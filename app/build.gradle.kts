@@ -40,8 +40,8 @@ android {
     kapt {
         generateStubs = true
     }
-    viewBinding {
-        true
+    buildFeatures{
+        viewBinding = true
     }
 }
 

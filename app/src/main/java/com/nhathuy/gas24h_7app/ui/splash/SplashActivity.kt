@@ -10,7 +10,7 @@ import com.nhathuy.gas24h_7app.ui.main.MainActivity
 
 
 class SplashActivity : AppCompatActivity() {
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
