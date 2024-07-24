@@ -9,7 +9,9 @@ class CountryRepository{
         return listOf(
             Country("Vietnam", "+84", R.drawable.ic_flag_vietnam),
             Country("Usa", "+1", R.drawable.ic_flag_usa),
-            Country("Thai Lan", "+66", R.drawable.ic_flag_thailan),
+            Country("ThaiLand", "+66", R.drawable.ic_flag_thailan),
+            Country("Russia", "+66", R.drawable.ic_flag_russia),
+            Country("Japan", "+66", R.drawable.ic_flag_japan),
         )
     }
 }

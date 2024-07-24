@@ -14,6 +14,11 @@ data class Country(val name:String,val code:String,val flagResId:Int)
 
 class CountrySpinnerAdapter(context: Context,private var countries: List<Country>):ArrayAdapter<Country>(context,0,countries) {
 
+    fun updateCountries(newCountries:List<Country>){
+        countries=newCountries
+        notifyDataSetChanged()
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return createView(position, convertView, parent,false)
     }

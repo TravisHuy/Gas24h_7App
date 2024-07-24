@@ -7,10 +7,13 @@ interface LoginContract {
         fun showLoading()
         fun hideLoading()
         fun showError(message:String)
+        fun showCountries(countries:List<Country>)
         fun navigateVerification(verificationId:String)
     }
     interface Presenter{
-        fun setView(view: View)
+        fun attachView(view: LoginContract.View)
+        fun detachView()
+        fun loadCountries()
         fun onCountrySelected(country: Country)
         fun sendVerification(phoneNumber:String)
     }

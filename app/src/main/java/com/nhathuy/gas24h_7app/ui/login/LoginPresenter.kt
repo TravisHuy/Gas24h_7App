@@ -11,15 +11,26 @@ import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LoginPresenter @Inject constructor(private val auth:FirebaseAuth):LoginContract.Presenter {
+class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private val repository: CountryRepository):LoginContract.Presenter {
 
-    private lateinit var view: LoginContract.View
+    private  var view: LoginContract.View?=null
+    private lateinit var countries:List<Country>
     private lateinit var verificationId:String
     private var selectCountryCode= ""
 
-    override fun setView(view: LoginContract.View){
-        this.view=view
 
+    override fun attachView(view: LoginContract.View) {
+        this.view=view
+        loadCountries()
+    }
+
+    override fun detachView() {
+        view=null
+    }
+
+    override fun loadCountries() {
+        countries = repository.getCountries()
+        view?.showCountries(countries)
     }
 
     override fun onCountrySelected(country: Country) {
@@ -28,7 +39,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth):LoginCon
 
     private fun validatePhoneNumber(phoneNumber: String):Boolean {
         if(phoneNumber.isEmpty()||phoneNumber.length<9){
-            view.showError("Invalid phone number")
+            view?.showError("Invalid phone number")
             return false
         }
        return true
@@ -37,7 +48,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth):LoginCon
 
     override fun sendVerification(phoneNumber: String) {
         if(validatePhoneNumber(phoneNumber)){
-            view.showLoading()
+            view?.showLoading()
             var formattedNumber=  formatPhoneNumber(phoneNumber)
 
             val fullPhoneNumber=selectCountryCode+formattedNumber
@@ -49,19 +60,19 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth):LoginCon
                 .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
 
                     override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                        view.hideLoading()
+                        view?.hideLoading()
                         signWithPhoneCredential(phoneAuthCredential)
                     }
 
                     override fun onVerificationFailed(e: FirebaseException) {
-                        view.hideLoading()
-                        view.showError("Verification failed: "+e.message)
+                        view?.hideLoading()
+                        view?.showError("Verification failed: "+e.message)
                     }
 
                     override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                        view.hideLoading()
+                        view?.hideLoading()
                         verificationId=id
-                        view.navigateVerification(verificationId)
+                        view?.navigateVerification(verificationId)
                     }
 
                 }).build()
@@ -78,15 +89,15 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth):LoginCon
     }
 
     private fun signWithPhoneCredential(phoneAuthCredential: PhoneAuthCredential) {
-        view.showLoading()
+        view?.showLoading()
         auth.signInWithCredential(phoneAuthCredential)
             .addOnCompleteListener {
                 task ->
                 if(task.isSuccessful){
-                    view.navigateVerification(verificationId)
+                    view?.navigateVerification(verificationId)
                 }
                 else{
-                    view.showError("Auth failed: ${task.exception?.message}")
+                    view?.showError("Auth failed: ${task.exception?.message}")
                 }
             }
     }

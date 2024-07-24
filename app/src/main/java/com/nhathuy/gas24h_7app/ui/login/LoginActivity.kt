@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
         setContentView(binding.root)
 
         (application as Gas24h_7Application).getGasComponent().inject(this)
-        presenter.setView(this)
+        presenter.attachView(this)
 
 
         setupCountrySpinner()
@@ -37,18 +37,11 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
     }
 
     private fun setupCountrySpinner() {
-        val countries =listOf(
-            Country("Vietnam", "+84", R.drawable.ic_flag_vietnam),
-            Country("Usa", "+1", R.drawable.ic_flag_usa),
-            Country("Thai Lan", "+66", R.drawable.ic_flag_thailan),
-        )
-        countryAdapter=CountrySpinnerAdapter(this, countries)
-        binding.countrySpinner.adapter=countryAdapter
-
+        presenter.loadCountries()
 
         binding.countrySpinner.onItemSelectedListener= object :AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>, view: View, positon: Int, id: Long) {
-                val selectCountry =countries[positon]
+                val selectCountry = parent.adapter.getItem(positon) as Country
                 presenter.onCountrySelected(selectCountry)
                 binding.edLoginPhoneNumber.setText("")
             }
@@ -76,6 +69,12 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
     override fun showError(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
+
+    override fun showCountries(countries: List<Country>) {
+        countryAdapter = CountrySpinnerAdapter(this, countries)
+        binding.countrySpinner.adapter = countryAdapter
+    }
+
     override fun navigateVerification(verificationId: String) {
         val intent=Intent(this,VerificationActivity::class.java)
         intent.putExtra("verificationId",verificationId)

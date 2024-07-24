@@ -33,6 +33,11 @@ class GasModule(private val application: Application) {
 
     @Provides
     @Singleton
+    fun provideCountryRepository():CountryRepository{
+        return CountryRepository()
+    }
+    @Provides
+    @Singleton
     fun LoginPresenter(auth:FirebaseAuth):LoginContract.Presenter{
         return LoginPresenter(auth)
     }
