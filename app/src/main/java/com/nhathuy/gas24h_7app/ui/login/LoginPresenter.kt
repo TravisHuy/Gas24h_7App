@@ -17,7 +17,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
     private lateinit var countries:List<Country>
     private lateinit var verificationId:String
     private var selectCountryCode= ""
-
+    private var  fullPhoneNumber=""
 
     override fun attachView(view: LoginContract.View) {
         this.view=view
@@ -51,8 +51,8 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
             view?.showLoading()
             var formattedNumber=  formatPhoneNumber(phoneNumber)
 
-            val fullPhoneNumber=selectCountryCode+formattedNumber
-
+            fullPhoneNumber=selectCountryCode+formattedNumber
+            fullNumber(fullPhoneNumber)
             val options=PhoneAuthOptions.newBuilder(auth)
                 .setTimeout(60L,TimeUnit.SECONDS)
                 .setActivity(view as Activity)
@@ -72,7 +72,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
                     override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
                         view?.hideLoading()
                         verificationId=id
-                        view?.navigateVerification(verificationId)
+                        view?.navigateVerification(verificationId,fullPhoneNumber)
                     }
 
                 }).build()
@@ -87,6 +87,9 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
             phoneNumber
         }
     }
+    private fun fullNumber(fullNumber:String):String{
+        return fullNumber
+    }
 
     private fun signWithPhoneCredential(phoneAuthCredential: PhoneAuthCredential) {
         view?.showLoading()
@@ -94,7 +97,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
             .addOnCompleteListener {
                 task ->
                 if(task.isSuccessful){
-                    view?.navigateVerification(verificationId)
+                    view?.navigateVerification(verificationId, fullPhoneNumber)
                 }
                 else{
                     view?.showError("Auth failed: ${task.exception?.message}")

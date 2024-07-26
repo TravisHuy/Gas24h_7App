@@ -75,9 +75,10 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
         binding.countrySpinner.adapter = countryAdapter
     }
 
-    override fun navigateVerification(verificationId: String) {
+    override fun navigateVerification(verificationId: String,fullPhoneNumber:String) {
         val intent=Intent(this,VerificationActivity::class.java)
         intent.putExtra("verificationId",verificationId)
+        intent.putExtra("fullPhoneNumber",fullPhoneNumber)
         startActivity(intent)
         finish()
     }
