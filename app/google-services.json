@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273196432238",
+    "project_id": "gas24h7d",
+    "storage_bucket": "gas24h7d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273196432238:android:0ebea82e8a452d23e5df7f",
+        "android_client_info": {
+          "package_name": "com.nhathuy.gas24h_7app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYNDJm3L1B37p46BYBBevVbjnO4bg-aUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

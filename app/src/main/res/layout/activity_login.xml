@@ -76,7 +76,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_login_phoneNumber"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_sans_light"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,7 +87,6 @@
 
         <Button
             android:id="@+id/btn_continue"
-            style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"

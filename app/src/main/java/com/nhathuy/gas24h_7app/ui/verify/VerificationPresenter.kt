@@ -23,6 +23,7 @@ class VerificationPresenter @Inject constructor(private val auth:FirebaseAuth,
 
     override fun attachView(view: VerificationContract.View) {
         this.view=view
+        startResendTimer()
     }
 
     override fun detachView() {

@@ -9,10 +9,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.nhathuy.gas24h_7app.Gas24h_7Application
-import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.databinding.ActivityVerificationBinding
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
-import com.nhathuy.gas24h_7app.ui.register.RegistetrActivity
+import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import javax.inject.Inject
 
 class VerificationActivity : AppCompatActivity(),VerificationContract.View {
@@ -107,7 +106,7 @@ class VerificationActivity : AppCompatActivity(),VerificationContract.View {
     }
 
     override fun navigateRegister() {
-        startActivity(Intent(this,RegistetrActivity::class.java))
+        startActivity(Intent(this,RegisterActivity::class.java))
         finish()
     }
 
