@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.di.module
 
 import android.app.Application
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -57,6 +58,13 @@ class GasModule(private val application: Application) {
         return CoroutineScope(Dispatchers.Main)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideContext(): Context {
+        return application.applicationContext
+    }
+
     @Provides
     @Singleton
     fun provideLoginPresenter(auth: FirebaseAuth, countryRepository: CountryRepository): LoginContract.Presenter {
@@ -65,8 +73,8 @@ class GasModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideRegisterPresenter(locationApiService: LocationApiService, userRepository: UserRepository,coroutineScope: CoroutineScope): RegisterContract.Presenter {
-        return RegisterPresenter(locationApiService, userRepository,coroutineScope)
+    fun provideRegisterPresenter(locationApiService: LocationApiService, userRepository: UserRepository,coroutineScope: CoroutineScope,context: Context): RegisterContract.Presenter {
+        return RegisterPresenter(locationApiService, userRepository,coroutineScope,context)
     }
 
 }

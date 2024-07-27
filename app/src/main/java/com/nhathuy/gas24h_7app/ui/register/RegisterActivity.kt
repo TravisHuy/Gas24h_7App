@@ -1,11 +1,15 @@
 package com.nhathuy.gas24h_7app.ui.register
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.District
@@ -28,6 +32,8 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     lateinit var presenter: RegisterContract.Presenter
 
 
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityRegisterBinding.inflate(layoutInflater)
@@ -40,6 +46,35 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
         presenter.loadProvinces()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                presenter.fetchCurrentAddress()
+            } else {
+                showError("Location permission denied")
+            }
+        }
+    }
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            presenter.fetchCurrentAddress()
+        }
+    }
     private fun setupUI() {
 
         // Initialize adapters
@@ -55,16 +90,18 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
 
         binding.provinceAutoComplete.setOnItemClickListener { _, _, _, _ ->
             presenter.onProvinceSelected(binding.provinceAutoComplete.text.toString())
-            binding.districtAutoComplete.text.clear()
-            binding.wardAutoComplete.text.clear()
+            clearDistrictAndWard()
         }
 
         binding.districtAutoComplete.setOnItemClickListener { _, _, _, _ ->
             presenter.onDistrictSelected(binding.districtAutoComplete.text.toString())
-            binding.wardAutoComplete.text.clear()
+            clearWard()
         }
-        binding.wardAutoComplete.setOnItemClickListener { _, _, _, _ ->
-//            presenter.onWardSelected(binding.wardAutoComplete.text.toString())
+//        binding.wardAutoComplete.setOnItemClickListener { _, _, _, _ ->
+////            presenter.onWardSelected(binding.wardAutoComplete.text.toString())
+//        }
+        binding.tvRegLocation.setOnClickListener {
+            requestLocationPermission()
         }
         binding.btnRegister.setOnClickListener {
 
@@ -72,6 +109,18 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
 
     }
 
+
+
+    private fun clearDistrictAndWard() {
+        binding.districtAutoComplete.text.clear()
+        binding.wardAutoComplete.text.clear()
+        districtAdapter.clear()
+        wardAdapter.clear()
+    }
+    private fun clearWard() {
+        binding.wardAutoComplete.text.clear()
+        wardAdapter.clear()
+    }
     override fun showLoading() {
         binding.progressBar.visibility=View.VISIBLE
     }
@@ -119,6 +168,9 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     override fun getSelectedProvince(): String = binding.provinceAutoComplete.text.toString()
     override fun getSelectedDistrict(): String = binding.districtAutoComplete.text.toString()
     override fun getSelectedWard(): String = binding.wardAutoComplete.text.toString()
+    override fun setAddress(address: String) {
+        binding.edRegAddress.setText(address)
+    }
 
     override fun onDestroy() {
         super.onDestroy()

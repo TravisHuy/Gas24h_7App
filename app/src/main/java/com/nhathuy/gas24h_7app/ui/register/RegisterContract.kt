@@ -22,6 +22,7 @@ interface RegisterContract {
         fun getSelectedProvince(): String
         fun getSelectedDistrict(): String
         fun getSelectedWard(): String
+        fun setAddress(address:String)
     }
     interface Presenter{
         fun attachView(view: RegisterContract.View)
@@ -30,5 +31,6 @@ interface RegisterContract {
         fun loadProvinces()
         fun onProvinceSelected(provinceName: String)
         fun onDistrictSelected(districtName: String)
+        fun fetchCurrentAddress()
     }
 }

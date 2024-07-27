@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Gas24h_7</string>
     <string name="title">Travis Huy Gas\nis the perfect choice</string>
+
+    <string name="google_map_api_key">AIzaSyD8_JLmNS8nIdjqXYJR4Gqi6IaPXum7Jbs</string>
 </resources>
