@@ -34,7 +34,7 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
 ):RegisterContract.Presenter {
 
     private var view:RegisterContract.View?=null
-    private lateinit var provinces: List<Province>
+    private lateinit var provinces: MutableList<Province>
     private var districts: MutableMap<String, List<District>> = mutableMapOf()
     private var wards: MutableMap<String, List<Ward>> = mutableMapOf()
 
@@ -50,7 +50,57 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
     }
 
     override fun registerUser(user: User) {
+        if(!validateUserInput(user)){
+            return
+        }
+        coroutineScope.launch {
+            view?.showLoading()
+            try {
+                val result= userRepository.registerUser(user)
+                withContext(Dispatchers.Main){
+                    if(result.isSuccess){
+                        view?.showSuccess("Registration successful")
+                        view?.navigateMain()
+                    }
+                    else{
+                        view?.showError("Registration failed: ${result.exceptionOrNull()?.message}")
+                    }
+                }
+            }catch (e:Exception){
+                withContext(Dispatchers.Main){
+                    view?.showError("Registration failed: ${e.message}")
+                }
+            }
+            finally {
+                view?.hideLoading()
+            }
+        }
+    }
 
+    private fun validateUserInput(user: User): Boolean {
+        when {
+            user.fullName.isBlank() -> {
+                view?.showError("Please enter your full name")
+                return false
+            }
+            user.province.isBlank() -> {
+                view?.showError("Please select a province")
+                return false
+            }
+            user.district.isBlank() -> {
+                view?.showError("Please select a district")
+                return false
+            }
+            user.ward.isBlank() -> {
+                view?.showError("Please select a ward")
+                return false
+            }
+            user.address.isBlank() -> {
+                view?.showError("Please enter your address")
+                return false
+            }
+        }
+        return true
     }
 
     override fun loadProvinces() {
@@ -59,7 +109,7 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
                 val response= withContext(Dispatchers.IO){
                     locationApiService.getProvides()
                 }
-                provinces=response.data
+                provinces=response.data.toMutableList()
                 view?.setProvinces(provinces.map { it.full_name })
             }
             catch (e:Exception){
@@ -70,44 +120,46 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
 
     override fun onProvinceSelected(provinceName: String) {
         val province =provinces.find { it.full_name==provinceName }?:return
-        if (districts.containsKey(province.id)) {
-            view?.setDistricts(districts[province.id]?.map { it.full_name } ?: emptyList())
-        }
-        else {
-            coroutineScope.launch {
+
+        coroutineScope.launch {
                 try {
+                    view?.showLoading()
                     val response = withContext(Dispatchers.IO) {
                         locationApiService.getDistricts(province.id)
                     }
 //                districts= mapOf(province.id to response.data)
                     districts[province.id] = response.data
                     view?.setDistricts(response.data.map { it.full_name })
+                    view?.hideLoading()
                 } catch (e: Exception) {
+                    view?.hideLoading()
                     view?.showError("Error fetching districts: ${e.message}")
                 }
             }
-        }
-        view?.setWards(emptyList())
     }
 
     override fun onDistrictSelected(districtName: String) {
-        val district =districts.values.flatten().find { it.full_name==districtName }?:return
+        val selectedProvince = provinces.find { province ->
+            districts[province.id]?.any { it.full_name == districtName } == true
+        } ?: return
 
-        if (wards.containsKey(district.id)) {
-            view?.setWards(wards[district.id]?.map { it.full_name } ?: emptyList())
-        }else {
-            coroutineScope.launch {
+        val district = districts[selectedProvince.id]?.find { it.full_name == districtName } ?: return
+
+
+        coroutineScope.launch {
                 try {
+                    view?.showLoading()
                     val response = withContext(Dispatchers.IO) {
                         locationApiService.getWards(district.id)
                     }
 //                wards= mapOf(district.id to response.data)
                     wards[district.id] = response.data
                     view?.setWards(response.data.map { it.full_name })
+                    view?.hideLoading()
                 } catch (e: Exception) {
+                    view?.hideLoading()
                     view?.showError("Error fetching districts: ${e.message}")
                 }
-            }
         }
     }
     @SuppressLint("MissingPermission")

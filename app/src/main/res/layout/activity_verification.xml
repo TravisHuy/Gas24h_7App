@@ -82,7 +82,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField2"
@@ -93,7 +94,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField3"
@@ -104,7 +106,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField4"
@@ -115,7 +118,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp4"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField5"
@@ -126,7 +130,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp5"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField6"
@@ -136,7 +141,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_verification_otp6"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

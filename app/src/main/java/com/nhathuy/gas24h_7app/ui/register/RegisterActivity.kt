@@ -7,13 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.District
 import com.nhathuy.gas24h_7app.data.model.Province
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.model.Ward
 import com.nhathuy.gas24h_7app.databinding.ActivityRegisterBinding
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
@@ -27,10 +31,12 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     private lateinit var districtAdapter:ArrayAdapter<String>
     private lateinit var wardAdapter: ArrayAdapter<String>
 
+    private lateinit var currentUser: FirebaseUser
 
     @Inject
     lateinit var presenter: RegisterContract.Presenter
-
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
@@ -78,7 +84,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     private fun setupUI() {
 
         // Initialize adapters
-        provinceAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        provinceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
         districtAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
         wardAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
 
@@ -87,39 +93,68 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
         binding.districtAutoComplete.setAdapter(districtAdapter)
         binding.wardAutoComplete.setAdapter(wardAdapter)
 
+        setDropdownHeight(binding.wardAutoComplete, 4)
+        setDropdownHeight(binding.provinceAutoComplete, 5)
+        setDropdownHeight(binding.districtAutoComplete, 5)
 
-        binding.provinceAutoComplete.setOnItemClickListener { _, _, _, _ ->
-            presenter.onProvinceSelected(binding.provinceAutoComplete.text.toString())
+
+        binding.provinceAutoComplete.setOnItemClickListener { _, _, position, _ ->
             clearDistrictAndWard()
+            val selectedProvince = binding.provinceAutoComplete.text.toString()
+            presenter.onProvinceSelected(selectedProvince)
         }
 
-        binding.districtAutoComplete.setOnItemClickListener { _, _, _, _ ->
-            presenter.onDistrictSelected(binding.districtAutoComplete.text.toString())
+        binding.districtAutoComplete.setOnItemClickListener { _, _, position, _ ->
             clearWard()
+            val selectedDistrict = binding.districtAutoComplete.text.toString()
+            presenter.onDistrictSelected(selectedDistrict)
         }
-//        binding.wardAutoComplete.setOnItemClickListener { _, _, _, _ ->
-////            presenter.onWardSelected(binding.wardAutoComplete.text.toString())
-//        }
         binding.tvRegLocation.setOnClickListener {
             requestLocationPermission()
         }
         binding.btnRegister.setOnClickListener {
+            registerUser()
+        }
+    }
 
+    private fun registerUser() {
+        currentUser=auth.currentUser!!
+        if(currentUser!=null){
+            val phoneNumber:String=currentUser.phoneNumber!!
+            val user=User(
+                uid=currentUser.uid,
+                fullName = getFullName(),
+                phoneNumber=phoneNumber,
+                province = getSelectedProvince(),
+                district = getSelectedDistrict(),
+                ward= getSelectedWard(),
+                address = getAddress(),
+                referralCode = getReferralCode())
+            presenter.registerUser(user)
         }
 
     }
 
+    private fun setDropdownHeight(wardAutoComplete: AutoCompleteTextView, maxItems: Int) {
+        wardAutoComplete.post {
+            val itemHeight = resources.getDimensionPixelSize(R.dimen.max_dropdown_height) // Approximate item height
+            wardAutoComplete.dropDownHeight = itemHeight * maxItems
+        }
+    }
 
 
     private fun clearDistrictAndWard() {
-        binding.districtAutoComplete.text.clear()
-        binding.wardAutoComplete.text.clear()
+        binding.districtAutoComplete.setText("", false)
+        binding.wardAutoComplete.setText("", false)
         districtAdapter.clear()
         wardAdapter.clear()
+        districtAdapter.notifyDataSetChanged()
+        wardAdapter.notifyDataSetChanged()
     }
     private fun clearWard() {
-        binding.wardAutoComplete.text.clear()
+        binding.wardAutoComplete.setText("",false)
         wardAdapter.clear()
+        wardAdapter.notifyDataSetChanged()
     }
     override fun showLoading() {
         binding.progressBar.visibility=View.VISIBLE
@@ -144,6 +179,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     }
 
     override fun setDistricts(districts: List<String>) {
+        clearWard()
         districtAdapter.clear()
         districtAdapter.addAll(districts)
         districtAdapter.notifyDataSetChanged()

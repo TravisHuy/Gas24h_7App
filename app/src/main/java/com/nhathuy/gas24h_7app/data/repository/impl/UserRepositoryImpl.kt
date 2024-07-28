@@ -16,8 +16,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun registerUser(user: User): Result<Unit>  = withContext(Dispatchers.IO) {
         try {
-            val currentUser= auth.currentUser?: return@withContext Result.failure(Exception("No authenticated user found"))
-            db.collection("users").document(currentUser.uid).set(user.toMap()).await()
+            val userId= auth.currentUser?.uid?:""
+            db.collection("users").document(userId).set(user.toMap()).await()
             Result.success(Unit)
         }
         catch (e:Exception){

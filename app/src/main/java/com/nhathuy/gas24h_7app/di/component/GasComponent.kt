@@ -3,7 +3,9 @@ package com.nhathuy.gas24h_7app.di.component
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.di.module.GasModule
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
+import com.nhathuy.gas24h_7app.ui.splash.SplashActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
 import dagger.Component
 import dagger.Module
@@ -15,4 +17,5 @@ interface GasComponent {
     fun inject(loginActivity: LoginActivity)
     fun inject(verifyActivity: VerificationActivity)
     fun inject(registerActivity: RegisterActivity)
+    fun inject(mainActivity: MainActivity)
 }

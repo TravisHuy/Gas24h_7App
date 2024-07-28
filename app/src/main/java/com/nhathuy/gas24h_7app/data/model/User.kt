@@ -5,25 +5,26 @@ import com.google.firebase.firestore.DocumentSnapshot
 data class User(
     var uid:String = "",
     var fullName:String = "",
+    var phoneNumber: String ="",
     var province:String = "",
     var district:String ="",
     var ward:String ="",
     var address: String = "",
     var referralCode:String ="",
-    var phoneNumber: String ="",
     var imageUser: String = "",
 ){
+    constructor():this("","","","","","","","","")
 
-     fun toMap():Map<String,Any>{
+    fun toMap():Map<String,Any>{
          return hashMapOf(
              "uid" to uid,
              "fullName" to fullName,
+             "phoneNumber" to phoneNumber,
              "province" to province,
              "district" to district,
              "ward" to ward,
              "address" to address,
              "referralCode" to referralCode,
-             "phoneNumber" to phoneNumber,
              "imageUser" to imageUser)
      }
     companion object{
