@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn = "navigation_view"
+    >
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_history_order"
+            android:title="History Order"
+            android:icon="@drawable/ic_recent"
+            />
+        <item android:id="@+id/nav_promotion"
+            android:title="Promotion"
+            android:icon="@drawable/ic_label"
+            />
+        <item android:id="@+id/nav_access_record"
+            android:title="Access record"
+            android:icon="@drawable/ic_download"
+            />
+        <item android:id="@+id/nav_sale_policy"
+            android:title="Sales policy"
+            android:icon="@drawable/ic_note"
+            />
+        <item android:id="@+id/nav_privacy_policy"
+            android:title="Privacy policy"
+            android:icon="@drawable/ic_protection"
+            />
+        <item android:id="@+id/nav_feedback"
+            android:title="Feedback"
+            android:icon="@drawable/ic_mail"
+            />
+        <item android:id="@+id/nav_company_information"
+            android:title="Company information"
+            android:icon="@drawable/ic_company"
+            />
+        <item android:id="@+id/nav_setting"
+            android:title="Setting"
+            android:icon="@drawable/ic_setting"
+            />
+        <item android:id="@+id/nav_delete_account"
+            android:title="Delete Account"
+            android:icon="@drawable/ic_delete"
+            />
+        <item android:id="@+id/nav_logout"
+            android:title="Logout"
+            android:icon="@drawable/ic_refresh"
+            />
+    </group>
+</menu>

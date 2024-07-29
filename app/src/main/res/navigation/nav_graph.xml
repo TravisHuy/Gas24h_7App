@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.nhathuy.gas24h_7app.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_order"
+        android:name="com.nhathuy.gas24h_7app.fragment.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" />
+
+    <fragment
+        android:id="@+id/nav_notification"
+        android:name="com.nhathuy.gas24h_7app.fragment.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.nhathuy.gas24h_7app.fragment.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/nav_history_order"
+        android:name="com.nhathuy.gas24h_7app.fragment.history_order.HistoryOrderFragment"
+        android:label="fragment_history_order"
+        tools:layout="@layout/fragment_history_order" />
+    <fragment
+        android:id="@+id/nav_access_record"
+        android:name="com.nhathuy.gas24h_7app.fragment.access_record.AccessRecordFragment"
+        android:label="fragment_access_record"
+        tools:layout="@layout/fragment_access_record" />
+    <fragment
+        android:id="@+id/nav_company_information"
+        android:name="com.nhathuy.gas24h_7app.fragment.company_information.CompanyInformationFragment"
+        android:label="fragment_company_information"
+        tools:layout="@layout/fragment_company_information" />
+    <fragment
+        android:id="@+id/nav_delete_account"
+        android:name="com.nhathuy.gas24h_7app.fragment.delete.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" />
+    <fragment
+        android:id="@+id/nav_feedback"
+        android:name="com.nhathuy.gas24h_7app.fragment.feedback.FeedBackFragment"
+        android:label="fragment_feed_back"
+        tools:layout="@layout/fragment_feed_back" />
+    <fragment
+        android:id="@+id/nav_hotline"
+        android:name="com.nhathuy.gas24h_7app.fragment.HotlineFragment"
+        android:label="fragment_hotline"
+        tools:layout="@layout/fragment_hotline" />
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.nhathuy.gas24h_7app.fragment.logout.LogoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout" />
+    <fragment
+        android:id="@+id/nav_privacy_policy"
+        android:name="com.nhathuy.gas24h_7app.fragment.privacy_policy.PrivacyPolicyFragment"
+        android:label="fragment_privacy_policy"
+        tools:layout="@layout/fragment_privacy_policy" />
+    <fragment
+        android:id="@+id/nav_promotion"
+        android:name="com.nhathuy.gas24h_7app.fragment.promotion.PromotionFragment"
+        android:label="fragment_promotion"
+        tools:layout="@layout/fragment_promotion" />
+    <fragment
+        android:id="@+id/nav_sale_policy"
+        android:name="com.nhathuy.gas24h_7app.fragment.sales_policy.SalesPolicyFragment"
+        android:label="fragment_sales_policy"
+        tools:layout="@layout/fragment_sales_policy" />
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.nhathuy.gas24h_7app.fragment.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+
+</navigation>
