@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -83,6 +85,16 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     }
     private fun setupUI() {
 
+        setDropdownHeight(binding.wardAutoComplete, 4)
+        setDropdownHeight(binding.provinceAutoComplete, 5)
+        setDropdownHeight(binding.districtAutoComplete, 5)
+
+        setupAdapters()
+        setupListeners()
+        setupTextWatchers()
+    }
+
+    private fun setupAdapters() {
         // Initialize adapters
         provinceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
         districtAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
@@ -92,12 +104,9 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
         binding.provinceAutoComplete.setAdapter(provinceAdapter)
         binding.districtAutoComplete.setAdapter(districtAdapter)
         binding.wardAutoComplete.setAdapter(wardAdapter)
+    }
 
-        setDropdownHeight(binding.wardAutoComplete, 4)
-        setDropdownHeight(binding.provinceAutoComplete, 5)
-        setDropdownHeight(binding.districtAutoComplete, 5)
-
-
+    private fun setupListeners() {
         binding.provinceAutoComplete.setOnItemClickListener { _, _, position, _ ->
             clearDistrictAndWard()
             val selectedProvince = binding.provinceAutoComplete.text.toString()
@@ -116,6 +125,28 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
             registerUser()
         }
     }
+    private fun setupTextWatchers() {
+        binding.edRegFullName.addTextChangedListener(createTextWatcher { binding.tilFullName.error = null })
+        binding.edRegAddress.addTextChangedListener(createTextWatcher { binding.tilAddress.error = null })
+        binding.provinceAutoComplete.addTextChangedListener(createTextWatcher { binding.tilProvince.error = null })
+        binding.districtAutoComplete.addTextChangedListener(createTextWatcher { binding.tilDistrict.error = null })
+        binding.wardAutoComplete.addTextChangedListener(createTextWatcher { binding.tilWard.error = null })
+    }
+
+    private fun createTextWatcher(clearError: () -> Unit): TextWatcher {
+        return object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                clearErrors()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        }
+    }
 
     private fun registerUser() {
         currentUser=auth.currentUser!!
@@ -130,7 +161,9 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
                 ward= getSelectedWard(),
                 address = getAddress(),
                 referralCode = getReferralCode())
-            presenter.registerUser(user)
+            if (presenter.validateUserInput(user)) {
+                presenter.registerUser(user)
+            }
         }
 
     }
@@ -206,6 +239,34 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     override fun getSelectedWard(): String = binding.wardAutoComplete.text.toString()
     override fun setAddress(address: String) {
         binding.edRegAddress.setText(address)
+    }
+
+    override fun showFullNameError(error: String) {
+        binding.tilFullName.error=error
+    }
+
+    override fun showAddressError(error: String) {
+        binding.tilAddress.error=error
+    }
+
+    override fun showProvinceError(error: String) {
+        binding.tilProvince.error=error
+    }
+
+    override fun showDistrictError(error: String) {
+        binding.tilDistrict.error=error
+    }
+
+    override fun showWardError(error: String) {
+        binding.tilWard.error=error
+    }
+
+    override fun clearErrors() {
+        binding.tilFullName.error=null
+        binding.tilAddress.error=null
+        binding.tilProvince.error=null
+        binding.tilDistrict.error=null
+        binding.tilWard.error=null
     }
 
     override fun onDestroy() {

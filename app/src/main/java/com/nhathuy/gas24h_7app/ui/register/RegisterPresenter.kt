@@ -77,30 +77,32 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
         }
     }
 
-    private fun validateUserInput(user: User): Boolean {
+    override fun validateUserInput(user: User): Boolean {
+        var isValid=true
+        view?.clearErrors()
         when {
             user.fullName.isBlank() -> {
-                view?.showError("Please enter your full name")
-                return false
+                view?.showFullNameError("Please enter your full name")
+                isValid=false
             }
             user.province.isBlank() -> {
-                view?.showError("Please select a province")
-                return false
+                view?.showProvinceError("Please select a province")
+                isValid=false
             }
             user.district.isBlank() -> {
-                view?.showError("Please select a district")
-                return false
+                view?.showDistrictError("Please select a district")
+                isValid=false
             }
             user.ward.isBlank() -> {
-                view?.showError("Please select a ward")
-                return false
+                view?.showWardError("Please select a ward")
+                isValid=false
             }
             user.address.isBlank() -> {
-                view?.showError("Please enter your address")
-                return false
+                view?.showAddressError("Please enter your address")
+                isValid=false
             }
         }
-        return true
+        return isValid
     }
 
     override fun loadProvinces() {

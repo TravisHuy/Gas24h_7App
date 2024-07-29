@@ -28,9 +28,16 @@
         </activity>
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false"/>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".ui.splash.SplashActivity"
+            android:exported="false" >
+
+        </activity>
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,9 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD8_JLmNS8nIdjqXYJR4Gqi6IaPXum7Jbs" />

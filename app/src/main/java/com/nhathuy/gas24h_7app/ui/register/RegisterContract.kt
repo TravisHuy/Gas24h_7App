@@ -23,6 +23,12 @@ interface RegisterContract {
         fun getSelectedDistrict(): String
         fun getSelectedWard(): String
         fun setAddress(address:String)
+        fun showFullNameError(error:String)
+        fun showAddressError(error:String)
+        fun showProvinceError(error:String)
+        fun showDistrictError(error:String)
+        fun showWardError(error:String)
+        fun clearErrors()
     }
     interface Presenter{
         fun attachView(view: RegisterContract.View)
@@ -32,5 +38,6 @@ interface RegisterContract {
         fun onProvinceSelected(provinceName: String)
         fun onDistrictSelected(districtName: String)
         fun fetchCurrentAddress()
+        fun validateUserInput(user: User):Boolean
     }
 }
