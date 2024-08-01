@@ -28,7 +28,17 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="elevationOverlayColor">@color/md_theme_light_surfaceTint</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
+
+        
     </style>
 
     <style name="Theme.Gas24h_7App" parent="Base.Theme.Gas24h_7App" />
+
+    <style name="tablayout_text" parent="TextAppearance.AppCompat">
+        <item name="android:color">@color/black</item>
+        <item name="android:fontFamily">@font/noto_sans_bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

@@ -82,4 +82,7 @@ dependencies {
 
     //google location
     implementation("com.google.android.gms:play-services-location:18.0.0")
+
+    //autoimageslider
+    implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
 }
