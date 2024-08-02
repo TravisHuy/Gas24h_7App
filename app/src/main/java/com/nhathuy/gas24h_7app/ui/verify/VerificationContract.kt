@@ -15,6 +15,7 @@ interface VerificationContract {
         fun showResendButton()
         fun hideResendButton()
         fun updateResendButtonText(text: String)
+
     }
     interface Presenter{
         fun attachView(view: VerificationContract.View)

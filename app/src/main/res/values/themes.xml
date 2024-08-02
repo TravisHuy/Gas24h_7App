@@ -28,8 +28,6 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="elevationOverlayColor">@color/md_theme_light_surfaceTint</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
-
-        
     </style>
 
     <style name="Theme.Gas24h_7App" parent="Base.Theme.Gas24h_7App" />

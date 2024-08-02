@@ -10,6 +10,7 @@ import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.Country
 import com.nhathuy.gas24h_7app.adapter.CountrySpinnerAdapter
+import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityLoginBinding
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
@@ -80,6 +81,11 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
         intent.putExtra("verificationId",verificationId)
         intent.putExtra("fullPhoneNumber",fullPhoneNumber)
         startActivity(intent)
+        finish()
+    }
+
+    override fun navigateAdmin() {
+        startActivity(Intent(this,AdminActivity::class.java))
         finish()
     }
 }

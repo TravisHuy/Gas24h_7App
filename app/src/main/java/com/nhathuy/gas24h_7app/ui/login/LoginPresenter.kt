@@ -8,6 +8,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.nhathuy.gas24h_7app.adapter.Country
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
+import com.nhathuy.gas24h_7app.util.Constants.ADMIN_PHONE_NUMBER
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
     private lateinit var verificationId:String
     private var selectCountryCode= ""
     private var  fullPhoneNumber=""
+
 
     override fun attachView(view: LoginContract.View) {
         this.view=view
@@ -53,6 +55,13 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
 
             fullPhoneNumber=selectCountryCode+formattedNumber
             fullNumber(fullPhoneNumber)
+
+            if(isAdminNumber(fullPhoneNumber)){
+                view?.hideLoading()
+                view?.navigateAdmin()
+                return
+            }
+
             val options=PhoneAuthOptions.newBuilder(auth)
                 .setTimeout(60L,TimeUnit.SECONDS)
                 .setActivity(view as Activity)
@@ -80,6 +89,10 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
         }
     }
 
+    private fun isAdminNumber(fullPhoneNumber: String): Boolean {
+        return fullPhoneNumber==ADMIN_PHONE_NUMBER
+    }
+
     private fun formatPhoneNumber(phoneNumber: String): String{
         return if (phoneNumber.startsWith("0")) {
             phoneNumber.substring(1)
@@ -97,7 +110,13 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
             .addOnCompleteListener {
                 task ->
                 if(task.isSuccessful){
-                    view?.navigateVerification(verificationId, fullPhoneNumber)
+                    val user=auth.currentUser
+                    if(user!=null){
+                        view?.navigateAdmin()
+                    }
+                    else{
+                        view?.navigateVerification(verificationId, fullPhoneNumber)
+                    }
                 }
                 else{
                     view?.showError("Auth failed: ${task.exception?.message}")

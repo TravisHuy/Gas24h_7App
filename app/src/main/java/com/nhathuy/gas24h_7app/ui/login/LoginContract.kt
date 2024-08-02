@@ -9,6 +9,7 @@ interface LoginContract {
         fun showError(message:String)
         fun showCountries(countries:List<Country>)
         fun navigateVerification(verificationId:String,phoneNumber: String)
+        fun navigateAdmin()
     }
     interface Presenter{
         fun attachView(view: LoginContract.View)

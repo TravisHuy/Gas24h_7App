@@ -61,10 +61,14 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
     private fun getProductCategory(category: ProductCategory): List<Product> {
         return if (category == ProductCategory.GAS_VIP) {
             listOf(
-                Product("1", "Gas Stove 1", category, "Description 1", 100.0, null, "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c"),
-                Product("2", "Gas Stove 2", category, "Description 2", 120.0, null, "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c"),
-                Product("3", "Gas Stove 3", category, "Description 3", 140.0, null, "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c"),
-                Product("4", "Gas Stove 4", category, "Description 4", 160.0, null, "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c")
+                Product("1", "Gas Stove 1", ProductCategory.GAS_VIP, "Description 1", 100.0, null, listOf(
+                    "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c")),
+                Product("2", "Gas Stove 2", ProductCategory.GAS_VIP, "Description 2", 120.0, null, listOf(
+                    "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c")),
+                Product("3", "Gas Stove 3", ProductCategory.GAS_VIP, "Description 3", 140.0, null, listOf(
+                    "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c")),
+                Product("4", "Gas Stove 4", ProductCategory.GAS_VIP, "Description 4", 160.0, null, listOf(
+                    "https://firebasestorage.googleapis.com/v0/b/mvpfirebase-e2b2f.appspot.com/o/bep_gas.jpg?alt=media&token=f29f624f-66d4-46ec-af39-6cc62a61df1c"))
             )
         } else {
             emptyList()

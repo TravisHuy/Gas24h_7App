@@ -158,6 +158,7 @@ class VerificationActivity : AppCompatActivity(),VerificationContract.View {
         binding.resendOtp.text = text
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

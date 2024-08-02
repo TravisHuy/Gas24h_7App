@@ -25,7 +25,8 @@ data class User(
              "ward" to ward,
              "address" to address,
              "referralCode" to referralCode,
-             "imageUser" to imageUser)
+             "imageUser" to imageUser,
+         )
      }
     companion object{
         fun formDocumentSnapshot(snapshot: DocumentSnapshot):User?{
