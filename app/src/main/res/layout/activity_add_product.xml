@@ -22,12 +22,14 @@
         />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_add_product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
         android:layout_marginTop="20dp"
         >
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_add_product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -35,12 +37,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_add_product_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Price"
         android:layout_marginTop="15dp"
         >
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_add_product_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
@@ -48,18 +52,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
      <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_add_product_offerPercentage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Offer Percentage (Optional)"
          android:layout_marginTop="15dp"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_add_product_offerPercentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 />
      </com.google.android.material.textfield.TextInputLayout>
-
 
      <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_product_category_layout"
@@ -70,7 +75,7 @@
             app:hintEnabled="false"
             >
             <AutoCompleteTextView
-                android:id="@+id/provinceAutoComplete"
+                android:id="@+id/categoryAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -79,13 +84,25 @@
                 />
      </com.google.android.material.textfield.TextInputLayout>
 
+     <TextView
+         android:id="@+id/add_category"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Add Category"
+         android:layout_marginTop="5dp"
+         android:layout_gravity="end"
+         android:fontFamily="@font/kalam_bold"/>
+
+
      <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_add_product_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
          >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_add_product_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -135,7 +152,9 @@
           android:layout_marginTop="20dp"
           android:text="ADD"
           />
-    
+
+
+
     </LinearLayout>
  
     

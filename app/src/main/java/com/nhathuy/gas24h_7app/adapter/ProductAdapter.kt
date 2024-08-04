@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,4 +33,5 @@ class ProductAdapter(private val products: List<Product>) : RecyclerView.Adapter
         holder.tvProductPrice.text = "₫${product.price}"
         Glide.with(holder.itemView.context).load(product.imageUrl).into(holder.ivProduct)
     }
+
 }

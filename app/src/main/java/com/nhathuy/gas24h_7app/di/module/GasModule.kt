@@ -5,6 +5,8 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
+import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
@@ -77,4 +79,9 @@ class GasModule(private val application: Application) {
         return RegisterPresenter(locationApiService, userRepository,coroutineScope,context)
     }
 
+    @Provides
+    @Singleton
+    fun provideAddProductPresenter(context: Context,db:FirebaseFirestore,storage: FirebaseStorage):AddProductContract.Presenter{
+        return AddProductPresenter(context,db,storage)
+    }
 }

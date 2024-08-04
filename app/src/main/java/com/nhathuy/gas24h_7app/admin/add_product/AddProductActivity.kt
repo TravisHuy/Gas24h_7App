@@ -1,35 +1,59 @@
 package com.nhathuy.gas24h_7app.admin.add_product
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
+import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.ActivityAddProductBinding
+import com.nhathuy.gas24h_7app.util.Constants.MAX_IMAGE_COUNT
+import com.nhathuy.gas24h_7app.util.Constants.PICK_IMAGE_REQUEST
+import javax.inject.Inject
 
-class AddProductActivity : AppCompatActivity() {
+class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
     private lateinit var binding: ActivityAddProductBinding
-    private val imageUris: MutableList<Uri> = mutableListOf()
     private lateinit var adapter: ProductImageAdapter
-    private val PICK_IMAGE_REQUEST = 1
-    private val MAX_IMAGE_COUNT = 3
+
+//    private val imageUris: MutableList<Uri> = mutableListOf()
+
+//    private val PICK_IMAGE_REQUEST = 1
+//    private val MAX_IMAGE_COUNT = 3
+
+    @Inject
+    lateinit var presenter: AddProductPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        (application as Gas24h_7Application).getGasComponent().inject(this)
+        presenter.attachView(this)
         setupRecyclerView()
         setupListeners()
-        updateImageCount()
+        updateImageCount(0,MAX_IMAGE_COUNT)
+
     }
 
     private fun setupRecyclerView() {
-        adapter = ProductImageAdapter(imageUris) { position ->
-            removeImage(position)
+        adapter = ProductImageAdapter(mutableListOf()) { position ->
+            presenter.onImageRemoved(position)
         }
         binding.productImagesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.productImagesRecyclerView.adapter = adapter
@@ -37,10 +61,33 @@ class AddProductActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.addProductImage.setOnClickListener {
-            if (imageUris.size < MAX_IMAGE_COUNT) {
-                openImagePicker()
-            }
+            openImagePicker()
         }
+        binding.addCategory.setOnClickListener {
+            showDialogCategory()
+        }
+        binding.addProduct.setOnClickListener {
+            presenter.addProduct()
+        }
+    }
+
+    private fun showDialogCategory() {
+        val dialog =Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.add_category)
+
+        val category_name=dialog.findViewById<TextInputEditText>(R.id.category_name)
+        val btn_add_category=dialog.findViewById<Button>(R.id.btn_add_category)
+
+        btn_add_category.setOnClickListener {
+            presenter.addCategory(category_name.text.toString())
+            dialog.dismiss()
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.attributes?.windowAnimations=R.style.DialogAnimation;
+        dialog.window?.setGravity(Gravity.CENTER)
     }
 
     private fun openImagePicker() {
@@ -52,28 +99,86 @@ class AddProductActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+//            val imageUri: Uri? = data.data
+//            imageUri?.let {
+//                imageUris.add(it)
+//                adapter.notifyItemInserted(imageUris.size - 1)
+//                updateImageCount()
+//            }
+//        }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val imageUri: Uri? = data.data
             imageUri?.let {
-                imageUris.add(it)
-                adapter.notifyItemInserted(imageUris.size - 1)
-                updateImageCount()
+                presenter.onImageAdded(it)
             }
         }
     }
 
-    private fun removeImage(position: Int) {
-        if (position in 0 until imageUris.size) {
-            imageUris.removeAt(position)
-            adapter.notifyDataSetChanged()
-            updateImageCount()
-        }
+//    private fun removeImage(position: Int) {
+//        if (position in 0 until imageUris.size) {
+//            imageUris.removeAt(position)
+//            adapter.notifyDataSetChanged()
+//            updateImageCount()
+//        }
+//    }
+
+//    private fun updateImageCount() {
+//        val imageCountText = "Thêm hình\nảnh(${imageUris.size}/$MAX_IMAGE_COUNT)"
+//        binding.addProductTvCount.text = imageCountText
+//        binding.addProductImage.isEnabled = imageUris.size < MAX_IMAGE_COUNT
+//        binding.addProductImage.alpha = if (imageUris.size < MAX_IMAGE_COUNT) 1.0f else 0.5f
+//    }
+
+    override fun showError(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
-    private fun updateImageCount() {
-        val imageCountText = "Thêm hình\nảnh(${imageUris.size}/$MAX_IMAGE_COUNT)"
-        binding.addProductTvCount.text = imageCountText
-        binding.addProductImage.isEnabled = imageUris.size < MAX_IMAGE_COUNT
-        binding.addProductImage.alpha = if (imageUris.size < MAX_IMAGE_COUNT) 1.0f else 0.5f
+    override fun showSuccess(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun updateImageCount(count: Int, max: Int) {
+        binding.addProductTvCount.text = "Thêm hình\nảnh(${count}/$max)"
+    }
+
+    override fun addImageToAdapter(imageUrl: String) {
+        adapter.addImage(Uri.parse(imageUrl))
+    }
+
+    override fun removeImageFromAdapter(position: Int) {
+        adapter.removeImage(position)
+    }
+
+    override fun enableImageAddButton(enable: Boolean) {
+        binding.addProductImage.isEnabled = enable
+        binding.addProductImage.alpha = if (enable) 1.0f else 0.5f
+    }
+
+    override fun clearInputFields() {
+        binding.edAddProductName.text?.clear()
+        binding.edAddProductPrice.text?.clear()
+        binding.edAddProductOfferPercentage.text?.clear()
+        binding.categoryAutoComplete.text?.clear()
+        binding.edAddProductDescription.text?.clear()
+        adapter.clearImages()
+    }
+
+    override fun getProductName(): String = binding.edAddProductName.text.toString()
+    override fun getProductPrice(): String = binding.edAddProductPrice.text.toString()
+    override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.toString()
+    override fun getProductCategory(): String =binding.categoryAutoComplete.text.toString()
+    override fun getProductDescription(): String = binding.edAddProductDescription.text.toString()
+
+    override fun updateCategoryList(categories: List<ProductCategory>) {
+        val adapter=ArrayAdapter(this,android.R.layout.simple_dropdown_item_1line,categories.map {
+            it.categoryName
+        })
+        binding.categoryAutoComplete.setAdapter(adapter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }

@@ -1,5 +1,7 @@
 package com.nhathuy.gas24h_7app.di.component
 
+import com.nhathuy.gas24h_7app.admin.AdminActivity
+import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.di.module.GasModule
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
@@ -18,4 +20,7 @@ interface GasComponent {
     fun inject(verifyActivity: VerificationActivity)
     fun inject(registerActivity: RegisterActivity)
     fun inject(mainActivity: MainActivity)
+
+    fun inject(adminActivity: AdminActivity)
+    fun inject(addProductActivity: AddProductActivity)
 }

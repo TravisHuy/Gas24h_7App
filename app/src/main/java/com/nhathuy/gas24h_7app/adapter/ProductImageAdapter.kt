@@ -37,4 +37,19 @@ class ProductImageAdapter(
     override fun getItemCount(): Int {
         return images.size
     }
+    fun addImage(uri: Uri){
+        images.add(uri)
+        notifyItemInserted(images.size-1)
+    }
+    fun removeImage(position: Int){
+        if(position in images.indices){
+            images.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position,images.size)
+        }
+    }
+    fun clearImages(){
+        images.clear()
+        notifyDataSetChanged()
+    }
 }
