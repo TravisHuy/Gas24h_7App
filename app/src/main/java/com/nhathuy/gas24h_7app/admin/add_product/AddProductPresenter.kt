@@ -46,6 +46,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
 
     override fun addProduct() {
       launch {
+          view?.showLoading()
           try {
               val productId = db.collection("products").document().id
 
@@ -94,6 +95,9 @@ class AddProductPresenter @Inject constructor(private val context:Context,
               withContext(Dispatchers.Main) {
                   view?.showError("Failed to add product: ${e.message}")
               }
+          }
+          finally {
+              view?.hideLoading()
           }
       }
 

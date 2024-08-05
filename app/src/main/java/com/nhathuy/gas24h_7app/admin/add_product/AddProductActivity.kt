@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
@@ -125,6 +126,14 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
                 presenter.onImageAdded(it)
             }
         }
+    }
+
+    override fun showLoading() {
+        binding.progressBarAddProduct.visibility= View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        binding.progressBarAddProduct.visibility= View.GONE
     }
 
 //    private fun removeImage(position: Int) {

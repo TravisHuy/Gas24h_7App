@@ -6,11 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".admin.add_product.AddProductActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      <ProgressBar
+            android:id="@+id/progress_bar_add_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+          />
+
+
+   <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginHorizontal="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         >
 
     <TextView
@@ -153,9 +173,7 @@
           android:text="ADD"
           />
 
-
-
-    </LinearLayout>
- 
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     
 </ScrollView>

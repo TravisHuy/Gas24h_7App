@@ -6,6 +6,8 @@ import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 
 interface AddProductContract {
     interface View{
+        fun showLoading()
+        fun hideLoading()
         fun showError(message:String)
         fun showSuccess(message: String)
         fun updateImageCount(count:Int,max:Int)
