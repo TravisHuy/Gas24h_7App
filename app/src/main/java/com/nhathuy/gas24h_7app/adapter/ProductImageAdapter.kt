@@ -49,7 +49,8 @@ class ProductImageAdapter(
         }
     }
     fun clearImages(){
+        val size=images.size
         images.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, size)
     }
 }

@@ -23,16 +23,18 @@ package com.nhathuy.gas24h_7app.data.model
 //}
 data class ProductCategory(val id:String,val categoryName:String){
 
+    constructor():this("","")
+    fun toMap() : Map<String,Any>{
+        return hashMapOf(
+            "id" to id,
+            "categoryName" to categoryName
+        )
+    }
     companion object{
         fun fromMap(map:Map<String,Any>):ProductCategory{
             return ProductCategory(id = map["id"] as String,
                                     categoryName = map["categoryName"] as String)
         }
-        fun toMap(category: ProductCategory) : Map<String,Any>{
-            return hashMapOf(
-                "id" to category.id,
-                "categoryName" to category.categoryName
-            )
-        }
+
     }
 }

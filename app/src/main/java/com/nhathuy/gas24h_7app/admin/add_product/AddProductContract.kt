@@ -18,7 +18,16 @@ interface AddProductContract {
         fun getProductOfferPercentage():String
         fun getProductCategory():String
         fun getProductDescription():String
-        fun updateCategoryList(categories: List<ProductCategory>)
+        fun updateCategoryList(categories: List<String>)
+        fun getSelectedCategoryId():String?
+        fun showNameError(error:String?)
+        fun showCategoryError(error:String?)
+        fun showDescriptionError(error:String?)
+        fun showPriceError(error:String?)
+        fun showOfferPercentageError(error:String?)
+        fun showImageError(error:String?)
+
+        fun clearImages()
     }
     interface Presenter{
         fun attachView(view: AddProductContract.View)
@@ -27,5 +36,7 @@ interface AddProductContract {
         fun onImageAdded(uri:Uri)
         fun onImageRemoved(position:Int)
         fun addCategory(categoryName:String)
+        fun loadCategories()
+        fun getSelectedCategoryId(position: Int):String?
     }
 }

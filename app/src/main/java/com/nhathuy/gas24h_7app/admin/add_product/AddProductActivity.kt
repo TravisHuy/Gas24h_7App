@@ -29,7 +29,8 @@ import javax.inject.Inject
 class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
     private lateinit var binding: ActivityAddProductBinding
     private lateinit var adapter: ProductImageAdapter
-
+    private lateinit var categoryAdapter: ArrayAdapter<String>
+    private var selectedCategoryId: String? = null
 //    private val imageUris: MutableList<Uri> = mutableListOf()
 
 //    private val PICK_IMAGE_REQUEST = 1
@@ -47,6 +48,7 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         presenter.attachView(this)
         setupRecyclerView()
         setupListeners()
+        setupCategoryAdapter()
         updateImageCount(0,MAX_IMAGE_COUNT)
 
     }
@@ -69,6 +71,16 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         binding.addProduct.setOnClickListener {
             presenter.addProduct()
         }
+        binding.categoryAutoComplete.setOnItemClickListener { _, _, position, _ ->
+            selectedCategoryId = presenter.getSelectedCategoryId(position)
+            binding.addProductCategoryLayout.error = null
+        }
+    }
+
+    private fun setupCategoryAdapter() {
+        categoryAdapter=
+            ArrayAdapter(this,android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        binding.categoryAutoComplete.setAdapter(categoryAdapter)
     }
 
     private fun showDialogCategory() {
@@ -161,20 +173,48 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         binding.edAddProductOfferPercentage.text?.clear()
         binding.categoryAutoComplete.text?.clear()
         binding.edAddProductDescription.text?.clear()
-        adapter.clearImages()
+        clearImages()
     }
-
+    override fun clearImages() {
+        adapter.clearImages()
+        updateImageCount(0, MAX_IMAGE_COUNT)
+    }
     override fun getProductName(): String = binding.edAddProductName.text.toString()
     override fun getProductPrice(): String = binding.edAddProductPrice.text.toString()
     override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.toString()
     override fun getProductCategory(): String =binding.categoryAutoComplete.text.toString()
     override fun getProductDescription(): String = binding.edAddProductDescription.text.toString()
 
-    override fun updateCategoryList(categories: List<ProductCategory>) {
-        val adapter=ArrayAdapter(this,android.R.layout.simple_dropdown_item_1line,categories.map {
-            it.categoryName
-        })
-        binding.categoryAutoComplete.setAdapter(adapter)
+    override fun updateCategoryList(categories: List<String>) {
+        categoryAdapter.clear()
+        categoryAdapter.addAll(categories)
+        categoryAdapter.notifyDataSetChanged()
+    }
+
+    override fun getSelectedCategoryId(): String? = selectedCategoryId
+
+    override fun showNameError(error: String?) {
+        binding.layoutAddProductName.error = error
+    }
+
+    override fun showCategoryError(error: String?) {
+        binding.addProductCategoryLayout.error = error
+    }
+
+    override fun showDescriptionError(error: String?) {
+        binding.layoutAddProductDescription.error = error
+    }
+
+    override fun showPriceError(error: String?) {
+        binding.layoutAddProductPrice.error = error
+    }
+
+    override fun showOfferPercentageError(error: String?) {
+        binding.layoutAddProductOfferPercentage.error = error
+    }
+
+    override fun showImageError(error: String?) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

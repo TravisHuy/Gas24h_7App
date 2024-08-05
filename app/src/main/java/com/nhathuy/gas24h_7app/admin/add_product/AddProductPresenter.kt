@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.admin.add_product
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -28,6 +29,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
     private var view: AddProductContract.View? = null
     private val imageUris = mutableListOf<Uri>()
     private val imageUrls = mutableListOf<String>()
+    private var categories: List<ProductCategory> = listOf()
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -43,15 +45,107 @@ class AddProductPresenter @Inject constructor(private val context:Context,
     }
 
     override fun addProduct() {
-        val productId = db.collection("products").document().id
+      launch {
+          try {
+              val productId = db.collection("products").document().id
 
-        val name = view?.getProductName() ?: ""
-        val category = view?.getProductCategory() ?: ""
-        val description = view?.getProductDescription() ?: ""
-        val price = view?.getProductPrice()?.toDoubleOrNull() ?: 0.0
-        val offerPercentage = view?.getProductOfferPercentage()?.toDoubleOrNull() ?: 0.0
+              //validate input
+              val name = view?.getProductName()?.trim() ?: ""
+              val categoryId = view?.getSelectedCategoryId()
+              val description = view?.getProductDescription()?.trim() ?: ""
+              val priceString = view?.getProductPrice()?.trim() ?: ""
+              val offerPercentageString = view?.getProductOfferPercentage()?.trim() ?: ""
+              
+              if (!validateInputs(name, categoryId, description, priceString, offerPercentageString)) {
+                  return@launch
+              }
 
+              val price = priceString.toDouble()
+              val offerPercentage = offerPercentageString.toDoubleOrNull() ?: 0.0
 
+              val uploadedImageUrls = uploadImages()
+
+              if (uploadedImageUrls.isEmpty()) {
+                  view?.showError("Failed to upload any images. Please try again.")
+                  return@launch
+              }
+
+              // Create product object
+
+              val product = Product(
+                  id = productId,
+                  name = name,
+                  categoryId = categoryId!!, // Assume category exists
+                  description = description,
+                  price = price!!,
+                  offerPercentage = offerPercentage ?: 0.0,
+                  imageUrl = uploadedImageUrls
+              )
+
+              // Add product to Firestore
+              db.collection("products").document(productId).set(product.toMap()).await()
+
+              withContext(Dispatchers.Main) {
+                  view?.showSuccess("Product added successfully")
+                  view?.clearInputFields()
+                  clearImages()
+              }
+          } catch (e: Exception) {
+              withContext(Dispatchers.Main) {
+                  view?.showError("Failed to add product: ${e.message}")
+              }
+          }
+      }
+
+    }
+    //clear images after submit
+    private fun clearImages() {
+        imageUris.clear()
+        view?.updateImageCount(0, MAX_IMAGE_COUNT)
+        view?.clearImages()
+        view?.enableImageAddButton(true)
+    }
+
+    private fun validateInputs(
+        name: String,
+        categoryId: String?,
+        description: String,
+        priceString: String,
+        offerPercentageString: String
+    ): Boolean {
+        var isValid = true
+
+        if (name.isBlank()) {
+            view?.showNameError("Product name is required")
+            isValid = false
+        }
+        if (categoryId == null) {
+            view?.showCategoryError("Please select a category")
+            isValid = false
+        }
+        else {
+            view?.showCategoryError(null)  // Clear any previous error
+        }
+        if (description.isBlank()) {
+            view?.showDescriptionError("Description is required")
+            isValid = false
+        }
+        val price = priceString.toDoubleOrNull()
+        if (price == null || price <= 0) {
+            view?.showPriceError("Please enter a valid price")
+            isValid = false
+        }
+        val offerPercentage = offerPercentageString.toDoubleOrNull() ?: 0.0
+        if (offerPercentage < 0 || offerPercentage > 100) {
+            view?.showOfferPercentageError("Offer percentage must be between 0 and 100")
+            isValid = false
+        }
+        if (imageUris.isEmpty()) {
+            view?.showImageError("Please add at least one image")
+            isValid = false
+        }
+
+        return isValid
     }
 
     override fun onImageAdded(uri: Uri) {
@@ -74,7 +168,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         }
     }
 
-    private suspend fun uploadImage(uri: Uri) = withContext(Dispatchers.IO) {
+    private suspend fun uploadImage(uri: Uri): String = withContext(Dispatchers.IO) {
         val filename = getFileName(uri)
         val uniqueFileName = generateUniqueFileName(filename)
         val ref = storage.reference.child("product_images/$uniqueFileName")
@@ -82,18 +176,15 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         try {
             ref.putFile(uri).await()
             val downloadUrl = ref.downloadUrl.await().toString()
-
-            withContext(Dispatchers.Main) {
-                imageUrls.add(downloadUrl)
-                updateImageCountView()
-                view?.addImageToAdapter(downloadUrl)
-            }
+            downloadUrl  // Return the download URL
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 view?.showError("Failed to upload image: ${e.message}")
             }
+            ""  // Return an empty string in case of failure
         }
     }
+
 
     private fun updateImageCountView() {
         view?.updateImageCount(imageUrls.size, MAX_IMAGE_COUNT)
@@ -159,7 +250,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
                 )
 
                 db.collection("categories").document(category.id)
-                    .set(ProductCategory.toMap(category)).await()
+                    .set(category.toMap()).await()
                 withContext(Dispatchers.Main) {
                     view?.showSuccess("Category added successfully")
                     loadCategories()
@@ -170,23 +261,45 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         }
     }
 
-    private fun loadCategories() {
+    override fun loadCategories() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = db.collection("categories").get().await()
-                val categories = result.mapNotNull { document ->
-                    document.data.let {
-                        ProductCategory.fromMap(it)
-                    }
+                categories = result.mapNotNull { document ->
+                    document.toObject(ProductCategory::class.java)
                 }
                 withContext(Dispatchers.Main) {
-                    view?.updateCategoryList(categories)
+                    view?.updateCategoryList(categories.map {
+                        it.categoryName
+                    })
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     view?.showError("Failed to load categories: ${e.message}")
+                    Log.d("AddProductPresenter","Failed to load categories: ${e.message}")
                 }
             }
+        }
+    }
+    private suspend fun uploadImages(): List<String> = withContext(Dispatchers.IO) {
+        val uploadedUrls = mutableListOf<String>()
+        for (uri in imageUris) {
+            try {
+                val url = uploadImage(uri)
+                if (url.isNotEmpty()) {
+                    uploadedUrls.add(url)
+                }
+            } catch (e: Exception) {
+                continue
+            }
+        }
+        uploadedUrls
+    }
+    override fun getSelectedCategoryId(position: Int): String? {
+        return if (position in categories.indices) {
+            categories[position].id
+        } else {
+            null
         }
     }
 }
