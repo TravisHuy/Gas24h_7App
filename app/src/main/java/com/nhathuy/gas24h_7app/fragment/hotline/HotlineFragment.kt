@@ -1,4 +1,4 @@
-package com.nhathuy.gas24h_7app.fragment
+package com.nhathuy.gas24h_7app.fragment.hotline
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

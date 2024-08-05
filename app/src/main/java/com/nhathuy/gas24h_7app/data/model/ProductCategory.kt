@@ -21,7 +21,7 @@ package com.nhathuy.gas24h_7app.data.model
 //        }
 //    }
 //}
-data class ProductCategory(val id:String,val categoryName:String){
+data class ProductCategory(val id:String,val categoryName:String):Comparable<ProductCategory>{
 
     constructor():this("","")
     fun toMap() : Map<String,Any>{
@@ -36,5 +36,9 @@ data class ProductCategory(val id:String,val categoryName:String){
                                     categoryName = map["categoryName"] as String)
         }
 
+    }
+
+    override fun compareTo(other: ProductCategory): Int {
+        return this.id.toIntOrNull()?.compareTo(other.id.toIntOrNull()?:Int.MAX_VALUE)?:-1
     }
 }

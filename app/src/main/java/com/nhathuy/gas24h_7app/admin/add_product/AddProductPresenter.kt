@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
@@ -248,12 +249,25 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         }
         CoroutineScope(Dispatchers.IO).launch {
             try {
+
+                //get the current highest category Id
+                val highestIdDoc = db.collection("categories")
+                    .orderBy("id",Query.Direction.DESCENDING)
+                    .limit(1)
+                    .get().await()
+                val newId= if(!highestIdDoc.isEmpty){
+                    val highestId= highestIdDoc.documents[0].getString("id")?.toIntOrNull()?:0
+                    (highestId+1).toString()
+                }else{
+                    "1"
+                }
+
                 val category = ProductCategory(
-                    id = db.collection("categories").document().id,
+                    id = newId,
                     categoryName = categoryName
                 )
 
-                db.collection("categories").document(category.id)
+                db.collection("categories").document(newId)
                     .set(category.toMap()).await()
                 withContext(Dispatchers.Main) {
                     view?.showSuccess("Category added successfully")
