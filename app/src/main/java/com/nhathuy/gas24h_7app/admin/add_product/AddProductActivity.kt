@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -47,13 +48,20 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
 
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
+
         setupRecyclerView()
         setupListeners()
         setupCategoryAdapter()
         updateImageCount(0,MAX_IMAGE_COUNT)
-
+        setDropdownHeight(binding.categoryAutoComplete,4)
     }
 
+    private fun setDropdownHeight(categoryAutoComplete: AutoCompleteTextView, maxItems: Int) {
+        categoryAutoComplete.post {
+            val itemHeight=resources.getDimensionPixelSize(R.dimen.max_dropdown_height)
+            categoryAutoComplete.dropDownHeight=itemHeight*maxItems
+        }
+    }
     private fun setupRecyclerView() {
         adapter = ProductImageAdapter(mutableListOf()) { position ->
             presenter.onImageRemoved(position)
