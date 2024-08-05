@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.R
 
-class ProductAdapter(private val products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(private var products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivProduct: ImageView = view.findViewById(R.id.iv_product)
@@ -31,7 +31,10 @@ class ProductAdapter(private val products: List<Product>) : RecyclerView.Adapter
         val product = products[position]
         holder.tvProductName.text = product.name
         holder.tvProductPrice.text = "₫${product.price}"
-        Glide.with(holder.itemView.context).load(product.detailImageUrls).into(holder.ivProduct)
+        Glide.with(holder.itemView.context).load(product.coverImageUrl).into(holder.ivProduct)
     }
-
+    fun updateData(newProduct:List<Product>){
+        products = newProduct
+        notifyDataSetChanged()
+    }
 }

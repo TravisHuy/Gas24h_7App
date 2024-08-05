@@ -54,7 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun setCategoriesFragment(categories: List<ProductCategory>) {
 
         val categoriesFragments=categories.map {category->
-            ProductListCategoryFragment.newInstance(category.categoryName)
+            ProductListCategoryFragment.newInstance(category.id,category.categoryName)
         }
 
         val viewPager2Adapter= HomeViewpagerAdapter(categoriesFragments,childFragmentManager,lifecycle)

@@ -74,6 +74,10 @@ class AddProductPresenter @Inject constructor(private val context:Context,
                   view?.showError("Failed to upload any images. Please try again.")
                   return@launch
               }
+              if (uploadedCoverImageUrl.isEmpty()) {
+                  view?.showError("Failed to upload cover image. Please try again.")
+                  return@launch
+              }
 
               // Create product object
 
@@ -115,6 +119,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         view?.updateImageCount(0, MAX_IMAGE_COUNT)
         view?.clearImages()
         view?.enableImageAddButton(true)
+        view?.enableCoverImageAddButton(true)
         view?.clearCoverImage()
         view?.updateCoverImageCount(0, 1)
     }
@@ -157,7 +162,10 @@ class AddProductPresenter @Inject constructor(private val context:Context,
             view?.showImageError("Please add at least one image")
             isValid = false
         }
-
+        if (coverImageUri==null) {
+            view?.showImageError("Please add a cover image")
+            isValid = false
+        }
         return isValid
     }
 

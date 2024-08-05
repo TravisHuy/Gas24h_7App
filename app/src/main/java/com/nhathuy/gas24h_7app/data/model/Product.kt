@@ -12,10 +12,11 @@ data class Product (
     var reviewCount: Int = 0,
     var averageRating: Float =0.0f
 ){
+    constructor():this("","","","",0.0,0.0,"", emptyList(),0,0.0f)
     fun toMap():Map<String,Any>{
         return hashMapOf("id" to id,
                         "name" to name,
-                        "category" to categoryId,
+                        "categoryId" to categoryId,
                         "description" to description,
                         "price" to price,
                         "offerPercentage" to offerPercentage,

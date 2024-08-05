@@ -228,6 +228,8 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         binding.categoryAutoComplete.text?.clear()
         binding.edAddProductDescription.text?.clear()
         clearImages()
+        clearCoverImage()
+        updateCoverImageCount(0,1)
     }
     override fun clearImages() {
         adapter.clearImages()
