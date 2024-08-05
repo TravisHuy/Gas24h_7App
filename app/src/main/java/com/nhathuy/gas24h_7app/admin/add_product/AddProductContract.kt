@@ -11,9 +11,12 @@ interface AddProductContract {
         fun showError(message:String)
         fun showSuccess(message: String)
         fun updateImageCount(count:Int,max:Int)
+        fun updateCoverImage(imageUrl: String)
+        fun updateCoverImageCount(count: Int, max: Int)
         fun addImageToAdapter(imageUrl: String)
         fun removeImageFromAdapter(position: Int)
         fun enableImageAddButton(enable:Boolean)
+        fun enableCoverImageAddButton(enable: Boolean)
         fun clearInputFields()
         fun getProductName():String
         fun getProductPrice():String
@@ -30,6 +33,7 @@ interface AddProductContract {
         fun showImageError(error:String?)
 
         fun clearImages()
+        fun clearCoverImage()
     }
     interface Presenter{
         fun attachView(view: AddProductContract.View)
@@ -37,8 +41,13 @@ interface AddProductContract {
         fun addProduct()
         fun onImageAdded(uri:Uri)
         fun onImageRemoved(position:Int)
+
+        fun onCoverImageAdded(uri: Uri)
+        fun onCoverImageRemoved()
         fun addCategory(categoryName:String)
         fun loadCategories()
         fun getSelectedCategoryId(position: Int):String?
+
+
     }
 }

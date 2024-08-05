@@ -7,7 +7,8 @@ data class Product (
     var description:String,
     var price:Double,
     var offerPercentage :Double,
-    var imageUrl:List<String>,
+    var coverImageUrl:String,
+    var detailImageUrls:List<String>,
     var reviewCount: Int = 0,
     var averageRating: Float =0.0f
 ){
@@ -18,7 +19,8 @@ data class Product (
                         "description" to description,
                         "price" to price,
                         "offerPercentage" to offerPercentage,
-                        "imageUrl" to imageUrl,
+                        "coverImageUrl" to coverImageUrl,
+                        "detailImageUrls" to detailImageUrls,
                         "reviews" to reviewCount,
                         "averageRating" to averageRating)
     }

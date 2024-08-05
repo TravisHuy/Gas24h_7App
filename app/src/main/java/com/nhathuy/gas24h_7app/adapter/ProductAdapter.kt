@@ -31,7 +31,7 @@ class ProductAdapter(private val products: List<Product>) : RecyclerView.Adapter
         val product = products[position]
         holder.tvProductName.text = product.name
         holder.tvProductPrice.text = "₫${product.price}"
-        Glide.with(holder.itemView.context).load(product.imageUrl).into(holder.ivProduct)
+        Glide.with(holder.itemView.context).load(product.detailImageUrls).into(holder.ivProduct)
     }
 
 }

@@ -6,4 +6,5 @@ object Constants {
     const val ADMIN_PHONE_NUMBER="+84349929162"
     const val MAX_IMAGE_COUNT = 3
     const val PICK_IMAGE_REQUEST = 1
+    const val PICK_COVER_IMAGE_REQUEST = 2
 }

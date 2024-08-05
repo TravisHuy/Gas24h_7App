@@ -29,7 +29,9 @@ class AddProductPresenter @Inject constructor(private val context:Context,
 
     private var view: AddProductContract.View? = null
     private val imageUris = mutableListOf<Uri>()
+    private var coverImageUri: Uri? = null
     private val imageUrls = mutableListOf<String>()
+    private var coverImageUrl: String = ""
     private var categories: List<ProductCategory> = listOf()
     private val job = Job()
     override val coroutineContext: CoroutineContext
@@ -66,6 +68,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
               val offerPercentage = offerPercentageString.toDoubleOrNull() ?: 0.0
 
               val uploadedImageUrls = uploadImages()
+              val uploadedCoverImageUrl = uploadCoverImage()
 
               if (uploadedImageUrls.isEmpty()) {
                   view?.showError("Failed to upload any images. Please try again.")
@@ -81,7 +84,8 @@ class AddProductPresenter @Inject constructor(private val context:Context,
                   description = description,
                   price = price!!,
                   offerPercentage = offerPercentage ?: 0.0,
-                  imageUrl = uploadedImageUrls
+                  detailImageUrls = uploadedImageUrls,
+                  coverImageUrl = uploadedCoverImageUrl
               )
 
               // Add product to Firestore
@@ -103,12 +107,16 @@ class AddProductPresenter @Inject constructor(private val context:Context,
       }
 
     }
+
+
     //clear images after submit
     private fun clearImages() {
         imageUris.clear()
         view?.updateImageCount(0, MAX_IMAGE_COUNT)
         view?.clearImages()
         view?.enableImageAddButton(true)
+        view?.clearCoverImage()
+        view?.updateCoverImageCount(0, 1)
     }
 
     private fun validateInputs(
@@ -173,6 +181,38 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         }
     }
 
+    override fun onCoverImageAdded(uri: Uri) {
+        coverImageUri = uri
+        view?.updateCoverImage(uri.toString())
+        view?.enableCoverImageAddButton(false)
+        view?.updateCoverImageCount(1,1)
+    }
+
+    override fun onCoverImageRemoved() {
+        launch {
+            coverImageUri?.let {
+                uri ->
+                try {
+                    if(coverImageUrl.isNotEmpty()){
+                        val ref= storage.getReferenceFromUrl(coverImageUrl)
+                        ref.delete().await()
+                    }
+                    else{
+
+                    }
+                }
+                catch (e:Exception){
+                    view?.showError("Failed to delete cover image: ${e.message}")
+                }
+            }
+            coverImageUri=null
+            coverImageUrl=""
+            view?.clearCoverImage()
+            view?.enableCoverImageAddButton(true)
+            view?.updateCoverImageCount(0,1)
+        }
+    }
+
     private suspend fun uploadImage(uri: Uri): String = withContext(Dispatchers.IO) {
         val filename = getFileName(uri)
         val uniqueFileName = generateUniqueFileName(filename)
@@ -188,6 +228,29 @@ class AddProductPresenter @Inject constructor(private val context:Context,
             }
             ""  // Return an empty string in case of failure
         }
+    }
+
+    private suspend fun uploadCoverImage(): String = withContext(Dispatchers.IO) {
+        coverImageUri?.let { uri ->
+            try {
+
+                val fileName = getFileName(uri)
+                val uniqueFileName = generateUniqueFileName(fileName)
+
+                val ref = storage.reference.child("product_cover_image/$uniqueFileName")
+
+                ref.putFile(uri).await()
+
+                val downloadUrl = ref.downloadUrl.await().toString()
+
+                downloadUrl
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.showError("Failed to upload cover image: ${e.message}")
+                }
+                ""
+            }
+        } ?: ""
     }
 
 

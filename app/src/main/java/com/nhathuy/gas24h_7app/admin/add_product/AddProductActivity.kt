@@ -25,18 +25,17 @@ import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.ActivityAddProductBinding
 import com.nhathuy.gas24h_7app.util.Constants.MAX_IMAGE_COUNT
+import com.nhathuy.gas24h_7app.util.Constants.PICK_COVER_IMAGE_REQUEST
 import com.nhathuy.gas24h_7app.util.Constants.PICK_IMAGE_REQUEST
 import javax.inject.Inject
 
 class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
+
     private lateinit var binding: ActivityAddProductBinding
     private lateinit var adapter: ProductImageAdapter
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private var selectedCategoryId: String? = null
-//    private val imageUris: MutableList<Uri> = mutableListOf()
 
-//    private val PICK_IMAGE_REQUEST = 1
-//    private val MAX_IMAGE_COUNT = 3
 
     @Inject
     lateinit var presenter: AddProductPresenter
@@ -84,7 +83,16 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
             selectedCategoryId = presenter.getSelectedCategoryId(position)
             binding.addProductCategoryLayout.error = null
         }
+        binding.addProductCoverImage.setOnClickListener {
+            openCoverImagePicker()
+        }
+
+        binding.deleteCoverImage.setOnClickListener {
+            presenter.onCoverImageRemoved()
+        }
     }
+
+
 
     private fun setupCategoryAdapter() {
         categoryAdapter=
@@ -117,7 +125,12 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
-
+    private fun openCoverImagePicker() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Cover Picture"), PICK_COVER_IMAGE_REQUEST)
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 //        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
@@ -128,11 +141,21 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
 //                updateImageCount()
 //            }
 //        }
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            val imageUri: Uri? = data.data
-            imageUri?.let {
-                presenter.onImageAdded(it)
-            }
+        if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+           when(requestCode){
+               PICK_IMAGE_REQUEST ->{
+                   val imageUri: Uri? = data.data
+                   imageUri?.let {
+                       presenter.onImageAdded(it)
+                   }
+               }
+               PICK_COVER_IMAGE_REQUEST->{
+                   val imageUri: Uri? = data.data
+                   imageUri?.let {
+                       presenter.onCoverImageAdded(it)
+                   }
+               }
+           }
         }
     }
 
@@ -171,6 +194,15 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         binding.addProductTvCount.text = "Thêm hình\nảnh(${count}/$max)"
     }
 
+    override fun updateCoverImage(imageUrl: String) {
+        binding.productCoverImage.setImageURI(Uri.parse(imageUrl))
+        binding.cardViewCoverImage.visibility = View.VISIBLE
+    }
+
+    override fun updateCoverImageCount(count: Int, max: Int) {
+        binding.tvAddProductCoverImage.text="Thêm anh\nbìa(${count}/$max)"
+    }
+
     override fun addImageToAdapter(imageUrl: String) {
         adapter.addImage(Uri.parse(imageUrl))
     }
@@ -182,6 +214,11 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
     override fun enableImageAddButton(enable: Boolean) {
         binding.addProductImage.isEnabled = enable
         binding.addProductImage.alpha = if (enable) 1.0f else 0.5f
+    }
+
+    override fun enableCoverImageAddButton(enable: Boolean) {
+        binding.addProductCoverImage.isEnabled=enable
+        binding.addProductCoverImage.alpha = if (enable) 1.0f else 0.5f
     }
 
     override fun clearInputFields() {
@@ -196,6 +233,12 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         adapter.clearImages()
         updateImageCount(0, MAX_IMAGE_COUNT)
     }
+
+    override fun clearCoverImage() {
+        binding.productCoverImage.setImageURI(null)
+        binding.cardViewCoverImage.visibility = View.GONE
+    }
+
     override fun getProductName(): String = binding.edAddProductName.text.toString()
     override fun getProductPrice(): String = binding.edAddProductPrice.text.toString()
     override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.toString()
