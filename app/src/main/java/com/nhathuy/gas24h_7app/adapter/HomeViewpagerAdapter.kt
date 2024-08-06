@@ -11,5 +11,7 @@ class HomeViewpagerAdapter(private val fragments:List<Fragment>,
     override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment = fragments[position]
-
+    fun getFragment(position: Int): Fragment {
+        return fragments[position]
+    }
 }

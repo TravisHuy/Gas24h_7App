@@ -14,16 +14,19 @@ import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.FragmentProductListCategoryBinding
+import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.util.Constants.ARG_CATEGORY
 import com.nhathuy.gas24h_7app.util.Constants.ARG_CATEGORY_ID
 
 
 class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_category) {
 
-    private lateinit var binding: FragmentProductListCategoryBinding
+    private var _binding: FragmentProductListCategoryBinding? = null
+    private val binding get() = _binding!!
     private lateinit var productAdapter: ProductAdapter
     private var categoryName: String? =null
     private var categoryId: String? =null
+    private var isDataFetched = false
     companion object{
         fun newInstance(categoryId: String, categoryName: String) = ProductListCategoryFragment().apply {
             arguments = Bundle().apply {
@@ -46,27 +49,35 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
         savedInstanceState: Bundle?
     ): View? {
 
-        binding= FragmentProductListCategoryBinding.inflate(inflater,container,false)
+        _binding= FragmentProductListCategoryBinding.inflate(inflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        fetchProducts()
+        if (!isDataFetched) {
+            fetchProducts()
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!isDataFetched) {
+            fetchProducts()
+        }
+    }
 
     private fun setupRecyclerView() {
         productAdapter= ProductAdapter(emptyList())
         binding.recyclerViewProducts.apply {
             layoutManager=GridLayoutManager(requireContext(),2)
             this.adapter=productAdapter
-            isNestedScrollingEnabled=false
+            isNestedScrollingEnabled=true
         }
     }
     private fun fetchProducts() {
-//        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
         val db = FirebaseFirestore.getInstance()
         Log.d("ProductListCategory", "Fetching products for category ID: $categoryId")
 
@@ -83,10 +94,11 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
                 }
                 Log.d("ProductListCategory", "Retrieved ${productList.size} products")
                 updateRecyclerView(productList)
-//                binding.progressBar.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
+                isDataFetched = true
             }
             .addOnFailureListener { exception ->
-//                binding.progressBar.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
                 Log.e("ProductListCategory", "Error fetching products", exception)
             }
@@ -94,6 +106,12 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
 
     private fun updateRecyclerView(products: List<Product>) {
          productAdapter.updateData(products)
+            view?.post {
+            (parentFragment as? HomeFragment)?.updateViewPagerHeight()
+        }
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
