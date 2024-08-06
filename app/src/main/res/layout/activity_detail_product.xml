@@ -1,9 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.detail_product.DetailProductActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/image_slider"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            app:iss_text_align="CENTER"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+         />
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/image_slider"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="10dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="đ12.00"
+                android:textSize="20sp"
+                android:textColor="@color/red"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="đ19.00"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:background="#F4CECE"
+                android:textColor="@color/red"
+                android:text="- 37%"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đã bán 8,2k"
+                android:textStyle="bold"
+                android:gravity="end"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/detail_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="100 chiếc dây thun dây buộc tóc hông làm tổn thương dây buộc tóc dây thun đầu dây đàn hồi"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout1"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="10dp"
+            />
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C8C6C6"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_product_name"
+            />
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#ECECEC"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view"
+            />
+        <include
+            android:id="@+id/layout_review_product"
+            layout="@layout/review_product"
+            app:layout_constraintTop_toBottomOf="@id/view1"
+            />
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#ECECEC"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view"
+            />
+        <include
+            android:id="@+id/layout_description_product"
+            layout="@layout/description_product"
+            />
+        <include
+            android:id="@+id/layout_suggest_product"
+            layout="@layout/suggest_product"
+            />
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>
