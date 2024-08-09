@@ -44,13 +44,12 @@ class HomeFragment : Fragment(R.layout.fragment_home),HomeFragmentContract.View 
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         presenter.fetchCategories()
-        presenter.fetchBanners()
+        setSlideImage()
     }
 
     override fun onResume() {
         super.onResume()
         presenter.fetchCategories()
-        presenter.fetchBanners()
     }
 
     override fun showLoading() {
@@ -120,5 +119,14 @@ class HomeFragment : Fragment(R.layout.fragment_home),HomeFragmentContract.View 
         super.onDestroyView()
         presenter.detachView()
     }
-
+    private fun setSlideImage() {
+        val listImage = listOf(
+            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
+            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
+            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
+            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
+            SlideModel(R.drawable.image_test, ScaleTypes.FIT)
+        )
+        binding.imageSlider.setImageList(listImage)
+    }
 }
