@@ -12,6 +12,11 @@ import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.impl.UserRepositoryImpl
+import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
+import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
+import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
+import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
+import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.ui.login.LoginContract
 import com.nhathuy.gas24h_7app.ui.login.LoginPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
@@ -84,4 +89,16 @@ class GasModule(private val application: Application) {
     fun provideAddProductPresenter(context: Context,db:FirebaseFirestore,storage: FirebaseStorage):AddProductContract.Presenter{
         return AddProductPresenter(context,db,storage)
     }
+
+    @Provides
+    @Singleton
+    fun provideProductListCategory(db:FirebaseFirestore):ProductListCategoryContract.Presenter{
+        return ProductListCategoryPresenter(db)
+    }
+    @Provides
+    @Singleton
+    fun provideHomeFragment(db:FirebaseFirestore,storage: FirebaseStorage):HomeFragmentContract.Presenter{
+        return HomeFragmentPresenter(db,storage)
+    }
+
 }

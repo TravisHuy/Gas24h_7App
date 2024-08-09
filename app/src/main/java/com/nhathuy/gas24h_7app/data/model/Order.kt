@@ -10,7 +10,7 @@ data class Order(
     val discountAmount: Double,
     val finalAmount:Double,
     val appliedVoucherId:String?,
-    val status:OrderStaus,
+    val status:OrderStatus,
     val createdAt:Date,
     val updatedAt: Date,
 ){

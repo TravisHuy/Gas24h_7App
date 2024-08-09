@@ -4,6 +4,8 @@ import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.di.module.GasModule
+import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
+import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
@@ -23,4 +25,7 @@ interface GasComponent {
 
     fun inject(adminActivity: AdminActivity)
     fun inject(addProductActivity: AddProductActivity)
+
+    fun inject(homeFragment: HomeFragment)
+    fun inject(productListCategoryFragment: ProductListCategoryFragment)
 }

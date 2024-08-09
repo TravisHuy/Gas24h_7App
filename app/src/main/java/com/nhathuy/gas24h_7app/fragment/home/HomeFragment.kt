@@ -1,25 +1,37 @@
 package com.nhathuy.gas24h_7app.fragment.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.HomeViewpagerAdapter
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.FragmentHomeBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
+import javax.inject.Inject
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class HomeFragment : Fragment(R.layout.fragment_home),HomeFragmentContract.View {
 
     private lateinit var binding: FragmentHomeBinding
     private var viewPager2Adapter: HomeViewpagerAdapter? = null
+
+    @Inject
+    lateinit var presenter: HomeFragmentPresenter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as Gas24h_7Application).getGasComponent().inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,29 +40,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSlideImage()
-        fetchCategoriesFromFireStore()
+        presenter.attachView(this)
+        presenter.fetchCategories()
+        presenter.fetchBanners()
     }
 
-    private fun fetchCategoriesFromFireStore() {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("categories")
-            .get()
-            .addOnSuccessListener { document ->
-                val categories = document.map { doc ->
-                    ProductCategory(
-                        id = doc.getString("id") ?: "",
-                        categoryName = doc.getString("categoryName") ?: ""
-                    )
-                }.sorted()
-                setCategoriesFragment(categories)
-            }
-            .addOnFailureListener {
-                // Handle error
-            }
+    override fun onResume() {
+        super.onResume()
+        presenter.fetchCategories()
+        presenter.fetchBanners()
+    }
+
+    override fun showLoading() {
+        binding.progressBar.visibility=View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        binding.progressBar.visibility=View.GONE
+    }
+
+    override fun showError(message: String) {
+        Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showBanners(banners: List<String>) {
+        val slideModels = banners.map {
+            SlideModel(it,ScaleTypes.FIT)
+        }
+        binding.imageSlider.setImageList(slideModels)
+    }
+
+    override fun showCategories(categories: List<ProductCategory>) {
+        setCategoriesFragment(categories)
     }
 
     private fun setCategoriesFragment(categories: List<ProductCategory>) {
@@ -93,19 +116,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun setSlideImage() {
-        val listImage = listOf(
-            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
-            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
-            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
-            SlideModel(R.drawable.image_test, ScaleTypes.FIT),
-            SlideModel(R.drawable.image_test, ScaleTypes.FIT)
-        )
-        binding.imageSlider.setImageList(listImage)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detachView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchCategoriesFromFireStore()
-    }
 }

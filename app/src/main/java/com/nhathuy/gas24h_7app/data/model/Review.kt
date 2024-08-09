@@ -8,7 +8,7 @@ data class Review(
     val comment:String,
     val timestamp:Long,
     val images: List<String> = emptyList(),
-    val videos: List<String> = emptyList()
+    val videos: String
 ){
 
 }
