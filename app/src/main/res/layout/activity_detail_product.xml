@@ -10,15 +10,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/image_slider"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            app:iss_text_align="CENTER"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-         />
+            android:layout_height="250dp">
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/image_slider"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                app:iss_text_align="CENTER"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"

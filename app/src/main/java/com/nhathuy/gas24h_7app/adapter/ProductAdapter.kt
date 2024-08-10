@@ -10,13 +10,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 
-class ProductAdapter(private var products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(private var products: List<Product>,private  val listener: ProductClickListener) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivProduct: ImageView = view.findViewById(R.id.iv_product)
         val tvProductName: TextView = view.findViewById(R.id.tv_product_name)
         val tvProductPrice: TextView = view.findViewById(R.id.tv_product_price)
+
+        init {
+            view.setOnClickListener {
+                val position = adapterPosition
+                if(position !=RecyclerView.NO_POSITION){
+                    listener.onProductClick(products[position])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
