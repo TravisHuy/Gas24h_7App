@@ -86,4 +86,7 @@ dependencies {
     //autoimageslider
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
 
+    //circleimageview
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
 }
