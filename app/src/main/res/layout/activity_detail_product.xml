@@ -31,28 +31,32 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/linearLayout_reduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/image_slider"
             android:orientation="horizontal"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="10dp"
+            android:visibility="visible"
             >
             <TextView
+                android:id="@+id/price_reduce_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="đ12.00"
                 android:textSize="20sp"
                 android:textColor="@color/red"
+                android:visibility="visible"
                 />
             <TextView
+                android:id="@+id/price_original_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="đ19.00"
+                android:visibility="visible"
                 />
             <TextView
+                android:id="@+id/discount_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -60,7 +64,7 @@
                 android:paddingEnd="5dp"
                 android:background="#F4CECE"
                 android:textColor="@color/red"
-                android:text="- 37%"
+                android:visibility="visible"
                 />
             <TextView
                 android:layout_width="match_parent"

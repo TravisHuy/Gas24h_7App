@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     private lateinit var binding:ActivityDetailProductBinding
-
+    private var isDescriptionExpanded = false
     @Inject
     lateinit var presenter: DetailProductPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,31 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         presenter.loadProductDetails(productId)
         presenter.loadSuggestProducts(categoryId)
 
+        setupDescriptionToggle()
+    }
+
+    private fun setupDescriptionToggle() {
+        binding.layoutDescriptionProduct.seeMoreLayout.setOnClickListener {
+            isDescriptionExpanded=!isDescriptionExpanded
+            updateDescriptionVisibility()
+        }
+    }
+
+    private fun updateDescriptionVisibility() {
+        with(binding.layoutDescriptionProduct){
+            if(isDescriptionExpanded){
+                shortDescription.visibility=View.GONE
+                fullDescription.visibility=View.VISIBLE
+                seeMoreButton.text = "Thu gọn"
+                seeMoreIcon.setImageResource(R.drawable.ic_up)
+            }
+            else{
+                shortDescription.visibility = View.VISIBLE
+                fullDescription.visibility = View.GONE
+                seeMoreButton.text = "Xem thêm"
+                seeMoreIcon.setImageResource(R.drawable.ic_down)
+            }
+        }
     }
 
     private fun setupSuggestProducts() {
@@ -122,6 +148,23 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     override fun showProductDetails(product: Product) {
         binding.detailProductName.text=product.name
         binding.layoutDescriptionProduct.shortDescription.text=product.description
+        binding.layoutDescriptionProduct.fullDescription.text=product.description
+
+
+        val originalPrice = product.price
+        val discountedPrice = product.getDiscountedPrice()
+
+        if (product.offerPercentage > 0.0) {
+            binding.priceOriginalProduct.paintFlags = binding.priceOriginalProduct.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.priceOriginalProduct.text  = String.format("đ%.2f", originalPrice)
+            binding.priceReduceProduct.text = String.format("đ%.2f", discountedPrice)
+            binding.discountPercentage.text= String.format("-%.0f%%", product.offerPercentage)
+        } else {
+            binding.priceReduceProduct.text = String.format("đ%.2f", originalPrice)
+
+            binding.priceOriginalProduct.visibility=View.GONE
+            binding.discountPercentage.visibility=View.GONE
+        }
     }
 
     override fun setupImageSlider(detailImages: List<String>) {

@@ -29,10 +29,16 @@ Xin cảm ơn quý khách hàng đã tin tưởng và lựa chọn sản phẩm 
         android:textSize="14sp"
         android:maxLines="3"
         android:ellipsize="end"
-        android:visibility="visible"
         android:layout_marginTop="8dp"
        />
-
+     <TextView
+            android:id="@+id/fullDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chào quý khách hàng thân yêu của ban bè :"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
     <View
         android:id="@+id/view"
@@ -41,6 +47,7 @@ Xin cảm ơn quý khách hàng đã tin tưởng và lựa chọn sản phẩm 
         android:background="#C8C6C6"
         android:layout_marginTop="10dp"/>
     <RelativeLayout
+        android:id="@+id/seeMoreLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
@@ -53,6 +60,7 @@ Xin cảm ơn quý khách hàng đã tin tưởng và lựa chọn sản phẩm 
             android:layout_centerHorizontal="true"/>
 
         <ImageView
+            android:id="@+id/seeMoreIcon"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginStart="10dp"

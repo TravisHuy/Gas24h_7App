@@ -25,5 +25,7 @@ data class Product (
                         "reviews" to reviewCount,
                         "averageRating" to averageRating)
     }
-
+    fun getDiscountedPrice(): Double{
+        return price* (1-offerPercentage/100)
+    }
 }

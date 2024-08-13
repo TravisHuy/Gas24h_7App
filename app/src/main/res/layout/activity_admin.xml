@@ -22,5 +22,27 @@
         android:layout_marginTop="10dp"
         android:textSize="16sp"
         />
-
+    <TextView
+        android:id="@+id/edit_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sửa Sản Phẩm"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Marketing"
+        />
+    <TextView
+        android:id="@+id/add_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tạo Voucher"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        />
 </LinearLayout>
