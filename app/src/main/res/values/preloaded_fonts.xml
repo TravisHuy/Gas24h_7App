@@ -5,5 +5,6 @@
         <item>@font/kalam_bold</item>
         <item>@font/noto_sans_bold</item>
         <item>@font/nunito_sans_light</item>
+        <item>@font/roboto</item>
     </array>
 </resources>
