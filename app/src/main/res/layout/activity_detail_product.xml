@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.detail_product.DetailProductActivity">
-    <LinearLayout
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -28,6 +34,48 @@
                 android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:visibility="gone"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:padding="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/background_back"
+                />
+            <ImageView
+                android:id="@+id/detail_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_three_dots"
+                android:padding="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/background_back"
+                />
+
+            <ImageView
+                android:id="@+id/detail_cart_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/detail_setting"
+                android:background="@drawable/background_back"
+                android:padding="5dp"
+                android:src="@drawable/ic_cart2" />
+            <ImageView
+                android:id="@+id/detail_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/detail_cart_item"
+                android:background="@drawable/background_back"
+                android:padding="5dp"
+                android:src="@drawable/ic_share" />
         </RelativeLayout>
 
         <LinearLayout
@@ -125,6 +173,63 @@
             layout="@layout/suggest_product"
             />
     </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    <LinearLayout
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#0CB6A6"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:id="@+id/detail_call"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_phone"
+                android:contentDescription="Cart icon" />
 
+        </LinearLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:background="#706E6E"
+            android:layout_gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:id="@+id/detail_cart_plus"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_cart_plus"
+                android:contentDescription="Cart icon" />
 
-</androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_detail_buy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="#E33C20"
+            android:backgroundTint="#E33C20"
+            android:fontFamily="@font/raleway"
+            android:text="Mua ngay"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+</RelativeLayout>

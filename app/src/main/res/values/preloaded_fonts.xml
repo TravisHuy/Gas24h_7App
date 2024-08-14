@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/athiti</item>
         <item>@font/atkinson_hyperlegible</item>
         <item>@font/kalam_bold</item>
         <item>@font/noto_sans_bold</item>
         <item>@font/nunito_sans_light</item>
+        <item>@font/raleway</item>
+        <item>@font/raleway_light</item>
         <item>@font/roboto</item>
     </array>
 </resources>
