@@ -10,6 +10,8 @@ interface DetailProductContract {
         fun showProductDetails(product: Product)
         fun setupImageSlider(detailImages:List<String>)
         fun setupSuggestProduct(products:List<Product>)
+
+        fun setupBottomNavigation()
     }
     interface Presenter{
         fun attachView(view:View)

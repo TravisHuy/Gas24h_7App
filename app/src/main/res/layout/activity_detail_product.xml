@@ -183,6 +183,7 @@
         android:background="#0CB6A6"
         >
         <LinearLayout
+            android:id="@+id/linear_detail_call"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -204,6 +205,7 @@
             android:layout_gravity="center"
             />
         <LinearLayout
+            android:id="@+id/linear_detail_cart_plus"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

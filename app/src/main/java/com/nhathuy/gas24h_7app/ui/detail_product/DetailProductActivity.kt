@@ -1,12 +1,16 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
+import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,10 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
+import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import javax.inject.Inject
 
 class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
@@ -26,6 +33,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     private var isDescriptionExpanded = false
     @Inject
     lateinit var presenter: DetailProductPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityDetailProductBinding.inflate(layoutInflater)
@@ -43,6 +51,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         presenter.loadSuggestProducts(categoryId)
 
         setupDescriptionToggle()
+        setupBottomNavigation()
     }
 
     private fun setupDescriptionToggle() {
@@ -190,6 +199,62 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 //        }
     }
 
+    override fun setupBottomNavigation() {
+        binding.bottomNavigation.findViewById<View>(R.id.detail_cart_plus).setOnClickListener {
+            showAddToCartDialog()
+        }
+    }
+
+    private fun showAddToCartDialog() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottomsheet_add_product_to_cart_layout,null)
+        bottomSheetDialog.setContentView(view)
+
+        // Initialize views in the dialog
+        val productImage = view.findViewById<ImageView>(R.id.product_cover_image)
+        val priceText = view.findViewById<TextView>(R.id.price_text)
+        val stockText = view.findViewById<TextView>(R.id.stock_text)
+        val quantityEdit = view.findViewById<EditText>(R.id.quantity_edit)
+        val decreaseBtn = view.findViewById<ImageView>(R.id.decrease_btn)
+        val increaseBtn = view.findViewById<ImageView>(R.id.increase_btn)
+        val addToCartBtn = view.findViewById<Button>(R.id.btn_add_to_cart)
+        val closeBtn = view.findViewById<ImageView>(R.id.close_btn)
+
+
+        decreaseBtn.setOnClickListener {
+            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
+            if(quantity>1){
+                quantity--
+                quantityEdit.setText(quantity.toString())
+            }
+        }
+        increaseBtn.setOnClickListener {
+            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
+            quantity++
+            quantityEdit.setText(quantity.toString())
+
+        }
+
+        closeBtn.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    //    override fun setupBottomNavigation() {
+//        binding.bottomNavigation.apply {
+//            findViewById<LinearLayout>(R.id.detail_call).setOnClickListener {
+//                checkLoginAndPerformAction {}
+//            }
+//            findViewById<View>(R.id.detail_cart_plus).setOnClickListener {
+//                checkLoginAndPerformAction { /* Add to cart action */ }
+//            }
+//            findViewById<View>(R.id.btn_detail_buy).setOnClickListener {
+//                checkLoginAndPerformAction { /* Buy action */ }
+//            }
+//        }
+//    }
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
