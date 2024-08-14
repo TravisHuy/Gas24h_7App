@@ -16,9 +16,11 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.FragmentProductListCategoryBinding
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.util.Constants.ARG_CATEGORY
 import com.nhathuy.gas24h_7app.util.Constants.ARG_CATEGORY_ID
 import javax.inject.Inject
@@ -34,6 +36,8 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
     private var isDataFetched = false
     @Inject
     lateinit var presenter: ProductListCategoryPresenter
+    @Inject
+    lateinit var userRepository: UserRepository
     companion object{
         fun newInstance(categoryId: String, categoryName: String) = ProductListCategoryFragment().apply {
             arguments = Bundle().apply {
@@ -101,6 +105,19 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
     override fun showError(message: String) {
         Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
     }
+
+    override fun navigateToProductDetails(product: Product) {
+        val intent =Intent(requireContext(),DetailProductActivity::class.java).apply {
+            putExtra("PRODUCT_ID",product.id)
+            putExtra("CATEGORY_ID",product.categoryId)
+        }
+        startActivity(intent)
+    }
+
+    override fun navigateToLogin() {
+        startActivity(Intent(requireContext(),LoginActivity::class.java))
+    }
+
     private fun setupRecyclerView() {
         productAdapter= ProductAdapter(emptyList(),this)
         binding.recyclerViewProducts.apply {
@@ -117,11 +134,12 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
     }
 
     override fun onProductClick(product: Product) {
-        val intent =Intent(requireContext(),DetailProductActivity::class.java).apply {
-            putExtra("PRODUCT_ID",product.id)
-            putExtra("CATEGORY_ID",product.categoryId)
+        if(userRepository.isUserLoggedIn()){
+            navigateToProductDetails(product)
         }
-        startActivity(intent)
+        else{
+            navigateToLogin()
+        }
     }
 
 }

@@ -8,6 +8,10 @@ interface ProductListCategoryContract {
         fun hideLoading()
         fun showProducts(products:List<Product>)
         fun showError(message:String)
+
+        fun navigateToProductDetails(product:Product)
+
+        fun navigateToLogin()
     }
     interface Presenter{
         fun attachView(view:View)

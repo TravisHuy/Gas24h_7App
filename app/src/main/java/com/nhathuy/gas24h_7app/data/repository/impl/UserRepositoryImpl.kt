@@ -13,6 +13,7 @@ class UserRepositoryImpl @Inject constructor(
     private val auth:FirebaseAuth,
     private val db:FirebaseFirestore):UserRepository {
 
+    private var currentUser: User? = null
 
     override suspend fun registerUser(user: User): Result<Unit>  = withContext(Dispatchers.IO) {
         try {
@@ -47,6 +48,15 @@ class UserRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override fun isUserLoggedIn(): Boolean {
+        return auth.currentUser!=null
+    }
+
+    override fun logout() {
+        auth.signOut()
+        currentUser=null
     }
 
 

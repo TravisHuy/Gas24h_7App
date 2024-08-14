@@ -1,6 +1,6 @@
 package com.nhathuy.gas24h_7app.data.model
 
-data class CartItem(
+data class OrderItem(
     val productId:String,
     val quantity:Int,
     val selectedVoucherId:String?=null
