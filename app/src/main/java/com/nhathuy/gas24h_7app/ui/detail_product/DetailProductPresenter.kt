@@ -66,12 +66,40 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
             if(userId!=null){
                 val result=cartRepository.addToCart(userId, productId, quantity, price)
                 result.fold(
-                    onSuccess = {view?.showSuccess("Added to cart")},
+                    onSuccess = {view?.showSuccess("Added to cart")
+                                updateCartCount(userId)
+                                },
                     onFailure = {e->view?.showError(e.message?:"Unknown error occured")}
                 )
             }
             else{
                 view?.showError("Failed add to cart")
+            }
+        }
+    }
+
+    private suspend fun updateCartCount(userId: String) {
+        coroutineScope.launch {
+            val currentCountResult = cartRepository.getCartItemCount(userId)
+            currentCountResult.fold(
+                onSuccess = { count ->
+                    view?.updateCartItemCount(count)
+                },
+                onFailure = { e -> view?.showError(e.message ?: "Failed to update cart count") }
+            )
+        }
+    }
+
+    override fun loadCartItemCount() {
+        coroutineScope.launch {
+            val userId= userRepository.getCurrentUserId()
+            if(userId!=null){
+                val result = cartRepository.getCartItemCount(userId)
+                result.fold(
+                    onSuccess = {count -> view?.updateCartItemCount(count)},
+
+                    onFailure = {e->view?.showError(e.message?:"Failed to load cart item count")}
+                )
             }
         }
     }

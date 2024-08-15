@@ -13,13 +13,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.internal.ViewUtils.dpToPx
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -34,9 +38,10 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     private var isDescriptionExpanded = false
 
     private lateinit var currentProduct: Product
+    private lateinit var cartBadge:BadgeDrawable
     @Inject
     lateinit var presenter: DetailProductPresenter
-
+    @com.google.android.material.badge.ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityDetailProductBinding.inflate(layoutInflater)
@@ -55,7 +60,9 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
         setupDescriptionToggle()
         setupBottomNavigation()
+        setupCartBadge()
         backHome()
+        presenter.loadCartItemCount()
     }
 
     private fun setupDescriptionToggle() {
@@ -220,6 +227,27 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         }
     }
 
+    override fun updateCartItemCount(count: Int) {
+        if (count > 0) {
+            cartBadge.isVisible = true
+            cartBadge.number = count
+        } else {
+            cartBadge.isVisible = false
+        }
+    }
+    @com.google.android.material.badge.ExperimentalBadgeUtils
+    override fun setupCartBadge() {
+        cartBadge=BadgeDrawable.create(this)
+        cartBadge.isVisible=false
+        cartBadge.backgroundColor=ContextCompat.getColor(this,R.color.badge_background_color)
+        cartBadge.horizontalOffset = dpToPx(10)
+        cartBadge.verticalOffset= dpToPx(2)
+        val cartIcon = binding.detailCartItem
+        BadgeUtils.attachBadgeDrawable(cartBadge,cartIcon,binding.detailCartItemContainer)
+    }
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
     private fun showAddToCartDialog() {
         val bottomSheetDialog = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.bottomsheet_add_product_to_cart_layout,null)

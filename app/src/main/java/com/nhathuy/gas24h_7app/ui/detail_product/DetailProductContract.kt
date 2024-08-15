@@ -15,6 +15,8 @@ interface DetailProductContract {
         fun backHome()
 
         fun setupBottomNavigation()
+        fun updateCartItemCount(count: Int)
+        fun setupCartBadge()
     }
     interface Presenter{
         fun attachView(view:View)
@@ -22,5 +24,6 @@ interface DetailProductContract {
         fun loadProductDetails(productId:String)
         fun loadSuggestProducts(categoryId:String)
         fun addToCart(productId: String,quantity:Int,price:Double)
+        fun loadCartItemCount()
     }
 }

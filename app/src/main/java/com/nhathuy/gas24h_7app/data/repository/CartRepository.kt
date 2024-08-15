@@ -44,4 +44,23 @@ class CartRepository @Inject constructor(private val db:FirebaseFirestore){
             Result.failure(e)
         }
     }
+    suspend fun getCartItemCount(userId: String) : Result<Int>{
+        return try {
+            val cartRef=db.collection("carts").document(userId)
+            val cartSnapshot= cartRef.get().await()
+
+            if(cartSnapshot.exists()){
+                val cart=cartSnapshot.toObject(Cart::class.java)
+                val itemCount = cart?.items?.size ?: 0
+
+                Result.success(itemCount)
+            }
+            else{
+                Result.success(0)
+            }
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
 }
