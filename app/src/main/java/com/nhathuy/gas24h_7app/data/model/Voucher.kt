@@ -10,6 +10,7 @@ data class Voucher(
     val minOrderAmount:Double,
     val expirationDate:Date,
     val isActive:Boolean = false,
+    val applicableProductIds: List<String> = listOf()
 ){
     fun toMap(): Map<String, Any> {
         return mapOf(

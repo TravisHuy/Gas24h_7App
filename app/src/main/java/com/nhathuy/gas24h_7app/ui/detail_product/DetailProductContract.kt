@@ -6,10 +6,13 @@ interface DetailProductContract {
     interface View{
         fun showLoading()
         fun hideLoading()
+        fun showSuccess(message: String)
         fun showError(message:String)
         fun showProductDetails(product: Product)
         fun setupImageSlider(detailImages:List<String>)
         fun setupSuggestProduct(products:List<Product>)
+
+        fun backHome()
 
         fun setupBottomNavigation()
     }
@@ -18,5 +21,6 @@ interface DetailProductContract {
         fun detachView()
         fun loadProductDetails(productId:String)
         fun loadSuggestProducts(categoryId:String)
+        fun addToCart(productId: String,quantity:Int,price:Double)
     }
 }

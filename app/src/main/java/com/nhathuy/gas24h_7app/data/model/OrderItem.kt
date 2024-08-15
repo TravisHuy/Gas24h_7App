@@ -3,14 +3,8 @@ package com.nhathuy.gas24h_7app.data.model
 data class OrderItem(
     val productId:String,
     val quantity:Int,
-    val selectedVoucherId:String?=null
+    val price:Double,
+    val discountedPrice:Double
 ){
-    fun toMap(): Map<String, Any> {
-        val map = mutableMapOf<String, Any>(
-            "productId" to productId,
-            "quantity" to quantity
-        )
-        selectedVoucherId?.let { map["selectedVoucherId"] = it }
-        return map
-    }
+
 }

@@ -12,12 +12,14 @@ data class Order(
     val status:OrderStatus,
     val createdAt:Date,
     val updatedAt: Date,
+    val shippingAddress: String,
+    val paymentMethod: String
 ){
     fun toMap(): Map<String, Any> {
         return mapOf(
             "id" to id,
             "userId" to userId,
-            "items" to items.map { it.toMap() },
+            "items" to items.map { },
             "totalAmount" to totalAmount,
             "discountAmount" to discountAmount,
             "appliedVoucherId" to (appliedVoucherId ?: ""),

@@ -7,6 +7,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
+import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
@@ -58,7 +59,7 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideProductDetailPresenter(repository: ProductRepository): DetailProductContract.Presenter{
-        return DetailProductPresenter(repository)
+    fun provideProductDetailPresenter(repository: ProductRepository,cartRepository: CartRepository,userRepository: UserRepository): DetailProductContract.Presenter{
+        return DetailProductPresenter(repository,cartRepository,userRepository)
     }
 }

@@ -72,7 +72,20 @@
             android:inputType="numberDecimal"
             />
     </com.google.android.material.textfield.TextInputLayout>
-
+       <com.google.android.material.textfield.TextInputLayout
+           android:id="@+id/layout_add_product_stockCount"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:hint="StockCount"
+           android:layout_marginTop="15dp"
+           >
+           <com.google.android.material.textfield.TextInputEditText
+               android:id="@+id/ed_add_product_stockCount"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:inputType="numberDecimal"
+               />
+       </com.google.android.material.textfield.TextInputLayout>
      <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_add_product_offerPercentage"
             android:layout_width="match_parent"
@@ -228,6 +241,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="20dp"
+          android:layout_marginBottom="20dp"
           android:text="ADD"
           />
 

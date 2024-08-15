@@ -59,12 +59,14 @@ class AddProductPresenter @Inject constructor(private val context:Context,
               val description = view?.getProductDescription()?.trim() ?: ""
               val priceString = view?.getProductPrice()?.trim() ?: ""
               val offerPercentageString = view?.getProductOfferPercentage()?.trim() ?: ""
-              
-              if (!validateInputs(name, categoryId, description, priceString, offerPercentageString)) {
+              val stockCountString = view?.getProductStockCount()?.trim() ?: ""
+
+              if (!validateInputs(name, categoryId, description, priceString, offerPercentageString,stockCountString)) {
                   return@launch
               }
 
               val price = priceString.toDouble()
+              val stockCount = stockCountString.toInt()
               val offerPercentage = offerPercentageString.toDoubleOrNull() ?: 0.0
 
               val uploadedImageUrls = uploadImages()
@@ -87,6 +89,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
                   categoryId = categoryId!!, // Assume category exists
                   description = description,
                   price = price!!,
+                  stockCount = stockCount,
                   offerPercentage = offerPercentage ?: 0.0,
                   detailImageUrls = uploadedImageUrls,
                   coverImageUrl = uploadedCoverImageUrl
@@ -129,7 +132,8 @@ class AddProductPresenter @Inject constructor(private val context:Context,
         categoryId: String?,
         description: String,
         priceString: String,
-        offerPercentageString: String
+        offerPercentageString: String,
+        stockCountString:String
     ): Boolean {
         var isValid = true
 
@@ -153,6 +157,12 @@ class AddProductPresenter @Inject constructor(private val context:Context,
             view?.showPriceError("Please enter a valid price")
             isValid = false
         }
+        val stock = stockCountString.toIntOrNull()
+        if (stock == null || stock <= 0) {
+            view?.showProductStockCountError("Please enter a valid stock count")
+            isValid = false
+        }
+
         val offerPercentage = offerPercentageString.toDoubleOrNull() ?: 0.0
         if (offerPercentage < 0 || offerPercentage > 100) {
             view?.showOfferPercentageError("Offer percentage must be between 0 and 100")

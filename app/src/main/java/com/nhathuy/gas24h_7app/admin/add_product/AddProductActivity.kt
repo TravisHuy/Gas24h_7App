@@ -246,6 +246,7 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
     override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.toString()
     override fun getProductCategory(): String =binding.categoryAutoComplete.text.toString()
     override fun getProductDescription(): String = binding.edAddProductDescription.text.toString()
+    override fun getProductStockCount(): String = binding.edAddProductStockCount.text.toString()
 
     override fun updateCategoryList(categories: List<String>) {
         categoryAdapter.clear()
@@ -273,6 +274,10 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
 
     override fun showOfferPercentageError(error: String?) {
         binding.layoutAddProductOfferPercentage.error = error
+    }
+
+    override fun showProductStockCountError(error: String?) {
+        binding.layoutAddProductStockCount.error = error
     }
 
     override fun showImageError(error: String?) {

@@ -23,6 +23,7 @@ interface AddProductContract {
         fun getProductOfferPercentage():String
         fun getProductCategory():String
         fun getProductDescription():String
+        fun getProductStockCount():String
         fun updateCategoryList(categories: List<String>)
         fun getSelectedCategoryId():String?
         fun showNameError(error:String?)
@@ -30,6 +31,7 @@ interface AddProductContract {
         fun showDescriptionError(error:String?)
         fun showPriceError(error:String?)
         fun showOfferPercentageError(error:String?)
+        fun showProductStockCountError(error:String?)
         fun showImageError(error:String?)
 
         fun clearImages()

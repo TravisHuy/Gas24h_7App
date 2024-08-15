@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.di.module
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
@@ -27,5 +28,11 @@ class RepositoryModule {
     @Singleton
     fun provideProductRepository(db:FirebaseFirestore):ProductRepository{
         return ProductRepository(db)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartRepository(db:FirebaseFirestore):CartRepository{
+        return CartRepository(db)
     }
 }

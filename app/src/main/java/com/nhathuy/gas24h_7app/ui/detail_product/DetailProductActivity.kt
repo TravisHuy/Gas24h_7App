@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -31,6 +32,8 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     private lateinit var binding:ActivityDetailProductBinding
     private var isDescriptionExpanded = false
+
+    private lateinit var currentProduct: Product
     @Inject
     lateinit var presenter: DetailProductPresenter
 
@@ -52,6 +55,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
         setupDescriptionToggle()
         setupBottomNavigation()
+        backHome()
     }
 
     private fun setupDescriptionToggle() {
@@ -150,11 +154,16 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         binding.progressBar.visibility=View.GONE
     }
 
+    override fun showSuccess(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+    }
+
     override fun showError(message:String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
     override fun showProductDetails(product: Product) {
+        currentProduct=product
         binding.detailProductName.text=product.name
         binding.layoutDescriptionProduct.shortDescription.text=product.description
         binding.layoutDescriptionProduct.fullDescription.text=product.description
@@ -199,6 +208,12 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 //        }
     }
 
+    override fun backHome() {
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
     override fun setupBottomNavigation() {
         binding.bottomNavigation.findViewById<View>(R.id.detail_cart_plus).setOnClickListener {
             showAddToCartDialog()
@@ -220,6 +235,18 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         val addToCartBtn = view.findViewById<Button>(R.id.btn_add_to_cart)
         val closeBtn = view.findViewById<ImageView>(R.id.close_btn)
 
+        val price = if(currentProduct.offerPercentage<0){
+            currentProduct.getDiscountedPrice()
+        }
+        else{
+            currentProduct.price
+        }
+        priceText.text=String.format("đ%.2f",price)
+        stockText.text=currentProduct.stockCount.toString()
+
+        Glide.with(this)
+            .load(currentProduct.coverImageUrl)
+            .into(productImage)
 
         decreaseBtn.setOnClickListener {
             var quantity = quantityEdit.text.toString().toIntOrNull()?:1
@@ -234,6 +261,11 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
             quantityEdit.setText(quantity.toString())
 
         }
+        addToCartBtn.setOnClickListener {
+            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
+            presenter.addToCart(productId = currentProduct.id, quantity = quantity, price = price)
+            bottomSheetDialog.dismiss()
+        }
 
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -242,19 +274,9 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         bottomSheetDialog.show()
     }
 
-    //    override fun setupBottomNavigation() {
-//        binding.bottomNavigation.apply {
-//            findViewById<LinearLayout>(R.id.detail_call).setOnClickListener {
-//                checkLoginAndPerformAction {}
-//            }
-//            findViewById<View>(R.id.detail_cart_plus).setOnClickListener {
-//                checkLoginAndPerformAction { /* Add to cart action */ }
-//            }
-//            findViewById<View>(R.id.btn_detail_buy).setOnClickListener {
-//                checkLoginAndPerformAction { /* Buy action */ }
-//            }
-//        }
-//    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
