@@ -17,6 +17,8 @@ interface DetailProductContract {
         fun setupBottomNavigation()
         fun updateCartItemCount(count: Int)
         fun setupCartBadge()
+
+        fun navigateCart()
     }
     interface Presenter{
         fun attachView(view:View)

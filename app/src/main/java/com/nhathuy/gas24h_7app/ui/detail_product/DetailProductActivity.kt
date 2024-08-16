@@ -29,6 +29,7 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
+import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import javax.inject.Inject
 
@@ -61,8 +62,15 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         setupDescriptionToggle()
         setupBottomNavigation()
         setupCartBadge()
+        setupCart()
         backHome()
         presenter.loadCartItemCount()
+    }
+
+    private fun setupCart() {
+        binding.detailCartItem.setOnClickListener {
+            navigateCart()
+        }
     }
 
     private fun setupDescriptionToggle() {
@@ -245,6 +253,11 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         val cartIcon = binding.detailCartItem
         BadgeUtils.attachBadgeDrawable(cartBadge,cartIcon,binding.detailCartItemContainer)
     }
+
+    override fun navigateCart() {
+        startActivity(Intent(this,CartActivity::class.java))
+    }
+
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
     }

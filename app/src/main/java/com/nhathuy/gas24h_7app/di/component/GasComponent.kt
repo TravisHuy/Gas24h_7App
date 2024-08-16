@@ -10,6 +10,7 @@ import com.nhathuy.gas24h_7app.di.module.RepositoryModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileFragment
+import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
@@ -35,4 +36,6 @@ interface GasComponent {
     fun inject(productListCategoryFragment: ProductListCategoryFragment)
     fun inject(profileFragment: ProfileFragment)
     fun inject(detailProductActivity: DetailProductActivity)
+
+    fun inject(cartActivity: CartActivity)
 }
