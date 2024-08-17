@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.cart
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.Cart
 import com.nhathuy.gas24h_7app.data.model.CartItem
@@ -32,27 +33,35 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
         coroutineScope.launch {
             try {
                 val userId= userRepository.getCurrentUserId()
+                Log.d("CartPresenter", "Loading cart for user: $userId")
                 val cartDocument =db.collection("carts").document(userId!!).get().await()
+                Log.d("CartPresenter", "Cart document exists: ${cartDocument.exists()}")
                 val cart=cartDocument.toObject(Cart::class.java)
+                Log.d("CartPresenter", "Cart object: $cart")
 
                 if(cart!=null){
                     val productIds= cart.items.map {
                         it.productId
                     }
+                    Log.d("CartPresenter", "Product IDs to load: $productIds")
                     val productSnapshot =db.collection("products").whereIn("id",productIds).get().await()
+                    Log.d("CartPresenter", "Number of products loaded: ${productSnapshot.size()}")
                     val products= productSnapshot.documents.mapNotNull {
                         doc ->
                         doc.toObject(Product::class.java)?.let {
+                            Log.d("CartPresenter", "Loaded product: ${it.id} - ${it.name}")
                             it.id to it
                         }
                     }.toMap()
                     view?.showCartItems(cart.items,products)
                 }
                 else{
+                    Log.d("CartPresenter", "Cart is empty or null")
                     view?.showCartItems(emptyList(), emptyMap())
                 }
             }
             catch (e:Exception){
+                Log.e("CartPresenter", "Error loading cart items", e)
                 view?.showError("Failed to load cart items: ${e.message}")
             }
         }

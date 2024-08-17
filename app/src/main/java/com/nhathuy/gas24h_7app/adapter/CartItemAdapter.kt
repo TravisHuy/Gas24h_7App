@@ -45,8 +45,8 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
             CoroutineScope(Dispatchers.Main).launch {
                 product?.let {
                     cartItemName.text=it.name
-                    cartPriceReduce.text="đ${String.format("%.0f", it.getDiscountedPrice())}"
-                    cartPriceOriginal.text="đ${String.format("%.0f", it.price)}"
+                    cartPriceReduce.text="đ${String.format("%.3f", it.getDiscountedPrice())}"
+                    cartPriceOriginal.text="đ${String.format("%.3f", it.price)}"
 
                     Glide.with(cartItemProductImage.context)
                         .load(it.coverImageUrl)

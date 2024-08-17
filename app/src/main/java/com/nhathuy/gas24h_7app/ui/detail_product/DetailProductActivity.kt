@@ -29,8 +29,10 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
+import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import javax.inject.Inject
 
 class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
@@ -64,7 +66,14 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         setupCartBadge()
         setupCart()
         backHome()
+        setupHotline()
         presenter.loadCartItemCount()
+    }
+
+    private fun setupHotline() {
+        binding.detailCallHotline.setOnClickListener {
+            navigateHotline()
+        }
     }
 
     private fun setupCart() {
@@ -256,6 +265,14 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     override fun navigateCart() {
         startActivity(Intent(this,CartActivity::class.java))
+    }
+
+    override fun navigateHotline() {
+        val intent = Intent(this,MainActivity::class.java).apply {
+            putExtra("navigate_to","hotline")
+        }
+        startActivity(intent)
+        finish()
     }
 
     private fun dpToPx(dp: Int): Int {

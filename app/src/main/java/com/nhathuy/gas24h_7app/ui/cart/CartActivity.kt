@@ -19,14 +19,14 @@ class CartActivity : AppCompatActivity(),CartContract.View {
 
     private lateinit var binding: ActivityCartBinding
     private lateinit var cartItemAdapter: CartItemAdapter
-    private val db = FirebaseFirestore.getInstance()
-    
+
     @Inject
     lateinit var presenter: CartPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        (application as Gas24h_7Application).getGasComponent().inject(this)
 
         cartItemAdapter = CartItemAdapter { productId, newQuantity ->
             presenter.updateCartItemQuantity(productId, newQuantity)
@@ -35,10 +35,9 @@ class CartActivity : AppCompatActivity(),CartContract.View {
             layoutManager=LinearLayoutManager(context)
             adapter = cartItemAdapter
         }
-        presenter.loadCartItems()
 
-        (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
+        presenter.loadCartItems()
     }
 
     override fun showCartItems(cartItems: List<CartItem>, products: Map<String, Product>) {

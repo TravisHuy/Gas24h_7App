@@ -227,6 +227,7 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
         binding.edAddProductOfferPercentage.text?.clear()
         binding.categoryAutoComplete.text?.clear()
         binding.edAddProductDescription.text?.clear()
+        binding.edAddProductStockCount.text?.clear()
         clearImages()
         clearCoverImage()
         updateCoverImageCount(0,1)
@@ -243,7 +244,7 @@ class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
 
     override fun getProductName(): String = binding.edAddProductName.text.toString()
     override fun getProductPrice(): String = binding.edAddProductPrice.text.toString()
-    override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.toString()
+    override fun getProductOfferPercentage(): String = binding.edAddProductOfferPercentage.text.toString()
     override fun getProductCategory(): String =binding.categoryAutoComplete.text.toString()
     override fun getProductDescription(): String = binding.edAddProductDescription.text.toString()
     override fun getProductStockCount(): String = binding.edAddProductStockCount.text.toString()

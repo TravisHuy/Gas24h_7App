@@ -90,7 +90,7 @@ class AddProductPresenter @Inject constructor(private val context:Context,
                   description = description,
                   price = price!!,
                   stockCount = stockCount,
-                  offerPercentage = offerPercentage ?: 0.0,
+                  offerPercentage = offerPercentage,
                   detailImageUrls = uploadedImageUrls,
                   coverImageUrl = uploadedCoverImageUrl
               )

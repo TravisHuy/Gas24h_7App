@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_hotline"
             app:destination="@id/nav_hotline" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_hotline2"
+            app:destination="@id/nav_hotline" />
     </fragment>
     <fragment
         android:id="@+id/nav_order"

@@ -19,6 +19,7 @@ interface DetailProductContract {
         fun setupCartBadge()
 
         fun navigateCart()
+        fun navigateHotline()
     }
     interface Presenter{
         fun attachView(view:View)

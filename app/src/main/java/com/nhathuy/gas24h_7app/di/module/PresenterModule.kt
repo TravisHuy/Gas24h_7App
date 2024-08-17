@@ -15,6 +15,7 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
+import com.nhathuy.gas24h_7app.fragment.hotline.HotlineContract
 import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
@@ -70,4 +71,5 @@ class PresenterModule {
     fun provideCartPresenter(db:FirebaseFirestore,userRepository: UserRepository):CartContract.Presenter{
         return CartPresenter(db,userRepository)
     }
+
 }

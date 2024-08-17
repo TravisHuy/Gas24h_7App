@@ -53,6 +53,13 @@ class MainActivity : AppCompatActivity() {
             drawerLayout
         )
 
+        if(intent.hasExtra("navigate_to")){
+            when(intent.getStringExtra("navigate_to")){
+                "hotline" -> navController.navigate(R.id.nav_hotline)
+            }
+
+        }
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         bottomNavView.setupWithNavController(navController)
