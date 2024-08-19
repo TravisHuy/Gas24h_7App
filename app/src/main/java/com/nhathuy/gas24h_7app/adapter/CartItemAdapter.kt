@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListOf(),
                       private var products:Map<String,Product> = mapOf(),
-                      private val onQuantityChanged: (String,Int) -> Unit
+                      private val onQuantityChanged: (String,Int) -> Unit,
+                      private val onQuantityExceeded: (String, Int) -> Unit
 ):RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     @Inject
@@ -63,9 +64,14 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                     }
                 }
                 increaseBtn.setOnClickListener {
-                        cartItem.quantity++
-                        quantityProductCart.setText(cartItem.quantity.toString())
-                        onQuantityChanged(cartItem.productId,cartItem.quantity)
+                        if(product!=null && cartItem.quantity<product.stockCount){
+                            cartItem.quantity++
+                            quantityProductCart.setText(cartItem.quantity.toString())
+                            onQuantityChanged(cartItem.productId,cartItem.quantity)
+                        }
+                        else{
+                            onQuantityExceeded(cartItem.productId,product?.stockCount?:0)
+                        }
                 }
 
                 quantityProductCart.setOnFocusChangeListener { _, hasFocus ->

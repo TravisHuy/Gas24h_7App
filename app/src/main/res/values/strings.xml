@@ -9,4 +9,5 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="original_price"><u>underline</u></string>
+    <string name="max_purchase_limit">Rất tiếc, bạn chỉ có thể mua tối đa %1d\nsản phẩm của chương trình giảm giá này.</string>
 </resources>
