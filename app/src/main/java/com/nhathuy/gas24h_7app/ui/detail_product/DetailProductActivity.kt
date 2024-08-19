@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +45,9 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     private lateinit var currentProduct: Product
     private lateinit var cartBadge:BadgeDrawable
+
+
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     @Inject
     lateinit var presenter: DetailProductPresenter
     @com.google.android.material.badge.ExperimentalBadgeUtils
@@ -50,38 +56,44 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         binding= ActivityDetailProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        setupImageSlider()
-//        setupSuggestProducts()
+        // Inject dependencies and attach the presenter to the view
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
+        //Inject dependencies and attach the presenter to the view
         val productId = intent.getStringExtra("PRODUCT_ID")?:""
         val categoryId = intent.getStringExtra("CATEGORY_ID")?:""
 
+        // Load product details, suggestions , cartItem count
         presenter.loadProductDetails(productId)
         presenter.loadSuggestProducts(categoryId)
+        presenter.loadCartItemCount()
 
+        //set up UI components
         setupDescriptionToggle()
         setupBottomNavigation()
         setupCartBadge()
         setupCart()
         backHome()
         setupHotline()
-        presenter.loadCartItemCount()
+
     }
 
+    // set up the hotline button click listener
     private fun setupHotline() {
         binding.detailCallHotline.setOnClickListener {
             navigateHotline()
         }
     }
 
+    // set up the cart button click listener
     private fun setupCart() {
         binding.detailCartItem.setOnClickListener {
             navigateCart()
         }
     }
 
+    //toggle product description visibility
     private fun setupDescriptionToggle() {
         binding.layoutDescriptionProduct.seeMoreLayout.setOnClickListener {
             isDescriptionExpanded=!isDescriptionExpanded
@@ -89,6 +101,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         }
     }
 
+    // Update description visibility based on the toggle state
     private fun updateDescriptionVisibility() {
         with(binding.layoutDescriptionProduct){
             if(isDescriptionExpanded){
@@ -104,27 +117,6 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
                 seeMoreIcon.setImageResource(R.drawable.ic_down)
             }
         }
-    }
-
-    private fun setupSuggestProducts() {
-//        // Thiết lập phần sản phẩm gợi ý
-//        val suggestLayout = binding.layoutSuggestProduct.root
-//        val suggestRecyclerView = suggestLayout.findViewById<RecyclerView>(R.id.suggest_rec)
-//
-//        // Tạo danh sách sản phẩm gợi ý
-//        val suggestProducts = listOf(
-//            SuggestProduct(R.drawable.test_image, "Serum red peel da So Natural", "115.000đ", "Đã bán 1,9k"),
-//            SuggestProduct(R.drawable.test_image, "Khô Cá Chỉ Vàng Tẩm Gia Vị", "68.000đ", "Đã bán 2k"),
-//            SuggestProduct(R.drawable.test_image, "CAMERA IP YOOSEE", "172.000đ", "Đã bán 152,5k"),
-//            SuggestProduct(R.drawable.test_image, "Tai nghe HiFi Audio", "7.989đ", "Đã bán 3,9k")
-//        )
-//
-//        // Thiết lập RecyclerView với GridLayoutManager 2 cột
-//        val layoutManager = GridLayoutManager(this, 2)
-//        suggestRecyclerView.layoutManager = layoutManager
-//        suggestRecyclerView.adapter = SuggestProductAdapter(suggestProducts)
-
-
     }
 
     private fun setupImageSlider() {
@@ -170,6 +162,8 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         val sold: String
     )
 
+
+    // MVP View method implementations
     override fun showLoading() {
         binding.progressBar.visibility=View.VISIBLE
     }
@@ -240,7 +234,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     override fun setupBottomNavigation() {
         binding.bottomNavigation.findViewById<View>(R.id.detail_cart_plus).setOnClickListener {
-            showAddToCartDialog()
+            showAddToCartDialog(currentProduct)
         }
     }
 
@@ -275,11 +269,8 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         finish()
     }
 
-    private fun dpToPx(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
-    }
-    private fun showAddToCartDialog() {
-        val bottomSheetDialog = BottomSheetDialog(this)
+    override fun showAddToCartDialog(product: Product) {
+        bottomSheetDialog = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.bottomsheet_add_product_to_cart_layout,null)
         bottomSheetDialog.setContentView(view)
 
@@ -293,36 +284,50 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         val addToCartBtn = view.findViewById<Button>(R.id.btn_add_to_cart)
         val closeBtn = view.findViewById<ImageView>(R.id.close_btn)
 
-        val price = if(currentProduct.offerPercentage<0){
-            currentProduct.getDiscountedPrice()
+        val price = if(product.offerPercentage>0){
+            product.getDiscountedPrice()
         }
         else{
-            currentProduct.price
+            product.price
         }
-        priceText.text=String.format("đ%.2f",price)
-        stockText.text=currentProduct.stockCount.toString()
+
+
+        priceText.text=String.format("đ%.3f",price)
+        stockText.text=product.stockCount.toString()
 
         Glide.with(this)
-            .load(currentProduct.coverImageUrl)
+            .load(product.coverImageUrl)
             .into(productImage)
 
         decreaseBtn.setOnClickListener {
             var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            if(quantity>1){
-                quantity--
-                quantityEdit.setText(quantity.toString())
-            }
+            presenter.onDecreaseQuantity(quantity,product.stockCount)
         }
         increaseBtn.setOnClickListener {
             var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            quantity++
-            quantityEdit.setText(quantity.toString())
-
+            presenter.onIncreaseQuantity(quantity,product.stockCount)
         }
+        quantityEdit.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                val inputText=e.toString()
+                val quantity=inputText.toIntOrNull()?:0
+                if(quantity>product.stockCount){
+                    quantityEdit.setText(product.stockCount.toString())
+                    quantityEdit.setSelection(product.stockCount.toString().length)
+                }
+                presenter.onQuantityChanged(quantity.coerceAtMost(product.stockCount),product.stockCount)
+            }
+
+        })
+
         addToCartBtn.setOnClickListener {
             var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            presenter.addToCart(productId = currentProduct.id, quantity = quantity, price = price)
-            bottomSheetDialog.dismiss()
+            presenter.onAddToCartClicked(product.id,quantity,price)
         }
 
         closeBtn.setOnClickListener {
@@ -330,6 +335,23 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         }
 
         bottomSheetDialog.show()
+    }
+
+    override fun updateQuantity(quantity: Int) {
+        bottomSheetDialog.findViewById<EditText>(R.id.quantity_edit)?.setText(quantity.toString())
+    }
+
+    override fun dismissAddToCartDialog() {
+        bottomSheetDialog.dismiss()
+    }
+
+    override fun setAddToCartButtonEnabled(isEnabled: Boolean) {
+        findViewById<Button>(R.id.btn_add_to_cart)?.isEnabled = isEnabled
+        findViewById<Button>(R.id.btn_add_to_cart)?.alpha = 0.5f
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 
     override fun onBackPressed() {

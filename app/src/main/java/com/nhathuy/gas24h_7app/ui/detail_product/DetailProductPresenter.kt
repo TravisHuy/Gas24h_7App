@@ -103,4 +103,48 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
             }
         }
     }
+
+    override fun onDecreaseQuantity(currentQuantity: Int,stockCount: Int) {
+        if (currentQuantity > 1) {
+            val newQuantity = currentQuantity - 1
+            view?.updateQuantity(newQuantity)
+            view?.setAddToCartButtonEnabled(true)
+        }
+    }
+
+    override fun onIncreaseQuantity(currentQuantity: Int,stockCount: Int) {
+        val newQuantity = currentQuantity + 1
+        if (newQuantity <= stockCount) {
+            view?.updateQuantity(newQuantity)
+            view?.setAddToCartButtonEnabled(true)
+        }
+    }
+
+    override fun onQuantityChanged(quantity: Int, stockCount: Int) {
+        val isEnabled= quantity in 1..stockCount
+        view?.setAddToCartButtonEnabled(isEnabled)
+    }
+
+    override fun onAddToCartClicked(productId: String, quantity: Int, price: Double) {
+        coroutineScope.launch {
+            val userId=userRepository.getCurrentUserId()
+            if(userId!=null){
+                val result=cartRepository.addToCart(userId,productId, quantity, price)
+                result.fold(
+                    onSuccess = {
+                        view?.showSuccess("Added to cart")
+                        updateCartCount(userId)
+                        view?.dismissAddToCartDialog()
+                    }
+                    ,
+                    onFailure = {
+                        e -> view?.showError(e.message?:"Unknown error occurred")
+                    }
+                )
+            }
+            else{
+                view?.showError("Failed to add to cart")
+            }
+        }
+    }
 }
