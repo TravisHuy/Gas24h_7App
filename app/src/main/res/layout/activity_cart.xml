@@ -146,20 +146,20 @@
                 android:id="@+id/cart_total_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="đ0"
+                android:text="@string/cart_total_amount"
                 android:textSize="16sp"
                 android:textColor="@color/red"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintEnd_toStartOf="@+id/button"
+                app:layout_constraintEnd_toStartOf="@+id/btn_buy"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/btn_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#E33C20"
-                android:text="Mua hàng (0)"
+                android:text="@string/btn_buy"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

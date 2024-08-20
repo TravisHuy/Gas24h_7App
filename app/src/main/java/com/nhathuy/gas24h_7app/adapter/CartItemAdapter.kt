@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +21,10 @@ import javax.inject.Inject
 
 class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListOf(),
                       private var products:Map<String,Product> = mapOf(),
+                      private var selectedItemIds:Set<String> = setOf(),
                       private val onQuantityChanged: (String,Int) -> Unit,
-                      private val onQuantityExceeded: (String, Int) -> Unit
+                      private val onQuantityExceeded: (String, Int) -> Unit,
+                      private val onItemChecked:(String,Boolean) -> Unit
 ):RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     @Inject
@@ -44,16 +47,30 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
 
         holder.binding.apply {
             CoroutineScope(Dispatchers.Main).launch {
+
                 product?.let {
                     cartItemName.text=it.name
-                    cartPriceReduce.text="đ${String.format("%.3f", it.getDiscountedPrice())}"
-                    cartPriceOriginal.text="đ${String.format("%.3f", it.price)}"
+
+                    if(it.offerPercentage > 0.0){
+                        cartPriceReduce.text="đ${String.format("%.3f", it.getDiscountedPrice())}"
+                        cartPriceOriginal.text="đ${String.format("%.3f", it.price)}"
+                        cartPriceOriginal.visibility=View.VISIBLE
+                    }
+                    else{
+                        cartPriceReduce.text="đ${String.format("%.3f", it.price)}"
+                        cartPriceOriginal.visibility=View.GONE
+                    }
+
+                    Log.d("CartItemAdapter", "Product: ${it.name}, Price: ${it.price}, OfferPercentage: ${it.offerPercentage}")
 
                     Glide.with(cartItemProductImage.context)
                         .load(it.coverImageUrl)
                         .into(cartItemProductImage)
                 }
-
+                checkBox.isChecked = selectedItemIds.contains(cartItem.productId)
+                checkBox.setOnCheckedChangeListener { _, isChecked ->
+                    onItemChecked(cartItem.productId, isChecked)
+                }
                 quantityProductCart.setText(cartItem.quantity.toString())
 
                 decreaseBtn.setOnClickListener {
@@ -84,6 +101,8 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                         }
                     }
                 }
+
+
             }
         }
     }
@@ -94,6 +113,10 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
         cartItems.clear()
         cartItems.addAll(newCartItems)
         products=newProducts
+        notifyDataSetChanged()
+    }
+    fun updateSelectedItems(selectedItemIds: Set<String>){
+        this.selectedItemIds=selectedItemIds
         notifyDataSetChanged()
     }
 }

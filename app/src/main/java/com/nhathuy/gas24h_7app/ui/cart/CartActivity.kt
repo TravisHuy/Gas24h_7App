@@ -38,13 +38,19 @@ class CartActivity : AppCompatActivity(),CartContract.View {
             onQuantityExceeded = {
                     productId, stockCount ->
                 showStockExceededError(productId,stockCount)
+            },
+            onItemChecked = {
+                productId,isChecked ->
+                presenter.updateItemSelection(productId,isChecked)
             }
         )
         binding.recyclerViewCart.apply {
             layoutManager=LinearLayoutManager(context)
             adapter = cartItemAdapter
         }
-
+        binding.cartCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            presenter.updateAllItemsSelection(isChecked)
+        }
         presenter.attachView(this)
         presenter.loadCartItems()
     }
@@ -82,6 +88,27 @@ class CartActivity : AppCompatActivity(),CartContract.View {
 
     override fun updateCartItemQuantity(productId: String, newQuantity: Int) {
         presenter.loadCartItems()
+    }
+
+    override fun updateSelectedItems(selectedIds: Set<String>) {
+        cartItemAdapter.updateSelectedItems(selectedIds)
+    }
+
+    override fun updateTotalPrice(total: Double) {
+        binding.cartTotalAmount.text= if(total>0){
+            getString(R.string.cart_total_amount,total)
+        }
+        else{
+            getString(R.string.cart_total_amount_zero)
+        }
+    }
+
+    override fun updatePurchaseBtnText(count: Int) {
+        binding.btnBuy.text=getString(R.string.btn_buy,count)
+    }
+
+    override fun updateAllItemsSelection(isChecked: Boolean) {
+        binding.cartCheckbox.isChecked=isChecked
     }
 
     override fun onDestroy() {

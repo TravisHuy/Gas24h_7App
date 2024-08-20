@@ -192,12 +192,11 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
         if (product.offerPercentage > 0.0) {
             binding.priceOriginalProduct.paintFlags = binding.priceOriginalProduct.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.priceOriginalProduct.text  = String.format("đ%.2f", originalPrice)
-            binding.priceReduceProduct.text = String.format("đ%.2f", discountedPrice)
+            binding.priceOriginalProduct.text  = String.format("đ%.3f", originalPrice)
+            binding.priceReduceProduct.text = String.format("đ%.3f", discountedPrice)
             binding.discountPercentage.text= String.format("-%.0f%%", product.offerPercentage)
         } else {
-            binding.priceReduceProduct.text = String.format("đ%.2f", originalPrice)
-
+            binding.priceReduceProduct.text = String.format("đ%.3f", originalPrice)
             binding.priceOriginalProduct.visibility=View.GONE
             binding.discountPercentage.visibility=View.GONE
         }

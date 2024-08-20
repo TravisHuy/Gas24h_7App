@@ -20,6 +20,9 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
     private val job = SupervisorJob()
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
 
+    private var cartItems: List<CartItem> = emptyList()
+    private var products : Map<String,Product> = emptyMap()
+    private val selectItemIds = mutableSetOf<String>()
     override fun attachView(view: CartContract.View) {
         this.view=view
     }
@@ -46,14 +49,16 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
                     Log.d("CartPresenter", "Product IDs to load: $productIds")
                     val productSnapshot =db.collection("products").whereIn("id",productIds).get().await()
                     Log.d("CartPresenter", "Number of products loaded: ${productSnapshot.size()}")
-                    val products= productSnapshot.documents.mapNotNull {
+                    products= productSnapshot.documents.mapNotNull {
                         doc ->
                         doc.toObject(Product::class.java)?.let {
                             Log.d("CartPresenter", "Loaded product: ${it.id} - ${it.name}")
                             it.id to it
                         }
                     }.toMap()
+                    cartItems =cart.items
                     view?.showCartItems(cart.items,products)
+                    calculateTotalPrice()
                 }
                 else{
                     Log.d("CartPresenter", "Cart is empty or null")
@@ -90,6 +95,49 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
                 view?.showError("Failed to update quantity: ${e.message}")
             }
         }
+    }
+
+    override fun updateItemSelection(productId: String, isChecked: Boolean) {
+        if(isChecked){
+            selectItemIds.add(productId)
+        }
+        else{
+            selectItemIds.remove(productId)
+        }
+        calculateTotalPrice()
+    }
+
+    override fun calculateTotalPrice() {
+        val total =cartItems.filter { it.productId in selectItemIds }.sumOf { cartItem ->
+            val product= products[cartItem.productId]
+            product?.let {
+                if(it.offerPercentage>0.0){
+                    (it.getDiscountedPrice())*cartItem.quantity
+                }
+                else{
+                    it.price*cartItem.quantity
+                }
+            }?:0.0
+        }
+        Log.d("CartPresenter", "Total price calculated: $total")
+        view?.updateTotalPrice(total)
+        view?.updatePurchaseBtnText(selectItemIds.size)
+    }
+
+    override fun selectAllItems(isChecked: Boolean) {
+        if(isChecked){
+            selectItemIds.addAll(cartItems.map { it.productId })
+        }
+        else{
+            selectItemIds.clear()
+        }
+        view?.updateSelectedItems(selectItemIds)
+        calculateTotalPrice()
+    }
+
+    override fun updateAllItemsSelection(isChecked: Boolean) {
+        selectAllItems(isChecked)
+        view?.updateAllItemsSelection(isChecked)
     }
 
 
