@@ -7,11 +7,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
 
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <application
         android:name=".Gas24h_7Application"
         android:allowBackup="true"
@@ -24,14 +26,23 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".ui.order.OrderActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.cart.CartActivity"
             android:exported="false" />
         <activity
             android:name=".ui.review.AddReviewActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".admin.voucher.detail_product.VoucherDetailProductActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".admin.voucher.all_product.VoucherAllProductActivity"
             android:exported="false" />
@@ -43,9 +54,7 @@
             android:exported="false" />
         <activity
             android:name=".admin.AdminActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />
@@ -60,12 +69,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data

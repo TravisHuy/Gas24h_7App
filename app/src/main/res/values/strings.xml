@@ -13,4 +13,6 @@
     <string name="btn_buy">Mua hàng (%d)</string>
     <string name="cart_total_amount">đ%,.3f</string>
     <string name="cart_total_amount_zero">đ0</string>
+    <string name="terms_text">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <font color='#1c90e8'>Điều khoản TravisHuy</font></string>
+
 </resources>

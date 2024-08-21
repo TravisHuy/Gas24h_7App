@@ -6,8 +6,11 @@
         <item>@font/kalam_bold</item>
         <item>@font/noto_sans_bold</item>
         <item>@font/nunito_sans_light</item>
+        <item>@font/open_sans_medium</item>
         <item>@font/raleway</item>
         <item>@font/raleway_light</item>
         <item>@font/roboto</item>
+        <item>@font/roboto_medium</item>
+        <item>@font/roboto_serif</item>
     </array>
 </resources>
