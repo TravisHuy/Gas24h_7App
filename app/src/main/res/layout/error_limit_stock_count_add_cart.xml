@@ -7,6 +7,7 @@
     >
 
     <TextView
+        android:id="@+id/tv_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
@@ -14,7 +15,7 @@
         android:fontFamily="@font/nunito_sans_light"
         android:padding="10dp"
         android:letterSpacing="0.01"
-        android:text="Bạn đã có 121 sản phẩm trong giỏ hàng.\nKhông thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn"
+        android:text="@string/error_count_add_to_cart"
         android:textSize="16sp" />
     <View
         android:layout_width="match_parent"
@@ -23,6 +24,7 @@
         android:layout_marginTop="10dp"
         />
     <TextView
+        android:id="@+id/tv_ok"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Đồng ý"

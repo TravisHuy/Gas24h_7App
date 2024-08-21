@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
@@ -18,6 +19,7 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
     private var view:DetailProductContract.View?=null
     private val job = SupervisorJob()
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
+    private var currentProduct:Product?=null
     override fun attachView(view: DetailProductContract.View) {
         this.view=view
     }
@@ -35,6 +37,7 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
             result.fold(
                 onSuccess = {
                     product ->
+                    currentProduct=product
                     view?.showProductDetails(product)
                     view?.setupImageSlider(product.detailImageUrls)
                 },
@@ -129,22 +132,44 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
         coroutineScope.launch {
             val userId=userRepository.getCurrentUserId()
             if(userId!=null){
-                val result=cartRepository.addToCart(userId,productId, quantity, price)
-                result.fold(
-                    onSuccess = {
-                        view?.showSuccess("Added to cart")
-                        updateCartCount(userId)
-                        view?.dismissAddToCartDialog()
-                    }
-                    ,
-                    onFailure = {
-                        e -> view?.showError(e.message?:"Unknown error occurred")
+                val currentQuantityResult =cartRepository.getCartItemQuantity(userId,productId)
+                currentQuantityResult.fold(
+                    onSuccess = {currentQuantity ->
+                        val totalQuantity = currentQuantity + quantity
+                        currentProduct?.let {
+                            product ->
+                            if(totalQuantity<=product.stockCount){
+                                addToCartImpl(userId,productId, quantity, price)
+                            }
+                            else{
+                                view?.showQuantityExceededDialog(currentQuantity)
+                            }
+                        }
+                    },
+                    onFailure = {e ->
+                        view?.showError(e.message ?: "Failed to check current quantity")
                     }
                 )
             }
             else{
                 view?.showError("Failed to add to cart")
             }
+        }
+    }
+
+    private fun addToCartImpl(userId: String, productId: String, quantity: Int, price: Double){
+        coroutineScope.launch {
+            val result = cartRepository.addToCart(userId, productId, quantity, price)
+            result.fold(
+                onSuccess = {
+                    view?.showSuccess("Added to cart")
+                    updateCartCount(userId)
+                    view?.dismissAddToCartDialog()
+                },
+                onFailure = { e ->
+                    view?.showError(e.message ?: "Unknown error occurred")
+                }
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
@@ -347,6 +348,25 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     override fun setAddToCartButtonEnabled(isEnabled: Boolean) {
         findViewById<Button>(R.id.btn_add_to_cart)?.isEnabled = isEnabled
         findViewById<Button>(R.id.btn_add_to_cart)?.alpha = 0.5f
+    }
+
+    override fun showQuantityExceededDialog(currentQuantity: Int) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.error_limit_stock_count_add_cart, null)
+        val dialogBuilder = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+
+        val dialog = dialogBuilder.create()
+
+        val messageTextView = dialogView.findViewById<TextView>(R.id.tv_message)
+        messageTextView.text = getString(R.string.max_purchase_limit, currentQuantity)
+
+        dialogView.findViewById<TextView>(R.id.tv_ok).setOnClickListener {
+            dialog.dismiss()
+            bottomSheetDialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun dpToPx(dp: Int): Int {

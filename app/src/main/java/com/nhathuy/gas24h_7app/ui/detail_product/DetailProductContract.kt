@@ -21,6 +21,7 @@ interface DetailProductContract {
         fun updateQuantity(quantity: Int)
         fun dismissAddToCartDialog()
         fun setAddToCartButtonEnabled(isEnabled:Boolean)
+        fun showQuantityExceededDialog(currentQuantity: Int)
     }
     interface Presenter{
         fun attachView(view:View)

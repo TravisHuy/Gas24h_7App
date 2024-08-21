@@ -71,8 +71,25 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                 checkBox.setOnCheckedChangeListener { _, isChecked ->
                     onItemChecked(cartItem.productId, isChecked)
                 }
-                quantityProductCart.setText(cartItem.quantity.toString())
 
+                quantityProductCart.setText(cartItem.quantity.toString())
+                quantityProductCart.setOnFocusChangeListener { _, hasFocus ->
+                    if(!hasFocus){
+                        val newQuantity= quantityProductCart.text.toString().toIntOrNull()?:1
+                        val maxQuantity=product?.stockCount?:0
+
+                        if(newQuantity>maxQuantity){
+                            cartItem.quantity=maxQuantity
+                            quantityProductCart.setText(maxQuantity.toString())
+                            onQuantityExceeded(cartItem.productId,maxQuantity)
+                        }
+                        else if(newQuantity!=cartItem.quantity){
+                            cartItem.quantity=newQuantity
+                            quantityProductCart.setText(newQuantity.toString())
+                            onQuantityChanged(cartItem.productId,newQuantity)
+                        }
+                    }
+                }
                 decreaseBtn.setOnClickListener {
                     if(cartItem.quantity>1){
                         cartItem.quantity--

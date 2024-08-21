@@ -14,5 +14,6 @@
     <string name="cart_total_amount">đ%,.3f</string>
     <string name="cart_total_amount_zero">đ0</string>
     <string name="terms_text">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <font color='#1c90e8'>Điều khoản TravisHuy</font></string>
+    <string name="error_count_add_to_cart">Bạn đã có %1d sản phẩm trong giỏ hàng.\nKhông thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn</string>
 
 </resources>
