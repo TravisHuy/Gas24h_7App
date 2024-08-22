@@ -22,6 +22,8 @@ import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductPresenter
 import com.nhathuy.gas24h_7app.ui.login.LoginContract
 import com.nhathuy.gas24h_7app.ui.login.LoginPresenter
+import com.nhathuy.gas24h_7app.ui.order.OrderContract
+import com.nhathuy.gas24h_7app.ui.order.OrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
 import dagger.Module
@@ -70,6 +72,12 @@ class PresenterModule {
     @Singleton
     fun provideCartPresenter(db:FirebaseFirestore,userRepository: UserRepository):CartContract.Presenter{
         return CartPresenter(db,userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository):OrderContract.Presenter{
+        return OrderPresenter(userRepository,productRepository)
     }
 
 }

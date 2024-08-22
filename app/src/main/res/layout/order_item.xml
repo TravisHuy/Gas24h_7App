@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="4dp"
-    android:layout_marginTop="5dp"
     >
 
     <LinearLayout
@@ -53,7 +52,6 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/open_sans_medium"
                 android:maxLines="1"
-
                 android:text="Gian nan đi tìm lăng mộ Hoàng đế Quang Trung" />
 
             <LinearLayout
@@ -76,8 +74,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="x4"
-                        android:textSize="10sp"
-                        android:layout_marginEnd="5dp"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp"
                         />
             </LinearLayout>
         </LinearLayout>
@@ -140,7 +139,7 @@
                 android:id="@+id/order_count_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(4 sản phẩm):"
+                android:text="@string/count_product"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/roboto"
                 />
@@ -157,8 +156,7 @@
         </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#C8C6C6"
-            />
+            android:layout_height="10dp"
+            android:background="#ECECEC"  />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
