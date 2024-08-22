@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
@@ -298,7 +299,9 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         Glide.with(this)
             .load(product.coverImageUrl)
             .into(productImage)
-
+        productImage.setOnClickListener {
+            showFullscreenImage(product.coverImageUrl)
+        }
         decreaseBtn.setOnClickListener {
             var quantity = quantityEdit.text.toString().toIntOrNull()?:1
             presenter.onDecreaseQuantity(quantity,product.stockCount)
@@ -373,6 +376,27 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         return (dp * resources.displayMetrics.density).toInt()
     }
 
+    //show full screenimage
+    private fun showFullscreenImage(imageUrl: String) {
+        val dialogs = Dialog(this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+        dialogs.setContentView(R.layout.fullscreen_image_layout)
+
+        val fullscreenImage = dialogs.findViewById<ImageView>(R.id.fullscreen_image)
+        val closeButton = dialogs.findViewById<ImageView>(R.id.close_button)
+
+        Glide.with(this)
+            .load(imageUrl)
+            .into(fullscreenImage)
+
+        closeButton.setOnClickListener {
+            dialogs.dismiss()
+        }
+
+        fullscreenImage.setOnClickListener {
+            dialogs.dismiss()
+        }
+        dialogs.show()
+    }
     override fun onBackPressed() {
         super.onBackPressed()
     }

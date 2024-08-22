@@ -24,6 +24,7 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                       private var selectedItemIds:Set<String> = setOf(),
                       private val onQuantityChanged: (String,Int) -> Unit,
                       private val onQuantityExceeded: (String, Int) -> Unit,
+                      private val onManualQuantityExceeded: (String,Int) -> Unit,
                       private val onItemChecked:(String,Boolean) -> Unit
 ):RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
@@ -74,19 +75,21 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
 
                 quantityProductCart.setText(cartItem.quantity.toString())
                 quantityProductCart.setOnFocusChangeListener { _, hasFocus ->
-                    if(!hasFocus){
-                        val newQuantity= quantityProductCart.text.toString().toIntOrNull()?:1
-                        val maxQuantity=product?.stockCount?:0
+                    if (!hasFocus) {
+                        val newQuantity = quantityProductCart.text.toString().toIntOrNull() ?: 1
+                        val maxQuantity = product?.stockCount ?: 0
 
-                        if(newQuantity>maxQuantity){
-                            cartItem.quantity=maxQuantity
-                            quantityProductCart.setText(maxQuantity.toString())
-                            onQuantityExceeded(cartItem.productId,maxQuantity)
-                        }
-                        else if(newQuantity!=cartItem.quantity){
-                            cartItem.quantity=newQuantity
-                            quantityProductCart.setText(newQuantity.toString())
-                            onQuantityChanged(cartItem.productId,newQuantity)
+                        when {
+                            newQuantity > maxQuantity -> {
+                                cartItem.quantity = maxQuantity
+                                quantityProductCart.setText(maxQuantity.toString())
+                                onManualQuantityExceeded(cartItem.productId, maxQuantity)
+                            }
+                            newQuantity != cartItem.quantity -> {
+                                cartItem.quantity = newQuantity
+                                quantityProductCart.setText(newQuantity.toString())
+                                onQuantityChanged(cartItem.productId, newQuantity)
+                            }
                         }
                     }
                 }
@@ -107,19 +110,6 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                             onQuantityExceeded(cartItem.productId,product?.stockCount?:0)
                         }
                 }
-
-                quantityProductCart.setOnFocusChangeListener { _, hasFocus ->
-                    if(hasFocus){
-                        val newQuantity = quantityProductCart.text.toString().toIntOrNull() ?:1
-                        if (newQuantity != cartItem.quantity) {
-                            cartItem.quantity = newQuantity
-                            quantityProductCart.setText(newQuantity.toString())
-                            onQuantityChanged(cartItem.productId, newQuantity)
-                        }
-                    }
-                }
-
-
             }
         }
     }

@@ -40,7 +40,7 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
                 val cartDocument =db.collection("carts").document(userId!!).get().await()
                 Log.d("CartPresenter", "Cart document exists: ${cartDocument.exists()}")
                 val cart=cartDocument.toObject(Cart::class.java)
-                Log.d("CartPresenter", "Cart object: $cart")
+                Log.d("CartPresenter", "Cart object: ${cart}")
 
                 if(cart!=null){
                     val productIds= cart.items.map {
@@ -58,6 +58,7 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
                     }.toMap()
                     cartItems =cart.items
                     view?.showCartItems(cart.items,products)
+                    view?.showCartSize(cartItems.size)
                     calculateTotalPrice()
                 }
                 else{
@@ -138,6 +139,32 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
     override fun updateAllItemsSelection(isChecked: Boolean) {
         selectAllItems(isChecked)
         view?.updateAllItemsSelection(isChecked)
+    }
+
+    override fun handleManualQuantityExceeded(productId: String, maxQuantity: Int) {
+        view?.showStockExceededError(productId, maxQuantity)
+        updateCartItemQuantity(productId, maxQuantity)
+    }
+
+    override fun onBtnClicked() {
+        val selectItems = cartItems.filter { it.productId in selectItemIds }
+        val totalAmount =calculateTotalAmount(selectItems)
+        view?.navigateToCheckout(selectItems, totalAmount)
+    }
+
+    private fun calculateTotalAmount(items: List<CartItem>): Double {
+        return items.sumOf {
+            cartItem ->
+            val product=products[cartItem.productId]
+            product?.let {
+                if(it.offerPercentage>0.0){
+                    (it.getDiscountedPrice())*cartItem.quantity
+                }
+                else{
+                    it.price*cartItem.quantity
+                }
+            }?:0.0
+        }
     }
 
 

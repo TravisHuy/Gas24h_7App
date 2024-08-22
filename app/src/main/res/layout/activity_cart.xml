@@ -14,9 +14,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         >
         <TextView
+            android:id="@+id/tv_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Giỏ hàng (2)"
             android:textSize="18sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
@@ -109,6 +109,7 @@
             android:layout_height="1dp"
             android:background="#C8C6C6"
             android:layout_marginTop="10dp"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -121,8 +122,39 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_buy"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Tổng thanh toán"
+                    app:layout_constraintEnd_toStartOf="@+id/cart_total_amount"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/cart_total_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cart_total_amount"
+                    android:textSize="16sp"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/red"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_buy"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
             <TextView
+                android:id="@+id/tvView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tất cả"
@@ -131,28 +163,8 @@
                 android:layout_marginStart="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cart_checkbox"
-                app:layout_constraintTop_toTopOf="@+id/cart_checkbox" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text="Tổng thanh toán"
-                app:layout_constraintBottom_toBottomOf="@+id/cart_total_amount"
-                app:layout_constraintEnd_toStartOf="@+id/cart_total_amount"
-                app:layout_constraintTop_toTopOf="@+id/cart_total_amount" />
-
-            <TextView
-                android:id="@+id/cart_total_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cart_total_amount"
-                android:textSize="16sp"
-                android:textColor="@color/red"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                app:layout_constraintEnd_toStartOf="@+id/btn_buy"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <Button
                 android:id="@+id/btn_buy"

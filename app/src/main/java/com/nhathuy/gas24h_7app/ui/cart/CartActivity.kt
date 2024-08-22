@@ -2,11 +2,13 @@ package com.nhathuy.gas24h_7app.ui.cart
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import com.nhathuy.gas24h_7app.adapter.CartItemAdapter
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityCartBinding
+import com.nhathuy.gas24h_7app.ui.order.OrderActivity
 import javax.inject.Inject
 
 class CartActivity : AppCompatActivity(),CartContract.View {
@@ -29,15 +32,22 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         super.onCreate(savedInstanceState)
         binding= ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        (application as Gas24h_7Application).getGasComponent().inject(this)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        (application as Gas24h_7Application).getGasComponent().inject(this)
         cartItemAdapter = CartItemAdapter(
             onQuantityChanged = { productId, newQuantity ->
                 presenter.updateCartItemQuantity(productId, newQuantity)
             },
             onQuantityExceeded = {
                     productId, stockCount ->
-                showStockExceededError(productId,stockCount)
+                presenter.handleManualQuantityExceeded(productId,stockCount)
+            },
+            onManualQuantityExceeded = { productId,maxCount->
+                 presenter.handleManualQuantityExceeded(productId,maxCount)
             },
             onItemChecked = {
                 productId,isChecked ->
@@ -51,12 +61,36 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         binding.cartCheckbox.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateAllItemsSelection(isChecked)
         }
+        binding.btnBuy.setOnClickListener {
+            presenter.onBtnClicked()
+        }
         presenter.attachView(this)
         presenter.loadCartItems()
     }
 
-    private fun showStockExceededError(productId: String, stockCount: Int) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+    override fun showStockExceededError(productId: String, stockCount: Int) {
         showMaxPurchaseLimitDialog(stockCount)
+    }
+
+    override fun showCartSize(size: Int) {
+        binding.tvToolbar.text=getString(R.string.title_cart_toolbar,size)
+    }
+
+    override fun navigateToCheckout(selectedItems: List<CartItem>, totalAmount: Double) {
+        val intent= Intent(this,OrderActivity::class.java).apply {
+            putExtra("SELECTED_ITEMS", ArrayList(selectedItems))
+            putExtra("TOTAL_AMOUNT", totalAmount)
+        }
+        startActivity(intent)
     }
 
     @SuppressLint("MissingInflatedId")

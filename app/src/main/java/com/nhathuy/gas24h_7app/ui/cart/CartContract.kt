@@ -13,6 +13,9 @@ interface CartContract {
         fun updateTotalPrice(total:Double)
         fun updatePurchaseBtnText(count:Int)
         fun updateAllItemsSelection(isChecked: Boolean)
+        fun showStockExceededError(productId: String, maxQuantity: Int)
+        fun showCartSize(size:Int)
+        fun navigateToCheckout(selectedItems: List<CartItem>, totalAmount: Double)
     }
     interface Presenter{
         fun attachView(view: CartContract.View)
@@ -23,5 +26,7 @@ interface CartContract {
         fun calculateTotalPrice()
         fun selectAllItems(isChecked: Boolean)
         fun updateAllItemsSelection(isChecked: Boolean)
+        fun handleManualQuantityExceeded(productId: String, maxQuantity: Int)
+        fun onBtnClicked()
     }
 }
