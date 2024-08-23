@@ -86,6 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
+                    android:layout_marginBottom="5dp"
                     android:text="Landmark 81 Vinhomes Central Park có vị trí tại 720A Điện Biên Phủ, phường 22 quận Bình Thạnh, thành phố Hồ Chí Minh" />
             </LinearLayout>
 

@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
+import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
 import com.nhathuy.gas24h_7app.di.module.FirebaseModule
 import com.nhathuy.gas24h_7app.di.module.GasModule
@@ -39,4 +40,5 @@ interface GasComponent {
     fun inject(detailProductActivity: DetailProductActivity)
     fun inject(cartActivity: CartActivity)
     fun inject(orderActivity: OrderActivity)
+    fun inject(voucherAllProductActivity: VoucherAllProductActivity)
 }

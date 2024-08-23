@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".admin.voucher.all_product.VoucherAllProductActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,6 +44,7 @@
             app:hintEnabled="false"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/code_voucher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapCharacters"
@@ -63,11 +65,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="140dp"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                app:hintEnabled="false"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 >
                 <AutoCompleteTextView
+                    android:id="@+id/autocomplete_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Theo số tiền"
@@ -82,12 +87,13 @@
                 android:layout_marginStart="5dp"
                 >
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/voucher_ed_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="đ"
                     android:inputType="numberDecimal"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,6 +102,7 @@
             android:text="Giá trị đơn hàng tối thiểu"
             android:textSize="16sp"
             />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,11 +111,19 @@
             android:layout_marginStart="5dp"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/voucher_minimum_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="đ"
                 android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,6 +142,7 @@
             app:helperTextEnabled="true"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/voucher_total_number_of_use"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -145,8 +161,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
+            app:hintEnabled="false"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/voucher_maximum_with_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -179,17 +197,20 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:id="@+id/imageView_start_time"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_calendar" />
 
                 <TextView
+                    android:id="@+id/voucher_hour_start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="13:42" />
 
                 <TextView
+                    android:id="@+id/voucher_date_start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -219,17 +240,20 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:id="@+id/imageView_end_time"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_calendar" />
 
                 <TextView
+                    android:id="@+id/voucher_hour_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="13:42" />
 
                 <TextView
+                    android:id="@+id/voucher_date_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -242,6 +266,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp">
             <Button
+                android:id="@+id/btn_cancel"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -252,6 +277,7 @@
                 android:layout_marginEnd="10dp"
                 />
             <Button
+                android:id="@+id/btn_confirm"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

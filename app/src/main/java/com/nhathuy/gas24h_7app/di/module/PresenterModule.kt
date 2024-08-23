@@ -6,11 +6,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
+import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
+import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
@@ -79,5 +82,9 @@ class PresenterModule {
     fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository):OrderContract.Presenter{
         return OrderPresenter(userRepository,productRepository)
     }
-
+    @Provides
+    @Singleton
+    fun provideVoucherPresenter(voucherRepository: VoucherRepository):VoucherAllContract.Presenter{
+        return VoucherAllPresenter(voucherRepository)
+    }
 }

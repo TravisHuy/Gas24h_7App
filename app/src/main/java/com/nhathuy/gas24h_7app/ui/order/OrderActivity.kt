@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.ui.order
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
@@ -61,5 +62,15 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
 
     override fun showError(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

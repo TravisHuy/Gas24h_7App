@@ -1,26 +1,40 @@
 package com.nhathuy.gas24h_7app.data.model
 
+import java.math.BigDecimal
 import java.util.Date
 
 data class Voucher(
     val id:String,
     val code:String,
-    val discountPercentage:Double,
-    val maxDiscountAmount:Double,
+    val discountType:DiscountType,
+    val discountValue:Double,
     val minOrderAmount:Double,
-    val expirationDate:Date,
+    val maxUsage:Int,
+    val maxUsagePreUser:Int,
+    val startDate:Date,
+    val endDate:Date,
     val isActive:Boolean = false,
-    val applicableProductIds: List<String> = listOf()
+    val applicableProductIds: List<String> = listOf(),
+    val isForAllProducts:Boolean =false
 ){
     fun toMap(): Map<String, Any> {
         return mapOf(
             "id" to id,
             "code" to code,
-            "discountPercentage" to discountPercentage,
-            "maxDiscountAmount" to maxDiscountAmount,
+            "discountType" to discountType.name,
+            "discountValue" to discountValue,
             "minOrderAmount" to minOrderAmount,
-            "expirationDate" to expirationDate,
-            "isActive" to isActive
+            "maxUsage" to maxUsage,
+            "maxUsagePreUser" to maxUsagePreUser,
+            "startDate" to startDate,
+            "endDate" to endDate,
+            "isActive" to isActive,
+            "applicableProductIds" to applicableProductIds,
+            "isForAllProducts" to isForAllProducts,
         )
     }
+}
+enum class DiscountType{
+    FIXED_AMOUNT,
+    PERCENTAGE
 }

@@ -6,6 +6,7 @@ import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.data.repository.impl.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
@@ -34,5 +35,10 @@ class RepositoryModule {
     @Singleton
     fun provideCartRepository(db:FirebaseFirestore):CartRepository{
         return CartRepository(db)
+    }
+    @Provides
+    @Singleton
+    fun provideVoucherRepository(db:FirebaseFirestore): VoucherRepository {
+        return VoucherRepository(db)
     }
 }
