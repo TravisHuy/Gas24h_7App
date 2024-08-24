@@ -51,7 +51,6 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
 
                 product?.let {
                     cartItemName.text=it.name
-
                     if(it.offerPercentage > 0.0){
                         cartPriceReduce.text="đ${String.format("%.3f", it.getDiscountedPrice())}"
                         cartPriceOriginal.text="đ${String.format("%.3f", it.price)}"

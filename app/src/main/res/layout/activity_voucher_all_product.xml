@@ -70,16 +70,17 @@
                 android:layout_marginTop="5dp"
                 app:hintEnabled="false"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_weight="1"
                 >
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Theo số tiền"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"/>
+                    />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 android:layout_marginTop="5dp"

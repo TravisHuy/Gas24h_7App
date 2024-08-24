@@ -43,4 +43,18 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
             }
         }
     }
+    suspend fun getAllProducts() : Result<List<Product>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot=db.collection("products").get().await()
+                val allProducts= querySnapshot.documents.mapNotNull {
+                    it.toObject(Product::class.java)
+                }
+                Result.success(allProducts)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }
