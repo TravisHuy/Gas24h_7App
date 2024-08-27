@@ -23,6 +23,8 @@ import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineContract
 import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
+import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherContract
+import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherPresenter
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductPresenter
 import com.nhathuy.gas24h_7app.ui.login.LoginContract
@@ -96,4 +98,9 @@ class PresenterModule {
         return VoucherDetailPresenter(voucherRepository,productRepository)
     }
 
+    @Provides
+    @Singleton
+    fun provideChooseVoucherPresenter(voucherRepository: VoucherRepository):ChooseVoucherContract.Presenter{
+        return ChooseVoucherPresenter(voucherRepository)
+    }
 }

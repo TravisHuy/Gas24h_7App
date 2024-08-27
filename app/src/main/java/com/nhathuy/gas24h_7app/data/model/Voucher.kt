@@ -17,6 +17,8 @@ data class Voucher(
     val applicableProductIds: List<String> = listOf(),
     val isForAllProducts:Boolean =false
 ){
+    constructor():this("","",DiscountType.FIXED_AMOUNT,0.0,0.0,0,0,Date(),Date(),false, listOf(),false)
+
     fun toMap(): Map<String, Any> {
         return mapOf(
             "id" to id,

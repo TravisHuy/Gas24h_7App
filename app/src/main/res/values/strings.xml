@@ -17,4 +17,10 @@
     <string name="error_count_add_to_cart">Bạn đã có %1d sản phẩm trong giỏ hàng.\nKhông thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn</string>
     <string name="title_cart_toolbar">Giỏ hàng (%d)</string>
     <string name="count_product">(%d sản phẩm) : </string>
+    <string name="voucher_tv_offerpercent">Giảm %.2f%% Giảm tối</string>
+    <string name="voucher_tv_max_discount">₫a %.1ftr</string>
+    <string name="voucher_discount_price">Giảm đ%dk</string>
+    <string name="tv_voucher_minimum_price">Đơn tối thiểu ₫%.2ftr</string>
+    <string name="voucher_condition">Đã dùng %d%, hết hạn...<font color='#1c90e8'>Điều kiện</font></string>
+    <string name="title_choose_voucher">Chọn TravisHuy Voucher</string>
 </resources>

@@ -89,4 +89,6 @@ dependencies {
     //circleimageview
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
+    //travisHuyprogressbar
+    implementation("com.github.TravisHuy:TravisHuyProgressBar:0.1.0")
 }
