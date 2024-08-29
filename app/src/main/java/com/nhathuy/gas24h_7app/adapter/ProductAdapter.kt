@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.adapter
 
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
 class ProductAdapter(private var products: List<Product>,private  val listener: ProductClickListener) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
@@ -40,7 +42,7 @@ class ProductAdapter(private var products: List<Product>,private  val listener: 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = products[position]
         holder.tvProductName.text = product.name
-        holder.tvProductPrice.text = "₫${product.price}"
+        holder.tvProductPrice.text = NumberFormatUtils.formatPrice(product.price)
         Glide.with(holder.itemView.context).load(product.coverImageUrl).into(holder.ivProduct)
     }
     fun updateData(newProduct:List<Product>){

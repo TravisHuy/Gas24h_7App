@@ -11,6 +11,7 @@
     <string name="original_price"><u>underline</u></string>
     <string name="max_purchase_limit">Rất tiếc, bạn chỉ có thể mua tối đa %1d\nsản phẩm của chương trình giảm giá này.</string>
     <string name="btn_buy">Mua hàng (%d)</string>
+
     <string name="cart_total_amount">đ%,.3f</string>
     <string name="cart_total_amount_zero">đ0</string>
     <string name="terms_text">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <font color='#1c90e8'>Điều khoản TravisHuy</font></string>

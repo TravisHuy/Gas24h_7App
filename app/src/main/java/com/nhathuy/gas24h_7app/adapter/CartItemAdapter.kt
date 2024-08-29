@@ -12,6 +12,7 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.CartItemProductBinding
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,12 +53,12 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                 product?.let {
                     cartItemName.text=it.name
                     if(it.offerPercentage > 0.0){
-                        cartPriceReduce.text="đ${String.format("%.3f", it.getDiscountedPrice())}"
-                        cartPriceOriginal.text="đ${String.format("%.3f", it.price)}"
+                        cartPriceReduce.text= NumberFormatUtils.formatPrice(it.getDiscountedPrice())
+                        cartPriceOriginal.text=NumberFormatUtils.formatPrice(it.price)
                         cartPriceOriginal.visibility=View.VISIBLE
                     }
                     else{
-                        cartPriceReduce.text="đ${String.format("%.3f", it.price)}"
+                        cartPriceReduce.text=NumberFormatUtils.formatPrice(it.price)
                         cartPriceOriginal.visibility=View.GONE
                     }
 

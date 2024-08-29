@@ -38,6 +38,7 @@ import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
 
 class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
@@ -194,11 +195,11 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
         if (product.offerPercentage > 0.0) {
             binding.priceOriginalProduct.paintFlags = binding.priceOriginalProduct.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.priceOriginalProduct.text  = String.format("đ%.3f", originalPrice)
-            binding.priceReduceProduct.text = String.format("đ%.3f", discountedPrice)
+            binding.priceOriginalProduct.text  = NumberFormatUtils.formatPrice(originalPrice)
+            binding.priceReduceProduct.text = NumberFormatUtils.formatPrice(discountedPrice)
             binding.discountPercentage.text= String.format("-%.0f%%", product.offerPercentage)
         } else {
-            binding.priceReduceProduct.text = String.format("đ%.3f", originalPrice)
+            binding.priceReduceProduct.text = NumberFormatUtils.formatPrice(originalPrice)
             binding.priceOriginalProduct.visibility=View.GONE
             binding.discountPercentage.visibility=View.GONE
         }
