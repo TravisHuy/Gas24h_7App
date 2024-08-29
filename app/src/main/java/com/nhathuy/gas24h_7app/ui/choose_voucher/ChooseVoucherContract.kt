@@ -7,13 +7,15 @@ import com.nhathuy.gas24h_7app.data.model.Voucher
 interface ChooseVoucherContract {
     interface View{
         fun showError(message:String)
-        fun updateVoucherList(products: List<Voucher>, selectedVouchers: Set<String>)
+        fun updateVoucherList(products: List<Voucher>, selectedVoucher: String?)
+        fun updateTvDiscountPrice(discountInfo:String?)
     }
     interface Presenter{
         fun attachView(view: View)
         fun detachView()
         fun loadVouchers()
-        fun searchVouchers()
+        fun searchVouchers(query:String)
         fun  updateItemSelection(voucherId:String,isChecked:Boolean)
+        fun searchAndSelectFirstVoucher(query: String)
     }
 }

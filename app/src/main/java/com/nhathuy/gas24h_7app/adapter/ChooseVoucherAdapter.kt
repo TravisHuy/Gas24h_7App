@@ -10,13 +10,16 @@ import com.nhathuy.gas24h_7app.data.model.DiscountType
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.Voucher
 import com.nhathuy.gas24h_7app.databinding.VoucherItemBinding
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
+import com.nhathuy.travishuyprogressbar.max
+import com.nhathuy.travishuyprogressbar.progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ChooseVoucherAdapter( private val context:Context,
                             private var vouchers:List<Voucher> = listOf(),
-                            private var selectedItemIds:Set<String> = setOf(),
+                            private var selectedItemId:String? = null,
                             private var onItemChecked : (String,Boolean) ->Unit
 ):RecyclerView.Adapter<ChooseVoucherAdapter.ChooseVoucherViewHolder>() {
 
@@ -39,35 +42,55 @@ class ChooseVoucherAdapter( private val context:Context,
         holder.binding.apply {
             CoroutineScope(Dispatchers.Main).launch {
                 voucher?.let {
-                    if (it.discountType==DiscountType.FIXED_AMOUNT){
-                        tvVoucherOfferpercent.text=context.getString(R.string.voucher_tv_offerpercent,it.discountValue)
-                        tvVoucherMaxDiscount.text=context.getString(R.string.voucher_tv_max_discount,it.discountValue)
+                    when (voucher.discountType) {
+                        DiscountType.PERCENTAGE -> {
+                            tvVoucherOfferpercent.text = context.getString(R.string.voucher_tv_offerpercent, voucher.discountValue)
+                            tvVoucherDiscountPrice.visibility = View.GONE
+                        }
+                        DiscountType.FIXED_AMOUNT -> {
+                            tvVoucherOfferpercent.visibility = View.GONE
+                            tvVoucherDiscountPrice.visibility = View.VISIBLE
+                            val formattedDiscount = NumberFormatUtils.formatDiscount(voucher.discountValue)
+                            tvVoucherDiscountPrice.text = context.getString(R.string.voucher_discount_price, formattedDiscount)
+                        }
                     }
-                    else{
-                        tvVoucherDiscountPrice.text=context.getString(R.string.voucher_tv_offerpercent,it.discountValue)
-                        tvVoucherOfferpercent.visibility=View.GONE
-                        tvVoucherMaxDiscount.visibility=View.GONE
-                        tvVoucherDiscountPrice.visibility=View.VISIBLE
-                    }
-                    tvVoucherMinimumPrice.text=context.getString(R.string.tv_voucher_minimum_price,it.minOrderAmount)
-                    tvVoucherCondition.text=context.getString(R.string.tv_voucher_minimum_price,it.minOrderAmount)
+                    val formattedMinOrderAmount = NumberFormatUtils.formatDiscount(it.minOrderAmount)
+                    tvVoucherMinimumPrice.text=context.getString(R.string.tv_voucher_minimum_price,formattedMinOrderAmount)
+
                     tvVoucherCountItem.text="x${it.maxUsagePreUser}"
 
-                    voucherCheckbox.isChecked=selectedItemIds.contains(it.id)
-                    voucherCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                        onItemChecked(it.id,isChecked)
+                    voucherCheckbox.isChecked=selectedItemId==it.id
+                    voucherCheckbox.setOnCheckedChangeListener(null)
+
+                    root.setOnClickListener {
+                        selectVoucher(voucher.id)
                     }
 
+                    voucherCheckbox.setOnClickListener {
+                        selectVoucher(voucher.id)
+                    }
+                    progressBar.max = it.maxUsage
+                    progressBar.progress = it.currentUsage
+
+                    val usagePercentage = (it.currentUsage.toFloat() / it.maxUsage.toFloat() * 100).toInt()
+                    tvVoucherCondition.text = context.getString(R.string.voucher_condition, usagePercentage)
                 }
             }
         }
     }
 
+    private fun selectVoucher(voucherId: String) {
+        val isCurrentlySelected = selectedItemId == voucherId
+        selectedItemId = if (isCurrentlySelected) null else voucherId
+        onItemChecked(voucherId, !isCurrentlySelected)
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int =vouchers.size
 
-    fun updateVouchers(newVoucher:List<Voucher>,newSelectedItemIds:Set<String>){
+    fun updateVouchers(newVoucher:List<Voucher>,newSelectedItemId:String?){
         vouchers = newVoucher
-        selectedItemIds= newSelectedItemIds
+        selectedItemId= newSelectedItemId
         notifyDataSetChanged()
     }
 }

@@ -1,10 +1,16 @@
 package com.nhathuy.gas24h_7app.ui.choose_voucher
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
@@ -39,7 +45,33 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
         })
 
         setupRecyclerView()
+        setupSearchView()
         presenter.loadVouchers()
+    }
+
+    private fun setupSearchView() {
+        binding.btnInputApply.setOnClickListener {
+            val searchQuery = binding.edInputSearch.text.toString().trim()
+            presenter.searchAndSelectFirstVoucher(searchQuery)
+            hideKeyboard()
+        }
+        binding.edInputSearch.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                presenter.searchVouchers(s.toString())
+            }
+
+        })
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.edInputSearch.windowToken,0)
     }
 
     private fun setupRecyclerView() {
@@ -64,7 +96,19 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
-    override fun updateVoucherList(products: List<Voucher>, selectedVouchers: Set<String>) {
-        adapter.updateVouchers(products,selectedVouchers)
+    override fun updateVoucherList(products: List<Voucher>, selectedVoucher: String?) {
+        adapter.updateVouchers(products,selectedVoucher)
+    }
+
+    override fun updateTvDiscountPrice(discountInfo: String?) {
+        binding.tvVoucherDiscount.apply {
+            if(discountInfo!=null){
+                text=discountInfo
+                visibility=View.VISIBLE
+            }
+            else{
+                visibility=View.GONE
+            }
+        }
     }
 }

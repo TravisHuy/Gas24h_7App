@@ -11,13 +11,14 @@ data class Voucher(
     val minOrderAmount:Double,
     val maxUsage:Int,
     val maxUsagePreUser:Int,
+    val currentUsage: Int = 0,
     val startDate:Date,
     val endDate:Date,
     val isActive:Boolean = false,
     val applicableProductIds: List<String> = listOf(),
     val isForAllProducts:Boolean =false
 ){
-    constructor():this("","",DiscountType.FIXED_AMOUNT,0.0,0.0,0,0,Date(),Date(),false, listOf(),false)
+    constructor():this("","",DiscountType.FIXED_AMOUNT,0.0,0.0,0,0,0,Date(),Date(),false, listOf(),false)
 
     fun toMap(): Map<String, Any> {
         return mapOf(
@@ -28,6 +29,7 @@ data class Voucher(
             "minOrderAmount" to minOrderAmount,
             "maxUsage" to maxUsage,
             "maxUsagePreUser" to maxUsagePreUser,
+            "currentUsage" to 0,
             "startDate" to startDate,
             "endDate" to endDate,
             "isActive" to isActive,

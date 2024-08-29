@@ -39,13 +39,14 @@
                 android:layout_weight="1"
                 >
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_input_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nhập mã shopee voucher"
                     />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_input_again"
+                android:id="@+id/btn_input_apply"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:text="Áp dụng"
@@ -99,10 +100,12 @@
         android:layout_marginHorizontal="10dp"
         >
         <TextView
+            android:id="@+id/tv_voucher_discount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2 Voucher đã được chọn.Bạn cũng tiết kiệm được đ100k từ Vouchere giảm giá"
+            android:text="@string/tv_voucher_discount"
             android:layout_marginBottom="5dp"
+            android:visibility="gone"
             />
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.Material3.Button.ElevatedButton"

@@ -100,7 +100,7 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideChooseVoucherPresenter(voucherRepository: VoucherRepository):ChooseVoucherContract.Presenter{
-        return ChooseVoucherPresenter(voucherRepository)
+    fun provideChooseVoucherPresenter(voucherRepository: VoucherRepository,context: Context):ChooseVoucherContract.Presenter{
+        return ChooseVoucherPresenter(voucherRepository,context)
     }
 }
