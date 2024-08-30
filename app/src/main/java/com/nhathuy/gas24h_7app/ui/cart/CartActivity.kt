@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.cart
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +20,13 @@ import com.nhathuy.gas24h_7app.adapter.CartItemAdapter
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityCartBinding
+import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
 import com.nhathuy.gas24h_7app.ui.order.OrderActivity
+import com.nhathuy.gas24h_7app.util.Constants.CHOOSE_VOUCHER_REQUEST_CODE
+import com.nhathuy.gas24h_7app.util.Constants.SELECTED_VOUCHER_KEY
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class CartActivity : AppCompatActivity(),CartContract.View {
 
@@ -64,8 +71,45 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         binding.btnBuy.setOnClickListener {
             presenter.onBtnClicked()
         }
+        setupVoucherSection()
         presenter.attachView(this)
         presenter.loadCartItems()
+    }
+
+    private fun setupVoucherSection() {
+        binding.chooseVoucherText.setOnClickListener {
+            val intent = Intent(this,ChooseVoucherActivity::class.java)
+            intent.putExtra("HAS_SELECTED_PRODUCTS", presenter.hasSelectedItems())
+            startActivityForResult(intent,CHOOSE_VOUCHER_REQUEST_CODE)
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CHOOSE_VOUCHER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val voucherId  =data?.getStringExtra("SELECT_VOUCHER_ID")
+            val voucherCode = data?.getStringExtra("SELECTED_VOUCHER_CODE")
+            val voucherDiscount = data?.getDoubleExtra("SELECTED_VOUCHER_DISCOUNT", 0.0)
+            val voucherType = data?.getStringExtra("SELECTED_VOUCHER_TYPE")
+
+            // Update UI to show selected voucher
+            updateVoucherUI(voucherCode, voucherDiscount, voucherType)
+            voucherId?.let {
+                presenter.applyVoucher(it)
+            }
+
+
+        }
+    }
+
+    private fun updateVoucherUI(code: String?, discount: Double?, type: String?) {
+        binding.chooseVoucherText.visibility = View.GONE
+        binding.priceReduceVoucher.visibility=View.VISIBLE
+        val discountText = when(type){
+            "FIXED_AMOUNT" -> getString(R.string.voucher_discount_prices, discount?.let { NumberFormatUtils.formatDiscount(it)  })
+            "PERCENTAGE" -> getString(R.string.voucher_discount_offerpercent, discount)
+            else -> ""
+        }
+        binding.priceReduceVoucher.text = discountText
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -91,6 +135,15 @@ class CartActivity : AppCompatActivity(),CartContract.View {
             putExtra("TOTAL_AMOUNT", totalAmount)
         }
         startActivity(intent)
+    }
+
+    override fun updateVoucherInfo(voucherDiscount: String) {
+        binding.priceReduceVoucher.apply {
+            text = voucherDiscount
+            visibility = if (voucherDiscount != null) View.VISIBLE else View.GONE
+        }
+
+        binding.chooseVoucherText.visibility = if (voucherDiscount != null) View.GONE else View.VISIBLE
     }
 
     @SuppressLint("MissingInflatedId")
@@ -130,7 +183,7 @@ class CartActivity : AppCompatActivity(),CartContract.View {
 
     override fun updateTotalPrice(total: Double) {
         binding.cartTotalAmount.text= if(total>0){
-            getString(R.string.cart_total_amount,total)
+            NumberFormatUtils.formatPrice(total)
         }
         else{
             getString(R.string.cart_total_amount_zero)

@@ -77,8 +77,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideCartPresenter(db:FirebaseFirestore,userRepository: UserRepository):CartContract.Presenter{
-        return CartPresenter(db,userRepository)
+    fun provideCartPresenter(cartRepository: CartRepository,userRepository: UserRepository,voucherRepository: VoucherRepository):CartContract.Presenter{
+        return CartPresenter(cartRepository,userRepository,voucherRepository)
     }
 
     @Provides

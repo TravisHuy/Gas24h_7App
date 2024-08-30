@@ -4,8 +4,12 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.Cart
 import com.nhathuy.gas24h_7app.data.model.CartItem
+import com.nhathuy.gas24h_7app.data.model.DiscountType
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.Voucher
+import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class CartPresenter @Inject constructor(private val db:FirebaseFirestore, private val userRepository: UserRepository):CartContract.Presenter{
+class CartPresenter @Inject constructor(private val cartRepository: CartRepository, private val userRepository: UserRepository,private val voucherRepository: VoucherRepository):CartContract.Presenter{
 
     private var view:CartContract.View?=null
     private val job = SupervisorJob()
@@ -23,6 +27,8 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
     private var cartItems: List<CartItem> = emptyList()
     private var products : Map<String,Product> = emptyMap()
     private val selectItemIds = mutableSetOf<String>()
+
+    private var appliedVoucher : Voucher? =null
     override fun attachView(view: CartContract.View) {
         this.view=view
     }
@@ -37,34 +43,35 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
             try {
                 val userId= userRepository.getCurrentUserId()
                 Log.d("CartPresenter", "Loading cart for user: $userId")
-                val cartDocument =db.collection("carts").document(userId!!).get().await()
-                Log.d("CartPresenter", "Cart document exists: ${cartDocument.exists()}")
-                val cart=cartDocument.toObject(Cart::class.java)
-                Log.d("CartPresenter", "Cart object: ${cart}")
-
-                if(cart!=null){
-                    val productIds= cart.items.map {
-                        it.productId
-                    }
-                    Log.d("CartPresenter", "Product IDs to load: $productIds")
-                    val productSnapshot =db.collection("products").whereIn("id",productIds).get().await()
-                    Log.d("CartPresenter", "Number of products loaded: ${productSnapshot.size()}")
-                    products= productSnapshot.documents.mapNotNull {
-                        doc ->
-                        doc.toObject(Product::class.java)?.let {
-                            Log.d("CartPresenter", "Loaded product: ${it.id} - ${it.name}")
-                            it.id to it
+                val cartResult =cartRepository.getCart(userId!!)
+                cartResult.fold(
+                    onSuccess ={cart ->
+                        Log.d("CartPresenter", "Cart object: ${cart}")
+                        cartItems =cart.items
+                        val productIds= cart.items.map {
+                            it.productId
                         }
-                    }.toMap()
-                    cartItems =cart.items
-                    view?.showCartItems(cart.items,products)
-                    view?.showCartSize(cartItems.size)
-                    calculateTotalPrice()
-                }
-                else{
-                    Log.d("CartPresenter", "Cart is empty or null")
-                    view?.showCartItems(emptyList(), emptyMap())
-                }
+                        val productResult = cartRepository.getProductForCart(productIds)
+                        productResult.fold(
+                            onSuccess = { loadedProducts ->
+                                products= loadedProducts
+                                view?.showCartItems(cart.items,products)
+                                view?.showCartSize(cartItems.size)
+                                calculateTotalPrice()
+                            },
+                            onFailure = {
+                                    e ->
+                                Log.e("CartPresenter", "Error loading products", e)
+                                view?.showError("Failed to load product details: ${e.message}")
+
+                            }
+                        )
+                    },
+                    onFailure = {e ->
+                        Log.d("CartPresenter", "Cart is empty or null",e)
+                        view?.showCartItems(emptyList(), emptyMap())
+                    }
+                )
             }
             catch (e:Exception){
                 Log.e("CartPresenter", "Error loading cart items", e)
@@ -78,20 +85,17 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
         coroutineScope.launch {
             try {
                 val userId = userRepository.getCurrentUserId()
-                val cartRef = db.collection("carts").document(userId!!)
+                val result = cartRepository.updateCartItemQuantity(userId!!,productId,newQuantity)
 
-                db.runTransaction { transaction ->
-                    val cartSnapshot = transaction.get(cartRef)
-                    val cart = cartSnapshot.toObject(Cart::class.java)
-                    if (cart != null) {
-                        val updatedItems = cart.items.map {
-                            if (it.productId == productId) it.copy(quantity = newQuantity) else it
-                        }
-                        transaction.update(cartRef, "items", updatedItems)
+                result.fold(
+                    onSuccess = {
+                        view?.updateCartItemQuantity(productId,newQuantity)
+                        loadCartItems()
+                    },
+                    onFailure = { e ->
+                        view?.showError("Failed to update quantity: ${e.message}")
                     }
-                }.await()
-
-                view?.updateCartItemQuantity(productId, newQuantity)
+                )
             } catch (e: Exception) {
                 view?.showError("Failed to update quantity: ${e.message}")
             }
@@ -109,7 +113,7 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
     }
 
     override fun calculateTotalPrice() {
-        val total =cartItems.filter { it.productId in selectItemIds }.sumOf { cartItem ->
+        var total =cartItems.filter { it.productId in selectItemIds }.sumOf { cartItem ->
             val product= products[cartItem.productId]
             product?.let {
                 if(it.offerPercentage>0.0){
@@ -119,6 +123,13 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
                     it.price*cartItem.quantity
                 }
             }?:0.0
+        }
+
+        appliedVoucher?.let {voucher ->
+            when(voucher.discountType){
+                DiscountType.FIXED_AMOUNT -> total -=voucher.discountValue
+                DiscountType.PERCENTAGE -> total *= (1 - voucher.discountValue / 100)
+            }
         }
         Log.d("CartPresenter", "Total price calculated: $total")
         view?.updateTotalPrice(total)
@@ -150,6 +161,27 @@ class CartPresenter @Inject constructor(private val db:FirebaseFirestore, privat
         val selectItems = cartItems.filter { it.productId in selectItemIds }
         val totalAmount =calculateTotalAmount(selectItems)
         view?.navigateToCheckout(selectItems, totalAmount)
+    }
+
+    override fun hasSelectedItems(): Boolean {
+       return cartItems.isNotEmpty()
+    }
+
+
+    override fun applyVoucher(voucherId: String) {
+        coroutineScope.launch {
+            val voucher = voucherRepository.getVoucherById(voucherId)
+            voucher.fold(
+                onSuccess ={
+                    appliedVoucher= it
+                    calculateTotalPrice()
+                    view?.updateVoucherInfo("-${it.discountValue}")
+                },
+                onFailure = {
+                    view?.showError("Voucher không áp dụng được cho đơn hàng này")
+                }
+            )
+        }
     }
 
     private fun calculateTotalAmount(items: List<CartItem>): Double {

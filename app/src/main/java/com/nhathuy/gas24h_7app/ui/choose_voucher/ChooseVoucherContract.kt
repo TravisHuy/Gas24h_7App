@@ -9,6 +9,7 @@ interface ChooseVoucherContract {
         fun showError(message:String)
         fun updateVoucherList(products: List<Voucher>, selectedVoucher: String?)
         fun updateTvDiscountPrice(discountInfo:String?)
+        fun finishWithResult(selectedVoucher: Voucher?)
     }
     interface Presenter{
         fun attachView(view: View)
@@ -17,5 +18,7 @@ interface ChooseVoucherContract {
         fun searchVouchers(query:String)
         fun  updateItemSelection(voucherId:String,isChecked:Boolean)
         fun searchAndSelectFirstVoucher(query: String)
+        fun setHasSelectedProducts(hasSelected: Boolean)
+        fun onAgreeButtonClick()
     }
 }

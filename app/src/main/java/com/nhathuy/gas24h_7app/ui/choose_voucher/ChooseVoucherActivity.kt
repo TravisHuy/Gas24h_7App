@@ -1,15 +1,20 @@
 package com.nhathuy.gas24h_7app.ui.choose_voucher
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
@@ -23,6 +28,8 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
 
     private lateinit var binding:ActivityChooseVoucherBinding
     private lateinit var adapter: ChooseVoucherAdapter
+
+    private var hasSelectedProducts: Boolean = false
 
     @Inject
     lateinit var presenter: ChooseVoucherPresenter
@@ -41,19 +48,45 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
 
         adapter = ChooseVoucherAdapter(this,
             onItemChecked = { voucherId,isChecked ->
-                presenter.updateItemSelection(voucherId,isChecked)
+                if (hasSelectedProducts) {
+                    presenter.updateItemSelection(voucherId, isChecked)
+                } else {
+                    showNoProductSelectedToast()
+                }
         })
+        hasSelectedProducts = intent.getBooleanExtra("HAS_SELECTED_PRODUCTS", false)
+        presenter.setHasSelectedProducts(hasSelectedProducts)
 
         setupRecyclerView()
         setupSearchView()
+        setupAgreeBtn()
         presenter.loadVouchers()
+    }
+
+    private fun setupAgreeBtn() {
+        binding.btnAgree.setOnClickListener {
+            presenter.onAgreeButtonClick()
+        }
+    }
+
+    private fun showNoProductSelectedToast() {
+        val toastView = layoutInflater.inflate(R.layout.dialog_error_voucher, null)
+        val toast = Toast(applicationContext)
+        toast.view = toastView
+        toast.duration = Toast.LENGTH_SHORT
+        toast.setGravity(Gravity.CENTER, 0, 0)
+        toast.show()
     }
 
     private fun setupSearchView() {
         binding.btnInputApply.setOnClickListener {
-            val searchQuery = binding.edInputSearch.text.toString().trim()
-            presenter.searchAndSelectFirstVoucher(searchQuery)
-            hideKeyboard()
+            if (hasSelectedProducts) {
+                val searchQuery = binding.edInputSearch.text.toString().trim()
+                presenter.searchAndSelectFirstVoucher(searchQuery)
+                hideKeyboard()
+            } else {
+                showNoProductSelectedToast()
+            }
         }
         binding.edInputSearch.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -111,4 +144,17 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
             }
         }
     }
+
+    override fun finishWithResult(selectedVoucher: Voucher?) {
+        val intent = Intent()
+        selectedVoucher?.let {
+            intent.putExtra("SELECT_VOUCHER_ID", it.id)
+            intent.putExtra("SELECT_VOUCHER_CODE", it.code)
+            intent.putExtra("SELECTED_VOUCHER_DISCOUNT", it.discountValue)
+            intent.putExtra("SELECTED_VOUCHER_TYPE", it.discountType.name)
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
 }

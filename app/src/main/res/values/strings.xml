@@ -20,6 +20,10 @@
     <string name="count_product">(%d sản phẩm) : </string>
     <string name="voucher_tv_offerpercent">Giảm %.0f%% </string>
     <string name="voucher_discount_price">Giảm %s</string>
+
+    <string name="voucher_discount_prices">-%s</string>
+    <string name="voucher_discount_offerpercent">-%.0f%% </string>
+
     <string name="tv_voucher_minimum_price">Đơn tối thiểu %s</string>
     <string name="voucher_condition">Đã dùng %1$d%%, hết hạn...<font color='#1c90e8'>Điều kiện </font></string>
     <string name="title_choose_voucher">Chọn TravisHuy Voucher</string>

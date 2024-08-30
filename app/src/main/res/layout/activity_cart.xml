@@ -70,7 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="-8k"
                 android:textColor="@color/red"
                 android:textSize="16sp"
                 android:layout_marginEnd="10dp"
@@ -79,6 +78,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/chevron_right"
                 app:layout_constraintTop_toTopOf="@+id/chevron_right" />
             <TextView
+                android:id="@+id/chooseVoucherText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"

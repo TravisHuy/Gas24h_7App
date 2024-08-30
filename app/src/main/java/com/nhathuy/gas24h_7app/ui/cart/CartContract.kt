@@ -16,6 +16,7 @@ interface CartContract {
         fun showStockExceededError(productId: String, maxQuantity: Int)
         fun showCartSize(size:Int)
         fun navigateToCheckout(selectedItems: List<CartItem>, totalAmount: Double)
+        fun updateVoucherInfo(price:String)
     }
     interface Presenter{
         fun attachView(view: CartContract.View)
@@ -28,5 +29,8 @@ interface CartContract {
         fun updateAllItemsSelection(isChecked: Boolean)
         fun handleManualQuantityExceeded(productId: String, maxQuantity: Int)
         fun onBtnClicked()
+        fun hasSelectedItems(): Boolean
+        fun applyVoucher(voucherId: String)
+
     }
 }

@@ -31,4 +31,21 @@ class VoucherRepository @Inject constructor(private val db:FirebaseFirestore) {
             }
         }
     }
+    suspend fun getVoucherById(voucherId:String):Result<Voucher>{
+        return withContext(Dispatchers.IO){
+            try {
+                val document = db.collection("vouchers").document(voucherId).get().await()
+                val voucher=document.toObject(Voucher::class.java)
+                if(voucher!=null){
+                    Result.success(voucher)
+                }
+                else{
+                    Result.failure(Exception("Product not found"))
+                }
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.ui.choose_voucher
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.DiscountType
@@ -21,7 +23,7 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
     private var allVouchers: List<Voucher> = listOf()
     private var selectedVoucherId:String?=null
-
+    private var hasSelectedProducts: Boolean = false
     override fun attachView(view: ChooseVoucherContract.View) {
         this.view=view
     }
@@ -84,6 +86,7 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
         else{
             view?.updateTvDiscountPrice(null)
         }
+
     }
 
     override fun searchAndSelectFirstVoucher(query: String) {
@@ -99,5 +102,18 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
             view?.updateTvDiscountPrice(null)
         }
         view?.updateVoucherList(filteredVouchers, selectedVoucherId)
+    }
+
+    override fun setHasSelectedProducts(hasSelected: Boolean) {
+        hasSelectedProducts = hasSelected
+    }
+
+    override fun onAgreeButtonClick() {
+        val selectedVoucher = selectedVoucherId?.let {
+            voucherId -> allVouchers.find {
+                it.id == voucherId
+            }
+        }
+        view?.finishWithResult(selectedVoucher)
     }
 }
