@@ -12,12 +12,14 @@ import com.nhathuy.gas24h_7app.data.model.Cart
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderBinding
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
 
 class OrderActivity : AppCompatActivity(),OrderContract.View{
     private lateinit var binding:ActivityOrderBinding
     private lateinit var orderItemAdapter: OrderItemAdapter
-
+    private var totalAmount=0.0
+    private var voucherDiscount = 0.0
     @Inject
     lateinit var presenter: OrderPresenter
 
@@ -29,7 +31,8 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         (application as Gas24h_7Application).getGasComponent().inject(this)
 
         val selectedItems = intent.getSerializableExtra("SELECTED_ITEMS") as? ArrayList<CartItem>
-        val totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0.0)
+        totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0.0)
+        voucherDiscount = intent.getDoubleExtra("SELECTED_VOUCHER_DISCOUNT",0.0)
 
         setupToolbar()
 
@@ -38,7 +41,16 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
             layoutManager=LinearLayoutManager(this@OrderActivity)
             adapter=orderItemAdapter
         }
-        binding.orderTotalPrice.text="đ${String.format("%,.3f",totalAmount)}"
+        binding.orderTotalPrice.text=NumberFormatUtils.formatPrice(totalAmount)
+
+        val voucherType = intent.getStringExtra("SELECTED_VOUCHER_TYPE")
+
+        val discountText = when(voucherType){
+            "FIXED_AMOUNT" -> getString(R.string.voucher_discount_prices, voucherDiscount?.let { NumberFormatUtils.formatDiscount(it)  })
+            "PERCENTAGE" -> getString(R.string.voucher_discount_offerpercent, voucherDiscount)
+            else -> ""
+        }
+        binding.priceReduceOfVoucher.text= discountText
 
         presenter.attachView(this)
         selectedItems?.let {

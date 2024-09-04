@@ -15,6 +15,7 @@ interface ChooseVoucherContract {
         fun attachView(view: View)
         fun detachView()
         fun loadVouchers()
+        fun setCurrentVoucherId(voucherId: String?)
         fun searchVouchers(query:String)
         fun  updateItemSelection(voucherId:String,isChecked:Boolean)
         fun searchAndSelectFirstVoucher(query: String)

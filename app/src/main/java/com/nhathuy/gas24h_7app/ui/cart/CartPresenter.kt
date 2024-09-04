@@ -11,6 +11,7 @@ import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
+import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,6 +30,8 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
     private val selectItemIds = mutableSetOf<String>()
 
     private var appliedVoucher : Voucher? =null
+    private var currentVoucherId: String? =null
+
     override fun attachView(view: CartContract.View) {
         this.view=view
     }
@@ -172,16 +175,36 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
         coroutineScope.launch {
             val voucher = voucherRepository.getVoucherById(voucherId)
             voucher.fold(
-                onSuccess ={
-                    appliedVoucher= it
+                onSuccess ={retrievedVoucher ->
+                    appliedVoucher= retrievedVoucher
+                    currentVoucherId=retrievedVoucher.id
                     calculateTotalPrice()
-                    view?.updateVoucherInfo("-${it.discountValue}")
+                    val discountInfo = formatVoucherDiscount(retrievedVoucher)
+                    view?.updateVoucherInfo("-${discountInfo}")
                 },
                 onFailure = {
                     view?.showError("Voucher không áp dụng được cho đơn hàng này")
                 }
             )
         }
+    }
+
+    private fun formatVoucherDiscount(voucher: Voucher): String {
+        return when (voucher.discountType) {
+            DiscountType.FIXED_AMOUNT -> "${NumberFormatUtils.formatDiscount(voucher.discountValue)}"
+            DiscountType.PERCENTAGE -> "${voucher.discountValue.toInt()}%"
+        }
+    }
+
+    override fun getCurrentVoucherId(): String? {
+        return currentVoucherId
+    }
+
+    override fun removeVoucher() {
+        appliedVoucher= null
+        currentVoucherId = null
+        calculateTotalPrice()
+        view?.updateVoucherInfo(null!!)
     }
 
     private fun calculateTotalAmount(items: List<CartItem>): Double {

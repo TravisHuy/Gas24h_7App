@@ -23,6 +23,7 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
     private var allVouchers: List<Voucher> = listOf()
     private var selectedVoucherId:String?=null
+    private var currentVoucherId: String? = null
     private var hasSelectedProducts: Boolean = false
     override fun attachView(view: ChooseVoucherContract.View) {
         this.view=view
@@ -41,6 +42,7 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
                     vouchers ->
                     allVouchers=vouchers
                     view?.updateVoucherList(vouchers,selectedVoucherId)
+                    currentVoucherId?.let { updateItemSelection(it,true) }
                 },
                 onFailure = {e ->
                     view?.showError("Failed to voucher: ${e.message}")
@@ -48,6 +50,11 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
                 }
             )
         }
+    }
+
+    override fun setCurrentVoucherId(voucherId: String?) {
+        currentVoucherId=voucherId
+        selectedVoucherId=voucherId
     }
 
     override fun searchVouchers(query:String) {
@@ -59,34 +66,43 @@ class ChooseVoucherPresenter @Inject constructor(private val voucherRepository: 
     }
 
     override fun updateItemSelection(voucherId: String, isChecked: Boolean) {
-        selectedVoucherId = if (isChecked) voucherId else null
+
+        if(isChecked && voucherId != selectedVoucherId){
+            selectedVoucherId = voucherId
+        }
+        else{
+            selectedVoucherId =null
+        }
         view?.updateVoucherList(allVouchers, selectedVoucherId)
 
-        if (isChecked) {
+        if(selectedVoucherId != null){
             val selectVoucher = allVouchers.find { it.id == voucherId }
             selectVoucher?.let {
-                 when (it.discountType) {
-                    DiscountType.FIXED_AMOUNT -> {
-                        val formattedDiscount = NumberFormatUtils.formatDiscount(it.discountValue)
-                        val discountInfo =
-                            context.getString(R.string.tv_voucher_discount, formattedDiscount)
-                        view?.updateTvDiscountPrice(discountInfo)
-                    }
-
-                    DiscountType.PERCENTAGE -> {
-                        val discountInfo = context.getString(
-                            R.string.tv_voucher_discount_percent,
-                            it.discountValue
-                        )
-                        view?.updateTvDiscountPrice(discountInfo)
-                    }
-                }
+                updateDiscountInfo(it)
             }
         }
         else{
             view?.updateTvDiscountPrice(null)
         }
+    }
 
+    private fun updateDiscountInfo(voucher: Voucher) {
+        when (voucher.discountType) {
+            DiscountType.FIXED_AMOUNT -> {
+                val formattedDiscount = NumberFormatUtils.formatDiscount(voucher.discountValue)
+                val discountInfo =
+                    context.getString(R.string.tv_voucher_discount, formattedDiscount)
+                view?.updateTvDiscountPrice(discountInfo)
+            }
+
+            DiscountType.PERCENTAGE -> {
+                val discountInfo = context.getString(
+                    R.string.tv_voucher_discount_percent,
+                    voucher.discountValue
+                )
+                view?.updateTvDiscountPrice(discountInfo)
+            }
+        }
     }
 
     override fun searchAndSelectFirstVoucher(query: String) {

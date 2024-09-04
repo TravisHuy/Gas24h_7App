@@ -131,6 +131,7 @@
                     android:fontFamily="@font/roboto"
                     />
                 <TextView
+                    android:id="@+id/price_reduce_of_voucher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

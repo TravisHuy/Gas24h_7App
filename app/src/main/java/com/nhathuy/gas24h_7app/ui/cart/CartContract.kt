@@ -31,6 +31,7 @@ interface CartContract {
         fun onBtnClicked()
         fun hasSelectedItems(): Boolean
         fun applyVoucher(voucherId: String)
-
+        fun getCurrentVoucherId(): String?
+        fun removeVoucher()
     }
 }

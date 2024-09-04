@@ -59,16 +59,8 @@ class ChooseVoucherAdapter( private val context:Context,
 
                     tvVoucherCountItem.text="x${it.maxUsagePreUser}"
 
-                    voucherCheckbox.isChecked=selectedItemId==it.id
-                    voucherCheckbox.setOnCheckedChangeListener(null)
-
-                    root.setOnClickListener {
-                        selectVoucher(voucher.id)
-                    }
-
-                    voucherCheckbox.setOnClickListener {
-                        selectVoucher(voucher.id)
-                    }
+                    setupVoucherSelection(this@apply, voucher)
+                    
                     progressBar.max = it.maxUsage
                     progressBar.progress = it.currentUsage
 
@@ -79,11 +71,32 @@ class ChooseVoucherAdapter( private val context:Context,
         }
     }
 
+    private fun setupVoucherSelection(binding: VoucherItemBinding, voucher: Voucher) {
+        binding.voucherCheckbox.isChecked = selectedItemId  == voucher.id
+        binding.voucherCheckbox.setOnCheckedChangeListener(null)
+
+        val clickListener = View.OnClickListener {
+            selectVoucher(voucher.id)
+        }
+        binding.root.setOnClickListener(clickListener)
+        binding.voucherCheckbox.setOnClickListener(clickListener)
+    }
+
     private fun selectVoucher(voucherId: String) {
         val isCurrentlySelected = selectedItemId == voucherId
-        selectedItemId = if (isCurrentlySelected) null else voucherId
-        onItemChecked(voucherId, !isCurrentlySelected)
-        notifyDataSetChanged()
+        val  newSelectedItemId = if (isCurrentlySelected) null else voucherId
+
+        if(newSelectedItemId !=selectedItemId){
+            val oldSelectItemId = selectedItemId
+            selectedItemId = newSelectedItemId
+
+            oldSelectItemId?.let {
+                notifyItemChanged(vouchers.indexOfFirst { it.id == oldSelectItemId })
+            }
+            notifyItemChanged(vouchers.indexOfFirst { it.id == voucherId })
+
+            onItemChecked(voucherId, !isCurrentlySelected)
+        }
     }
 
     override fun getItemCount(): Int =vouchers.size

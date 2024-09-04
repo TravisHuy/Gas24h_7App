@@ -30,7 +30,7 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
     private lateinit var adapter: ChooseVoucherAdapter
 
     private var hasSelectedProducts: Boolean = false
-
+    private var currentVoucherId: String? = null
     @Inject
     lateinit var presenter: ChooseVoucherPresenter
 
@@ -46,6 +46,7 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
+
         adapter = ChooseVoucherAdapter(this,
             onItemChecked = { voucherId,isChecked ->
                 if (hasSelectedProducts) {
@@ -56,6 +57,9 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
         })
         hasSelectedProducts = intent.getBooleanExtra("HAS_SELECTED_PRODUCTS", false)
         presenter.setHasSelectedProducts(hasSelectedProducts)
+        currentVoucherId = intent.getStringExtra("CURRENT_VOUCHER_ID")
+        presenter.setCurrentVoucherId(currentVoucherId)
+
 
         setupRecyclerView()
         setupSearchView()

@@ -78,39 +78,36 @@ class CartActivity : AppCompatActivity(),CartContract.View {
 
     private fun setupVoucherSection() {
         binding.chooseVoucherText.setOnClickListener {
-            val intent = Intent(this,ChooseVoucherActivity::class.java)
-            intent.putExtra("HAS_SELECTED_PRODUCTS", presenter.hasSelectedItems())
-            startActivityForResult(intent,CHOOSE_VOUCHER_REQUEST_CODE)
+            navigateToChooseVoucher()
+        }
+        binding.priceReduceVoucher.setOnClickListener {
+            navigateToChooseVoucher()
         }
     }
+
+    private fun navigateToChooseVoucher() {
+        val intent = Intent(this,ChooseVoucherActivity::class.java)
+        intent.putExtra("HAS_SELECTED_PRODUCTS", presenter.hasSelectedItems())
+        intent.putExtra("CURRENT_VOUCHER_ID", presenter.getCurrentVoucherId())
+        startActivityForResult(intent,CHOOSE_VOUCHER_REQUEST_CODE)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CHOOSE_VOUCHER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val voucherId  =data?.getStringExtra("SELECT_VOUCHER_ID")
-            val voucherCode = data?.getStringExtra("SELECTED_VOUCHER_CODE")
-            val voucherDiscount = data?.getDoubleExtra("SELECTED_VOUCHER_DISCOUNT", 0.0)
-            val voucherType = data?.getStringExtra("SELECTED_VOUCHER_TYPE")
 
-            // Update UI to show selected voucher
-            updateVoucherUI(voucherCode, voucherDiscount, voucherType)
+//            // Update UI to show selected voucher
             voucherId?.let {
                 presenter.applyVoucher(it)
+            } ?: run {
+                presenter.removeVoucher()
             }
 
-
         }
     }
 
-    private fun updateVoucherUI(code: String?, discount: Double?, type: String?) {
-        binding.chooseVoucherText.visibility = View.GONE
-        binding.priceReduceVoucher.visibility=View.VISIBLE
-        val discountText = when(type){
-            "FIXED_AMOUNT" -> getString(R.string.voucher_discount_prices, discount?.let { NumberFormatUtils.formatDiscount(it)  })
-            "PERCENTAGE" -> getString(R.string.voucher_discount_offerpercent, discount)
-            else -> ""
-        }
-        binding.priceReduceVoucher.text = discountText
-    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
@@ -138,6 +135,7 @@ class CartActivity : AppCompatActivity(),CartContract.View {
     }
 
     override fun updateVoucherInfo(voucherDiscount: String) {
+
         binding.priceReduceVoucher.apply {
             text = voucherDiscount
             visibility = if (voucherDiscount != null) View.VISIBLE else View.GONE
