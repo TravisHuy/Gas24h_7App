@@ -42,13 +42,12 @@
                         vouchers ->
                         allVouchers=vouchers
                         selectedVoucherId=currentVoucherId
-                        view?.updateVoucherList(vouchers,currentVoucherId)
-                        currentVoucherId?.let { updateItemSelection(it,true) }
+                        view?.updateVoucherList(vouchers,selectedVoucherId)
                         Log.d("ChooseVoucherPresenter",currentVoucherId.toString())
                     },
                     onFailure = {e ->
                         view?.showError("Failed to voucher: ${e.message}")
-                        Log.d("ChooseActivity","${e.message}")
+                        Log.d("ChooseVoucherPresenter", "Error loading vouchers: ${e.message}")
                     }
                 )
             }

@@ -17,7 +17,9 @@ class ChooseVoucherAdapter(
     private val context: Context,
     private var vouchers: List<Voucher> = listOf(),
     private var selectedItemId: String? = null,
-    private val onItemChecked: (String, Boolean) -> Unit
+    private val onItemChecked: (String, Boolean) -> Unit,
+    private val hasSelectedProducts: Boolean,
+    private val showNoProductSelectedToast: () -> Unit
 ) : RecyclerView.Adapter<ChooseVoucherAdapter.ChooseVoucherViewHolder>() {
 
     inner class ChooseVoucherViewHolder(val binding: VoucherItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -51,8 +53,22 @@ class ChooseVoucherAdapter(
                 // Update the checkbox state
                 voucherCheckbox.isChecked = selectedItemId == voucher.id
                 // Set click listeners
-                root.setOnClickListener { selectVoucher(voucher.id) }
-                voucherCheckbox.setOnClickListener { selectVoucher(voucher.id) }
+                root.setOnClickListener {
+                    if(hasSelectedProducts){
+                        selectVoucher(voucher.id)
+                    }
+                    else{
+                        showNoProductSelectedToast()
+                    }
+                }
+                voucherCheckbox.setOnClickListener {
+                    if (hasSelectedProducts) {
+                        selectVoucher(voucher.id)
+                    } else {
+                        voucherCheckbox.isChecked = false
+                        showNoProductSelectedToast()
+                    }
+                }
 
             }
         }
@@ -71,19 +87,24 @@ class ChooseVoucherAdapter(
     override fun getItemCount(): Int = vouchers.size
 
     private fun selectVoucher(voucherId: String) {
-        val isCurrentlySelected = selectedItemId == voucherId
-        val newSelectedItemId = if (isCurrentlySelected) null else voucherId
+        if (hasSelectedProducts) {
+            val isCurrentlySelected = selectedItemId == voucherId
+            val newSelectedItemId = if (isCurrentlySelected) null else voucherId
 
-        if (newSelectedItemId != selectedItemId) {
-            val oldSelectedItemId = selectedItemId
-            selectedItemId = newSelectedItemId
+            if (newSelectedItemId != selectedItemId) {
+                val oldSelectedItemId = selectedItemId
+                selectedItemId = newSelectedItemId
 
-            oldSelectedItemId?.let {
-                notifyItemChanged(vouchers.indexOfFirst { it.id == oldSelectedItemId })
+                oldSelectedItemId?.let {
+                    notifyItemChanged(vouchers.indexOfFirst { it.id == oldSelectedItemId })
+                }
+                notifyItemChanged(vouchers.indexOfFirst { it.id == voucherId })
+
+                onItemChecked(voucherId, !isCurrentlySelected)
             }
-            notifyItemChanged(vouchers.indexOfFirst { it.id == voucherId })
-
-            onItemChecked(voucherId, !isCurrentlySelected)
+        }
+        else{
+            showNoProductSelectedToast()
         }
     }
 

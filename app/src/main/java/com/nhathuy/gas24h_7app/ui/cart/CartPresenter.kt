@@ -167,7 +167,7 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
     }
 
     override fun hasSelectedItems(): Boolean {
-       return cartItems.isNotEmpty()
+       return selectItemIds.isNotEmpty()
     }
 
 

@@ -46,21 +46,22 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
-
-        adapter = ChooseVoucherAdapter(this,
-            onItemChecked = { voucherId,isChecked ->
-                if (hasSelectedProducts) {
-                    presenter.updateItemSelection(voucherId, isChecked)
-                } else {
-                    showNoProductSelectedToast()
-                }
-        })
         hasSelectedProducts = intent.getBooleanExtra("HAS_SELECTED_PRODUCTS", false)
         currentVoucherId = intent.getStringExtra("CURRENT_VOUCHER_ID")
 
         presenter.setHasSelectedProducts(hasSelectedProducts)
         presenter.setCurrentVoucherId(currentVoucherId)
+
         presenter.loadVouchers()
+
+        adapter = ChooseVoucherAdapter(this,
+            onItemChecked = { voucherId, isChecked ->
+                presenter.updateItemSelection(voucherId, isChecked)
+            },
+            hasSelectedProducts = hasSelectedProducts,
+            showNoProductSelectedToast = ::showNoProductSelectedToast
+        )
+
 
         setupRecyclerView()
         setupSearchView()
@@ -75,9 +76,10 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
     }
 
     private fun showNoProductSelectedToast() {
+        Log.d("ChooseVoucherActivity", "Showing no product selected toast")
         val toastView = layoutInflater.inflate(R.layout.dialog_error_voucher, null)
         val toast = Toast(applicationContext)
-        toast.view = toastView
+        toast.setView(toastView)
         toast.duration = Toast.LENGTH_SHORT
         toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
