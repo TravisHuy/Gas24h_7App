@@ -38,6 +38,21 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCurrentUser(): Result<User> = withContext(Dispatchers.IO) {
+        try {
+            val userId = auth.currentUser?.uid ?: return@withContext Result.failure(Exception("User not logged in"))
+            val userDoc = db.collection("users").document(userId).get().await()
+            val user = User.formDocumentSnapshot(userDoc)
+
+            user?.let {
+                Result.success(it)
+            } ?: Result.failure(Exception("User data not found"))
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
+
     override suspend fun updateUser(user: User): Result<Unit> = withContext(Dispatchers.IO){
         try {
             val currentUser = auth.currentUser

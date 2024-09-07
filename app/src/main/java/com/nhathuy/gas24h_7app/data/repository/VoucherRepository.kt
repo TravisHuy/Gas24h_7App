@@ -48,4 +48,21 @@ class VoucherRepository @Inject constructor(private val db:FirebaseFirestore) {
             }
         }
     }
+    suspend fun markVoucherAsUsed(voucherId: String, userId: String): Result<Unit>{
+        return withContext(Dispatchers.IO){
+            try {
+                val voucherRef = db.collection("vouchers").document(voucherId)
+                db.runTransaction {
+                    transition->
+                    val voucherSnapshot = transition.get(voucherRef)
+                    val currentUsedBy = voucherSnapshot.get("userBy") as List<String> ?: listOf()
+                    transition.update(voucherRef,"userBy",currentUsedBy+userId)
+                }.await()
+                Result.success(Unit)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }

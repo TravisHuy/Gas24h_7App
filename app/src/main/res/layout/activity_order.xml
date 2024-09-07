@@ -249,6 +249,7 @@
                         android:text="Tổng tiền hàng"
                         />
                     <TextView
+                        android:id="@+id/order_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="đ26.000"
@@ -267,6 +268,7 @@
                         android:text="Tổng cộng Voucher giảm giá"
                         />
                     <TextView
+                        android:id="@+id/order_price_voucher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-đ50.000"
@@ -358,6 +360,7 @@
                 android:textSize="16sp"
                 />
             <TextView
+                android:id="@+id/total_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="đ189.00"

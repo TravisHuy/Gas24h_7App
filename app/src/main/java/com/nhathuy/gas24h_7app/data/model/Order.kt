@@ -5,7 +5,7 @@ import java.util.Date
 data class Order(
     val id:String,
     val userId:String,
-    val items:List<OrderItem>,
+    val items:List<OrderItem> = listOf(),
     val totalAmount:Double,
     val discountAmount: Double,
     val appliedVoucherId:String?,
@@ -15,11 +15,13 @@ data class Order(
     val shippingAddress: String,
     val paymentMethod: String
 ){
+    constructor() : this("", "", listOf(), 0.0, 0.0, null, OrderStatus.PENDING, Date(), Date(), "", "")
+
     fun toMap(): Map<String, Any> {
         return mapOf(
             "id" to id,
             "userId" to userId,
-            "items" to items.map { },
+            "items" to items.map { it.toMap()},
             "totalAmount" to totalAmount,
             "discountAmount" to discountAmount,
             "appliedVoucherId" to (appliedVoucherId ?: ""),

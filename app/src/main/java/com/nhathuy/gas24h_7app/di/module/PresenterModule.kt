@@ -13,6 +13,7 @@ import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailPresent
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
+import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
@@ -83,8 +84,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository,voucherRepository: VoucherRepository):OrderContract.Presenter{
-        return OrderPresenter(userRepository,productRepository,voucherRepository)
+    fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository,voucherRepository: VoucherRepository,cartRepository: CartRepository,orderRepository: OrderRepository):OrderContract.Presenter{
+        return OrderPresenter(userRepository,productRepository,voucherRepository,cartRepository, orderRepository)
     }
     @Provides
     @Singleton

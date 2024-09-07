@@ -14,6 +14,7 @@ import com.nhathuy.gas24h_7app.adapter.OrderItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Cart
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderBinding
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
 import com.nhathuy.gas24h_7app.util.Constants
@@ -48,13 +49,14 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
 
         setupToolbar()
         setupVoucherSection()
+        setupOrderSuccess()
         orderItemAdapter= OrderItemAdapter()
         binding.orderRec.apply {
             layoutManager=LinearLayoutManager(this@OrderActivity)
             adapter=orderItemAdapter
         }
-        binding.orderTotalPrice.text=NumberFormatUtils.formatPrice(totalAmount)
-
+//        binding.orderTotalPrice.text=NumberFormatUtils.formatPrice(totalAmount)
+//        binding.orderPrice.text=NumberFormatUtils.formatPrice(totalAmount)
 
         presenter.attachView(this)
         selectedItems?.let {
@@ -66,6 +68,12 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
             presenter.setInitialVoucher(voucherId, voucherDiscount, voucherDiscountType)
         }
 
+    }
+
+    private fun setupOrderSuccess() {
+        binding.btnBuy.setOnClickListener {
+            presenter.placeOrder()
+        }
     }
 
     private fun setupVoucherSection() {
@@ -108,6 +116,23 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
             visibility = if (voucherDiscount != null) View.VISIBLE else View.GONE
         }
         binding.chooseVoucherText.visibility = if (voucherDiscount != null) View.GONE else View.VISIBLE
+    }
+
+    override fun updateTotalAmount(totalAmount: Double, discountedAmount: Double) {
+        binding.orderTotalPrice.text = NumberFormatUtils.formatPrice(discountedAmount)
+        binding.orderPrice.text = NumberFormatUtils.formatPrice(totalAmount)
+        binding.orderPriceVoucher.text= "- ${NumberFormatUtils.formatPrice(totalAmount-discountedAmount)}"
+        binding.totalPrice.text = NumberFormatUtils.formatPrice(discountedAmount)
+    }
+
+    override fun showUserInfo(user: User) {
+        binding.orderNameCustomer.text=user.fullName
+        binding.orderPhonenumber.text=user.phoneNumber
+        binding.orderLocation.text=user.address
+    }
+
+    override fun showSuccess() {
+        Toast.makeText(this,"Thanh toán thành công",Toast.LENGTH_SHORT).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

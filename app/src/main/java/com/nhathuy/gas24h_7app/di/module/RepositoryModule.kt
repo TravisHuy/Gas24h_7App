@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
+import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
@@ -40,5 +41,11 @@ class RepositoryModule {
     @Singleton
     fun provideVoucherRepository(db:FirebaseFirestore): VoucherRepository {
         return VoucherRepository(db)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOrderRepository(db:FirebaseFirestore): OrderRepository {
+        return OrderRepository(db)
     }
 }
