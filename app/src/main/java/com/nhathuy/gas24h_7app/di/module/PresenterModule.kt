@@ -83,8 +83,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository):OrderContract.Presenter{
-        return OrderPresenter(userRepository,productRepository)
+    fun provideOrderPresenter(userRepository: UserRepository,productRepository: ProductRepository,voucherRepository: VoucherRepository):OrderContract.Presenter{
+        return OrderPresenter(userRepository,productRepository,voucherRepository)
     }
     @Provides
     @Singleton

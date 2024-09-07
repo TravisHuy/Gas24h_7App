@@ -1,14 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.sales_policy.SalesPolicyFragment">
+   >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_marginHorizontal="5dp"
+        android:orientation="vertical"
+        tools:context=".fragment.sales_policy.SalesPolicyFragment">
 
-</FrameLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="1. Phương thức thanh toán:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Thanh toán khi nhận hàng (COD/Cash on Delivery):"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Là cách thanh toán dễ dàng nhất, đặc biệt khi quý khách không quen với cách hình thức thanh toán trực tuyên. Ngay sau kkhi nhận được đơn hàng, TRAVIS HUY GAS sẽ xác nhận với quý khách nhận qua email, tiến hành thực hiện đơn hàng và giao hàng trong thời gian quy định , TRAVIS HUY GAS sẽ  thông báo cho khách hàng cươc phí vận chuyển" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Thanh toán khi chuyển khoản:"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Ngay sau khi nhận hàng được dơn hàng Công ty sẽ liên hệ cho khách hàng đễ xác định để xác nhận đơn hàng. Công ty sẽ cung cấp số TK để khách hàng thanh toán để khách hàng chuyển khoản, TRAVIS HUY GAS sẽ kiểm tra giao dịch thanh toán. Nếu giao dịch chưa thành công,TRAVIS HUY GAS sẽ liên lạc với quý khách để thông báo. Nếu giao dịch thành công, TRAVIS HUY GAS sẽ tiến hành thực hiện đơn ngay và giao hàng trong thời gian quy định." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="2. Chính sách giao hàng:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="TRAVIS HUY GAS luôn hướng đến việc cung cấp dịch vụ vận chuyển tốt nhất với mức phí cạnh tranh cho tát cả các đơn hàng mà quý khắc đặt với chúng tôi. Chúng tôi hỗ trợ giao hàng mà quý khách đặt với chúng tôi. Chúng tôi hỗ trợ giao hàng trên toàn quốc với chính sách giao hàng cụ thể như sau:" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Phí giao hàng tận nơi:"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="TRAVIS HUY GAS áp dụng mức phí giao hàng theo chi phí đã được ký với bên đối tác chịu trách nhiệm vận chuyển , giao nhận cho tất cả các đơn hàng được đặt thành công." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Đối với khách hàng ở các Tỉnh, Thành phố có cửa hàng của công ty, chúng tôi sẽ tiến hàng gửi giao hàng tận nơi cho khách hàng." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Thời gian giao hàng:"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="TRAVIS HUY GAS sẽ yêu cầu bên vận chuyển hàng giao hàng cho khách hàng trong thời gian thỏa thuận khi quý khách thực hiện đầy đủ các thủ tục đặt hàng. Thời gian vận chuyển hàng thực hiện đầy đủ các thử tục đặt hàng. Thời gian vận chuyển thường mất 10-15 phút trong nội thành đối với mặt hàng LPG chai." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Trong trường hợp quý khách chọn hình thức thanh toán chuyển khoản thời gian xử lý đơn hàng sẽ được tính từ khi TRAVIS HUY GAS nhận được thanh toán hoàn tất quý khách."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách xin vui lòng liên hệ với bộ phận Chăm sóc khách hàng."/>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Khi hàng được chuyển giao đến quý khách xin vui lòng hoàn tất việc thanh toán và ký xác nhận với nhan viên giao hàng trước, sau đó quý khách vui lòng kiểm tra nếu sản phẩm có bất ký lỗi hay khiếm khuyến nào. Xin quy khách vui lòng giữa lại hóa đn giao hàng để kiểm tra."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="3. Chính sách đổi trả:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Các sản phẩm tại TRAVIS HUY GAS được đổi khi: "
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Sản phẩm giao hàng hông đúng với đơn đặt hàng về chủng loại, số lượng. "
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Sản phẩm bị hư hỏng trong quá trình vận chuyển Điều khiển khi đổi trả."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Sản phẩm chưa qua sử dụng."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Khách hàng phản hồi về trình trạng sản phẩm đổi trả trong vòng 30p kể từ khi xác nhận đã nhận hàng."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="4. Chính sách bảo hành:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Quý khách có thể thực hiện bảo hành khi sử dụng dịch vụ của TRAVIS HUY GAS."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Quy trình bảo hành: Khi cần bảo hành, hỗ trợ dịch vụ, khách hàng sẽ liên hệ với các trung tâm bảo hành, hỗ trợ của chúng tôi. Các nhân viên chắm sóc khách hàng của chúng tôi sẽ  tư vấn hỗ trợ khách hàng về quy trình bảo hành, hỗ trợ dịch vụ. Khi nhận được thông tin bảo hành của dịch vụ mà khách hàng yêu cầu, bộ phận kỹ thuật của TRAVIS HUY GAS sẽ hỗ trợ khắc phục sự cố cho khách hàng trong vòng 24h."
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Chúng tôi sẽ thực hiện các bước tiếp theo để kiểm tra chất lượng dịch vụ và tiến hành bảo hành hoặc hoàn tiền theo yêu cầu của quý khách."/>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Điều kiện bảo hành:"/>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Sản phầm có phiếu/tem bảo hành đi kèm"/>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Phiếu bảo hành còn nguyên vẹn, còn thời hạn bảo hành."/>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Khách hàng có thể trực tiếp liên hệ bảo hành và khiếu nại về dịch vụ tại các địa chỉ sau của TRAVIS HUY GAS:"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:background="#FBEA50"
+            android:text="CÔNG TY CỔ PHẦN LPG TRAVIS HUY......"
+            app:fontFamily="@font/kalam_bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:background="#FBEA50"
+            android:text="Địa chỉ: 3 đường số 1, khu phố 2, phường Linh Xuân, Thủ Đức, Hồ Chí Minh"
+            app:fontFamily="@font/kalam_bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:background="#FBEA50"
+            android:text="Email: honhathuy098@gmail.com"
+            app:fontFamily="@font/kalam_bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:background="#FBEA50"
+            android:text="Điện thoại: 0349929163"
+            app:fontFamily="@font/kalam_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Thời gian phục vụ từ 8:30 đến 17:30 các ngày từ thứ Hai đến thứ Bảy, không tính Chủ Nhật và các ngày lễ Tết."/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="4. Quỳ trình giải quyết tranh chấp và khiếu nại:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Trongg trường hợp có tranh chấp khiếu nại xảy ra, chúng tôi thực hiện quy trình giải quyết như sau: "
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Bước 1: Tiếp nhận: Nhận yêu cầu giải quyết khiếu nại của thành viên (gọi là người khiếu nại), kiểm tra thông tin khiếu nại để thực hiện tiếp nhận hay từ chối."/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Bước 2: Xử lý khiếu nại: Thu thập thông tin, hình ảnh chứng cứ từ các bên liên quan."/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Bước 3: Hoàn tất khiếu nại: Xác nhận kết quá, đưa ra các hình thức xử lý đổi với từng vi phạm và tiến hành đóng khiếu nại."/>
+    </LinearLayout>
+</ScrollView>

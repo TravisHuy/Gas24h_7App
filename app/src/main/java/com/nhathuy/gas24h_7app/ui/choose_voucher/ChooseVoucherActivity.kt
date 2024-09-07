@@ -56,15 +56,16 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
                 }
         })
         hasSelectedProducts = intent.getBooleanExtra("HAS_SELECTED_PRODUCTS", false)
-        presenter.setHasSelectedProducts(hasSelectedProducts)
         currentVoucherId = intent.getStringExtra("CURRENT_VOUCHER_ID")
-        presenter.setCurrentVoucherId(currentVoucherId)
 
+        presenter.setHasSelectedProducts(hasSelectedProducts)
+        presenter.setCurrentVoucherId(currentVoucherId)
+        presenter.loadVouchers()
 
         setupRecyclerView()
         setupSearchView()
         setupAgreeBtn()
-        presenter.loadVouchers()
+
     }
 
     private fun setupAgreeBtn() {

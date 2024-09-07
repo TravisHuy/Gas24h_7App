@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.cart
 
 import com.nhathuy.gas24h_7app.data.model.CartItem
+import com.nhathuy.gas24h_7app.data.model.DiscountType
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
 
@@ -16,7 +17,7 @@ interface CartContract {
         fun showStockExceededError(productId: String, maxQuantity: Int)
         fun showCartSize(size:Int)
         fun navigateToCheckout(selectedItems: List<CartItem>, totalAmount: Double)
-        fun updateVoucherInfo(price:String)
+        fun updateVoucherInfo(price:String?)
     }
     interface Presenter{
         fun attachView(view: CartContract.View)
@@ -33,5 +34,7 @@ interface CartContract {
         fun applyVoucher(voucherId: String)
         fun getCurrentVoucherId(): String?
         fun removeVoucher()
+        fun getAppliledVoucherDiscount(): Double
+        fun getAppliledVoucherDiscountType(): DiscountType?
     }
 }

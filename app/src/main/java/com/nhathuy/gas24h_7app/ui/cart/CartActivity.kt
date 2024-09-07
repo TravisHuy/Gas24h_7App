@@ -130,11 +130,15 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         val intent= Intent(this,OrderActivity::class.java).apply {
             putExtra("SELECTED_ITEMS", ArrayList(selectedItems))
             putExtra("TOTAL_AMOUNT", totalAmount)
+
+            putExtra("VOUCHER_ID",presenter.getCurrentVoucherId())
+            putExtra("VOUCHER_DISCOUNT",presenter.getAppliledVoucherDiscount())
+            putExtra("VOUCHER_DISCOUNT_TYPE",presenter.getAppliledVoucherDiscountType())
         }
         startActivity(intent)
     }
 
-    override fun updateVoucherInfo(voucherDiscount: String) {
+    override fun updateVoucherInfo(voucherDiscount: String?) {
 
         binding.priceReduceVoucher.apply {
             text = voucherDiscount

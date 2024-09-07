@@ -204,7 +204,15 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
         appliedVoucher= null
         currentVoucherId = null
         calculateTotalPrice()
-        view?.updateVoucherInfo(null!!)
+        view?.updateVoucherInfo(null)
+    }
+
+    override fun getAppliledVoucherDiscount(): Double {
+        return appliedVoucher?.discountValue ?: 0.0
+    }
+
+    override fun getAppliledVoucherDiscountType(): DiscountType? {
+        return appliedVoucher?.discountType
     }
 
     private fun calculateTotalAmount(items: List<CartItem>): Double {

@@ -21,5 +21,6 @@ interface ChooseVoucherContract {
         fun searchAndSelectFirstVoucher(query: String)
         fun setHasSelectedProducts(hasSelected: Boolean)
         fun onAgreeButtonClick()
+
     }
 }

@@ -1,8 +1,11 @@
 package com.nhathuy.gas24h_7app.ui.order
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
@@ -12,6 +15,8 @@ import com.nhathuy.gas24h_7app.data.model.Cart
 import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderBinding
+import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
+import com.nhathuy.gas24h_7app.util.Constants
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
 
@@ -34,8 +39,15 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0.0)
         voucherDiscount = intent.getDoubleExtra("SELECTED_VOUCHER_DISCOUNT",0.0)
 
-        setupToolbar()
 
+        // Get voucher information from cart if available
+        val voucherId = intent.getStringExtra("VOUCHER_ID")
+        val voucherDiscount = intent.getDoubleExtra("VOUCHER_DISCOUNT", 0.0)
+        val voucherDiscountType = intent.getStringExtra("VOUCHER_DISCOUNT_TYPE")
+
+
+        setupToolbar()
+        setupVoucherSection()
         orderItemAdapter= OrderItemAdapter()
         binding.orderRec.apply {
             layoutManager=LinearLayoutManager(this@OrderActivity)
@@ -43,20 +55,34 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         }
         binding.orderTotalPrice.text=NumberFormatUtils.formatPrice(totalAmount)
 
-        val voucherType = intent.getStringExtra("SELECTED_VOUCHER_TYPE")
-
-        val discountText = when(voucherType){
-            "FIXED_AMOUNT" -> getString(R.string.voucher_discount_prices, voucherDiscount?.let { NumberFormatUtils.formatDiscount(it)  })
-            "PERCENTAGE" -> getString(R.string.voucher_discount_offerpercent, voucherDiscount)
-            else -> ""
-        }
-        binding.priceReduceOfVoucher.text= discountText
 
         presenter.attachView(this)
         selectedItems?.let {
             presenter.loadOrderItems(it)
         }
 
+        // Apply voucher from cart if it exists
+        if (voucherId != null) {
+            presenter.setInitialVoucher(voucherId, voucherDiscount, voucherDiscountType)
+        }
+
+    }
+
+    private fun setupVoucherSection() {
+        binding.chooseVoucherText.setOnClickListener {
+            navigateToChooseVoucher()
+        }
+        binding.priceReduceOfVoucher.setOnClickListener {
+            navigateToChooseVoucher()
+        }
+    }
+
+    private fun navigateToChooseVoucher() {
+        val intent = Intent(this, ChooseVoucherActivity::class.java)
+        intent.putExtra("HAS_SELECTED_PRODUCTS", true)
+        intent.putExtra("CURRENT_VOUCHER_ID", presenter.getCurrentVoucherId())
+        intent.putExtra("TOTAL_AMOUNT", totalAmount)
+        startActivityForResult(intent, Constants.CHOOSE_VOUCHER_REQUEST_CODE)
     }
 
     private fun setupToolbar() {
@@ -76,6 +102,14 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
+    override fun updateVoucherInfo(voucherDiscount: String?) {
+        binding.priceReduceOfVoucher.apply {
+            text= voucherDiscount
+            visibility = if (voucherDiscount != null) View.VISIBLE else View.GONE
+        }
+        binding.chooseVoucherText.visibility = if (voucherDiscount != null) View.GONE else View.VISIBLE
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             android.R.id.home -> {
@@ -83,6 +117,23 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
                 true
             }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.CHOOSE_VOUCHER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val voucherId  =data?.getStringExtra("SELECT_VOUCHER_ID")
+            val voucherCode = data?.getStringExtra("SELECT_VOUCHER_CODE")
+            val voucherDiscount = data?.getDoubleExtra("SELECTED_VOUCHER_DISCOUNT", 0.0) ?: 0.0
+            val voucherType = data?.getStringExtra("SELECTED_VOUCHER_TYPE")
+//            // Update UI to show selected voucher
+            voucherId?.let {
+                presenter.applyVoucher(it, voucherDiscount, voucherType)
+            } ?: run {
+                presenter.removeVoucher()
+            }
+
         }
     }
 }
