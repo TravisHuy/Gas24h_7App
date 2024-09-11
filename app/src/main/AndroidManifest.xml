@@ -41,7 +41,9 @@
             android:exported="false" />
         <activity
             android:name=".admin.voucher.detail_product.VoucherDetailProductActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".admin.voucher.all_product.VoucherAllProductActivity"
             android:exported="false">
@@ -55,7 +57,9 @@
             android:exported="false" />
         <activity
             android:name=".admin.AdminActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />

@@ -16,7 +16,9 @@ import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderBinding
+import com.nhathuy.gas24h_7app.fragment.sales_policy.SalesPolicyFragment
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.util.Constants
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
@@ -68,6 +70,10 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
             presenter.setInitialVoucher(voucherId, voucherDiscount, voucherDiscountType)
         }
 
+        binding.linearTermsOfUse.setOnClickListener {
+            navigateSalesPolicy()
+        }
+
     }
 
     private fun setupOrderSuccess() {
@@ -89,6 +95,7 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         val intent = Intent(this, ChooseVoucherActivity::class.java)
         intent.putExtra("HAS_SELECTED_PRODUCTS", true)
         intent.putExtra("CURRENT_VOUCHER_ID", presenter.getCurrentVoucherId())
+        intent.putExtra("CURRENT_USER_ID", presenter.getCurrentUserId())
         intent.putExtra("TOTAL_AMOUNT", totalAmount)
         startActivityForResult(intent, Constants.CHOOSE_VOUCHER_REQUEST_CODE)
     }
@@ -135,6 +142,19 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         Toast.makeText(this,"Thanh toán thành công",Toast.LENGTH_SHORT).show()
     }
 
+    override fun showRemainingVoucherUsages(remainingUsages: Int) {
+        Toast.makeText(this, "Bạn còn $remainingUsages lần sử dụng voucher này", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateHome() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    override fun navigateSalesPolicy() {
+        navigateToSalesPolicyFragment()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             android.R.id.home -> {
@@ -144,7 +164,13 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
+    private fun navigateToSalesPolicyFragment() {
+        val fragment = SalesPolicyFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.CHOOSE_VOUCHER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {

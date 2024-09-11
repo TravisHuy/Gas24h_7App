@@ -1,66 +1,116 @@
 package com.nhathuy.gas24h_7app.data.repository
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.Voucher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Date
 import javax.inject.Inject
 
-class VoucherRepository @Inject constructor(private val db:FirebaseFirestore) {
-    suspend fun createVoucher(voucher: Voucher):Result<Unit>{
+class VoucherRepository @Inject constructor(private val db: FirebaseFirestore) {
+    suspend fun createVoucher(voucher: Voucher): Result<Unit> {
         return try {
             db.collection("vouchers").document(voucher.id).set(voucher.toMap()).await()
             Result.success(Unit)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
-    suspend fun getAllVouchers() : Result<List<Voucher>> {
-        return withContext(Dispatchers.IO){
+
+    suspend fun getAllVouchers(): Result<List<Voucher>> {
+        return withContext(Dispatchers.IO) {
             try {
-                val query=db.collection("vouchers").get().await()
-                val allVoucher=query.documents.mapNotNull {
+                val query = db.collection("vouchers").get().await()
+                val allVoucher = query.documents.mapNotNull {
                     it.toObject(Voucher::class.java)
                 }
                 Result.success(allVoucher)
-            }
-            catch (e:Exception){
+            } catch (e: Exception) {
                 Result.failure(e)
             }
         }
     }
-    suspend fun getVoucherById(voucherId:String):Result<Voucher>{
-        return withContext(Dispatchers.IO){
+
+    suspend fun getVoucherById(voucherId: String): Result<Voucher> {
+        return withContext(Dispatchers.IO) {
             try {
                 val document = db.collection("vouchers").document(voucherId).get().await()
-                val voucher=document.toObject(Voucher::class.java)
-                if(voucher!=null){
+//                val voucher = document.toObject(Voucher::class.java)?.copy(
+//                    isForAllProducts = document.getBoolean("isForAllProducts") ?: false,
+//                    applicableProductIds = document.get("applicableProductIds") as? List<String>
+//                        ?: listOf()
+//                )
+
+                val voucher = document.toObject(Voucher::class.java)
+
+                if (voucher != null) {
                     Result.success(voucher)
-                }
-                else{
+                } else {
                     Result.failure(Exception("Product not found"))
                 }
-            }
-            catch (e:Exception){
+            } catch (e: Exception) {
                 Result.failure(e)
             }
         }
     }
-    suspend fun markVoucherAsUsed(voucherId: String, userId: String): Result<Unit>{
-        return withContext(Dispatchers.IO){
+
+    suspend fun updateVoucherUsage(
+        voucherId: String,
+        userId: String
+    ): Result<Int> {
+        return withContext(Dispatchers.IO) {
             try {
-                val voucherRef = db.collection("vouchers").document(voucherId)
-                db.runTransaction {
-                    transition->
-                    val voucherSnapshot = transition.get(voucherRef)
-                    val currentUsedBy = voucherSnapshot.get("userBy") as List<String> ?: listOf()
-                    transition.update(voucherRef,"userBy",currentUsedBy+userId)
+                var remainingUsages = 0
+                db.runTransaction { transaction ->
+                    val voucherRef = db.collection("vouchers").document(voucherId)
+                    val voucherSnapshot = transaction.get(voucherRef)
+                    val voucher = voucherSnapshot.toObject(Voucher::class.java)
+                        ?: throw Exception("Voucher not found")
+
+                    if (!voucher.isValidForUser(userId)) {
+                        throw Exception("Voucher is not valid for this user")
+                    }
+
+                    val updatedUserUsages = voucher.userUsages.toMutableMap()
+                    val userUsageCount = updatedUserUsages[userId] ?: 0
+                    updatedUserUsages[userId] = userUsageCount +1
+
+                    val newCurrentUsage = voucher.currentUsage
+
+                    if (newCurrentUsage > voucher.maxUsage) {
+                        throw Exception("Voucher usage limit exceeded")
+                    }
+
+                    transaction.update(
+                        voucherRef, mapOf(
+                            "currentUsage" to newCurrentUsage,
+                            "userUsages" to updatedUserUsages
+                        )
+                    )
+
+                    remainingUsages = (voucher.maxUsage - newCurrentUsage).coerceAtLeast(0)
                 }.await()
-                Result.success(Unit)
+
+                Result.success(remainingUsages)
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-            catch (e:Exception){
+        }
+    }
+
+
+    suspend fun getApplicableVouchersForProducts(productIds: List<String>): Result<List<Voucher>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val allVoucher = getAllVouchers().getOrThrow()
+                val applicableVouchers = allVoucher.filter { voucher ->
+                    voucher.isApplicableToProducts(productIds) && voucher.isActive &&
+                            voucher.currentUsage < voucher.maxUsage && Date() in voucher.startDate..voucher.endDate
+                }
+                Result.success(applicableVouchers)
+            } catch (e: Exception) {
                 Result.failure(e)
             }
         }

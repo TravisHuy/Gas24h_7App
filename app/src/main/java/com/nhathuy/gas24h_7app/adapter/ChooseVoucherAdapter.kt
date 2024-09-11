@@ -19,7 +19,8 @@ class ChooseVoucherAdapter(
     private var selectedItemId: String? = null,
     private val onItemChecked: (String, Boolean) -> Unit,
     private val hasSelectedProducts: Boolean,
-    private val showNoProductSelectedToast: () -> Unit
+    private val showNoProductSelectedToast: () -> Unit,
+    private val currentUserId: String?
 ) : RecyclerView.Adapter<ChooseVoucherAdapter.ChooseVoucherViewHolder>() {
 
     inner class ChooseVoucherViewHolder(val binding: VoucherItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -42,7 +43,9 @@ class ChooseVoucherAdapter(
                 val formattedMinOrderAmount = NumberFormatUtils.formatDiscount(voucher.minOrderAmount)
                 tvVoucherMinimumPrice.text = context.getString(R.string.tv_voucher_minimum_price, formattedMinOrderAmount)
 
-                tvVoucherCountItem.text = "x${voucher.maxUsagePreUser}"
+                val userUsageCount = voucher.userUsages[currentUserId] ?: 0
+                val remainingUsages = voucher.maxUsagePreUser - userUsageCount
+                tvVoucherCountItem.text = "x$remainingUsages"
 
                 progressBar.max = voucher.maxUsage
                 progressBar.progress = voucher.currentUsage

@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.admin.voucher.detail_product
 
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
+import com.nhathuy.gas24h_7app.data.model.ApplicableType
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.Voucher
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
@@ -39,7 +40,7 @@ class VoucherDetailPresenter @Inject constructor(private val voucherRepository: 
         if(validateVoucherInput(voucher)){
             coroutineScope.launch {
                 view?.showLoading()
-                val voucherWithSelectProducts = voucher.copy(applicableProductIds = selectedProducts.toList(), isForAllProducts = isAllSelected)
+                val voucherWithSelectProducts = voucher.copy(applicableProductIds = selectedProducts.toList(), applicableType = ApplicableType.DETAIL_PRODUCTS)
                 val result=voucherRepository.createVoucher(voucherWithSelectProducts)
                 result.fold(
                     onSuccess = {

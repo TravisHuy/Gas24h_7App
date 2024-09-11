@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.data.model.ApplicableType
 import com.nhathuy.gas24h_7app.data.model.DiscountType
 import com.nhathuy.gas24h_7app.data.model.Voucher
 import com.nhathuy.gas24h_7app.databinding.ActivityVoucherAllProductBinding
@@ -131,7 +132,7 @@ class VoucherAllProductActivity : AppCompatActivity(),VoucherAllContract.View {
             startDate = presenter.getStartDate().time,
             endDate = presenter.getEndDate().time,
             isActive = true,
-            isForAllProducts = true
+            applicableType = ApplicableType.ALL_PRODUCTS
         )
     }
 

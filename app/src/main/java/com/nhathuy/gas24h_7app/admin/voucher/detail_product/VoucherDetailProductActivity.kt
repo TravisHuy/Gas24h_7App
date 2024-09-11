@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.VoucherProductAdapter
+import com.nhathuy.gas24h_7app.data.model.ApplicableType
 import com.nhathuy.gas24h_7app.data.model.DiscountType
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.Voucher
@@ -155,7 +156,7 @@ class VoucherDetailProductActivity : AppCompatActivity(),VoucherDetailContract.V
             startDate = presenter.getStartDate().time,
             endDate = presenter.getEndDate().time,
             isActive = true,
-            isForAllProducts = true
+            applicableType = ApplicableType.DETAIL_PRODUCTS
         )
     }
     private fun setupAddProduct() {

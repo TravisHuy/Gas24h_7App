@@ -13,6 +13,9 @@ interface OrderContract {
         fun updateTotalAmount(totalAmount: Double, discountedAmount: Double)
         fun showUserInfo(user:User)
         fun showSuccess()
+        fun showRemainingVoucherUsages(remainingUsages:Int)
+        fun navigateHome()
+        fun navigateSalesPolicy()
     }
     interface Presenter{
         fun attachView(view: OrderContract.View)
@@ -21,7 +24,7 @@ interface OrderContract {
         fun setInitialVoucher(voucherId: String, discount: Double, discountType: String?)
         fun applyVoucher(voucherId: String, discount: Double, discountType: String?)
         fun getCurrentVoucherId(): String?
-
+        fun getCurrentUserId(): String?
         fun loadUserInfo()
 
         fun removeVoucher()

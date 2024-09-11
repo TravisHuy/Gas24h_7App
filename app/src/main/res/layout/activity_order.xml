@@ -306,6 +306,7 @@
                 android:layout_height="10dp"
                 android:background="#ECECEC"  />
         <LinearLayout
+            android:id="@+id/linear_terms_of_use"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -376,4 +377,8 @@
             android:background="#E33C20"
             android:text="Đặt hàng"/>
     </LinearLayout>
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

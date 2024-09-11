@@ -45,7 +45,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideOrderRepository(db:FirebaseFirestore): OrderRepository {
-        return OrderRepository(db)
+    fun provideOrderRepository(db:FirebaseFirestore,voucherRepository: VoucherRepository): OrderRepository {
+        return OrderRepository(db,voucherRepository)
     }
 }

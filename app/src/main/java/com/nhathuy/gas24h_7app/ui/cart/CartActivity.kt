@@ -89,6 +89,7 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         val intent = Intent(this,ChooseVoucherActivity::class.java)
         intent.putExtra("HAS_SELECTED_PRODUCTS", presenter.hasSelectedItems())
         intent.putExtra("CURRENT_VOUCHER_ID", presenter.getCurrentVoucherId())
+        intent.putExtra("CURRENT_USER_ID", presenter.getCurrentUserId())
         startActivityForResult(intent,CHOOSE_VOUCHER_REQUEST_CODE)
     }
 

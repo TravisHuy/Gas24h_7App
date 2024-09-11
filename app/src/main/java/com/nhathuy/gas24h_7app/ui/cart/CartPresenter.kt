@@ -170,17 +170,24 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
        return selectItemIds.isNotEmpty()
     }
 
-
     override fun applyVoucher(voucherId: String) {
         coroutineScope.launch {
             val voucher = voucherRepository.getVoucherById(voucherId)
             voucher.fold(
                 onSuccess ={retrievedVoucher ->
-                    appliedVoucher= retrievedVoucher
-                    currentVoucherId=retrievedVoucher.id
-                    calculateTotalPrice()
-                    val discountInfo = formatVoucherDiscount(retrievedVoucher)
-                    view?.updateVoucherInfo("-${discountInfo}")
+                    val selectedProductIds = selectItemIds.toList()
+
+                    Log.d("CartPresenter", "Selected products: $selectedProductIds")
+                    if(retrievedVoucher.isApplicableToProducts(selectedProductIds)){
+                        appliedVoucher= retrievedVoucher
+                        currentVoucherId=retrievedVoucher.id
+                        calculateTotalPrice()
+                        val discountInfo = formatVoucherDiscount(retrievedVoucher)
+                        view?.updateVoucherInfo("-${discountInfo}")
+                    }
+                    else{
+                        view?.showError("Voucher không áp dụng được cho các sản phẩm đã chọn")
+                    }
                 },
                 onFailure = {
                     view?.showError("Voucher không áp dụng được cho đơn hàng này")
@@ -213,6 +220,10 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
 
     override fun getAppliledVoucherDiscountType(): DiscountType? {
         return appliedVoucher?.discountType
+    }
+
+    override fun getCurrentUserId(): String? {
+        return userRepository.getCurrentUserId()
     }
 
     private fun calculateTotalAmount(items: List<CartItem>): Double {

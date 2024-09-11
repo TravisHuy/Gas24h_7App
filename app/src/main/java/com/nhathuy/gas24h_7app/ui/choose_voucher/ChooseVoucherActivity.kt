@@ -31,6 +31,7 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
 
     private var hasSelectedProducts: Boolean = false
     private var currentVoucherId: String? = null
+    private var currentUserId: String? = null
     @Inject
     lateinit var presenter: ChooseVoucherPresenter
 
@@ -48,6 +49,8 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
 
         hasSelectedProducts = intent.getBooleanExtra("HAS_SELECTED_PRODUCTS", false)
         currentVoucherId = intent.getStringExtra("CURRENT_VOUCHER_ID")
+        currentUserId= intent.getStringExtra("CURRENT_USER_ID")
+
 
         presenter.setHasSelectedProducts(hasSelectedProducts)
         presenter.setCurrentVoucherId(currentVoucherId)
@@ -59,7 +62,8 @@ class ChooseVoucherActivity : AppCompatActivity(),ChooseVoucherContract.View{
                 presenter.updateItemSelection(voucherId, isChecked)
             },
             hasSelectedProducts = hasSelectedProducts,
-            showNoProductSelectedToast = ::showNoProductSelectedToast
+            showNoProductSelectedToast = ::showNoProductSelectedToast,
+            currentUserId =currentUserId
         )
 
 

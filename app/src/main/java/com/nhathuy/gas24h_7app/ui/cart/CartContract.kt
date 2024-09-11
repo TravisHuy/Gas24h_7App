@@ -36,5 +36,7 @@ interface CartContract {
         fun removeVoucher()
         fun getAppliledVoucherDiscount(): Double
         fun getAppliledVoucherDiscountType(): DiscountType?
+
+        fun getCurrentUserId():String?
     }
 }
