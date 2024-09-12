@@ -73,9 +73,9 @@ class VoucherRepository @Inject constructor(private val db: FirebaseFirestore) {
                         throw Exception("Voucher is not valid for this user")
                     }
 
-                    val updatedUserUsages = voucher.userUsages.toMutableMap()
-                    val userUsageCount = updatedUserUsages[userId] ?: 0
-                    updatedUserUsages[userId] = userUsageCount +1
+                    val userUsages = voucher.userUsages.toMutableMap()
+                    val userUsageCount = userUsages[userId] ?: 0
+                    userUsages[userId] = userUsageCount +1
 
                     val newCurrentUsage = voucher.currentUsage
 
@@ -83,17 +83,15 @@ class VoucherRepository @Inject constructor(private val db: FirebaseFirestore) {
                         throw Exception("Voucher usage limit exceeded")
                     }
 
-                    transaction.update(
-                        voucherRef, mapOf(
-                            "currentUsage" to newCurrentUsage,
-                            "userUsages" to updatedUserUsages
-                        )
+                    transaction.update(voucherRef,
+                        "currentUsage", voucher.currentUsage + 1,
+                        "userUsages", userUsages
                     )
 
-                    remainingUsages = (voucher.maxUsage - newCurrentUsage).coerceAtLeast(0)
+                    userUsages[userId] ?: 0
                 }.await()
 
-                Result.success(remainingUsages)
+                Result.success(1)
             } catch (e: Exception) {
                 Result.failure(e)
             }

@@ -43,8 +43,8 @@ import javax.inject.Singleton
 class PresenterModule {
     @Provides
     @Singleton
-    fun provideLoginPresenter(auth: FirebaseAuth, countryRepository: CountryRepository): LoginContract.Presenter {
-        return LoginPresenter(auth, countryRepository)
+    fun provideLoginPresenter(auth: FirebaseAuth,db: FirebaseFirestore, countryRepository: CountryRepository): LoginContract.Presenter {
+        return LoginPresenter(auth,db, countryRepository)
     }
 
     @Provides

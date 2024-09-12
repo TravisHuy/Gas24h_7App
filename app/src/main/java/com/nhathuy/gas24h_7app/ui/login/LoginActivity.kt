@@ -13,6 +13,7 @@ import com.nhathuy.gas24h_7app.adapter.CountrySpinnerAdapter
 import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityLoginBinding
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
 import javax.inject.Inject
 
@@ -86,6 +87,11 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
 
     override fun navigateAdmin() {
         startActivity(Intent(this,AdminActivity::class.java))
+        finish()
+    }
+
+    override fun navigateMainActivity() {
+        startActivity(Intent(this,MainActivity::class.java))
         finish()
     }
 }

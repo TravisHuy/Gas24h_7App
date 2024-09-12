@@ -6,13 +6,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.adapter.Country
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.util.Constants.ADMIN_PHONE_NUMBER
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private val repository: CountryRepository):LoginContract.Presenter {
+class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private val db:FirebaseFirestore,private val repository: CountryRepository):LoginContract.Presenter {
 
     private  var view: LoginContract.View?=null
     private lateinit var countries:List<Country>
@@ -61,32 +62,60 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
                 view?.navigateAdmin()
                 return
             }
-
-            val options=PhoneAuthOptions.newBuilder(auth)
-                .setTimeout(60L,TimeUnit.SECONDS)
-                .setActivity(view as Activity)
-                .setPhoneNumber(fullPhoneNumber)
-                .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
-
-                    override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                        view?.hideLoading()
-                        signWithPhoneCredential(phoneAuthCredential)
-                    }
-
-                    override fun onVerificationFailed(e: FirebaseException) {
-                        view?.hideLoading()
-                        view?.showError("Verification failed: "+e.message)
-                    }
-
-                    override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                        view?.hideLoading()
-                        verificationId=id
-                        view?.navigateVerification(verificationId,fullPhoneNumber)
-                    }
-
-                }).build()
-            PhoneAuthProvider.verifyPhoneNumber(options)
+            checkPhoneNumberRegistration(fullPhoneNumber)
         }
+    }
+
+    private fun checkPhoneNumberRegistration(phoneNumber: String) {
+        db.collection("users")
+            .whereEqualTo("phoneNumber",phoneNumber)
+            .get()
+            .addOnSuccessListener {
+                documents ->
+                if(documents.isEmpty){
+                    startPhoneNumberVerification(phoneNumber)
+                }
+                else{
+                    view?.hideLoading()
+                    view?.navigateMainActivity()
+                }
+            }
+            .addOnFailureListener {
+                e->
+                view?.hideLoading()
+                view?.showError("Error checking registration : ${e.message}")
+            }
+    }
+
+    private fun startPhoneNumberVerification(phoneNumber: String) {
+        val options=PhoneAuthOptions.newBuilder(auth)
+            .setTimeout(60L,TimeUnit.SECONDS)
+            .setActivity(view as Activity)
+            .setPhoneNumber(phoneNumber)
+            .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+
+                override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
+                    view?.hideLoading()
+                    signWithPhoneCredential(phoneAuthCredential)
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    view?.hideLoading()
+                    view?.showError("Verification failed: "+e.message)
+                }
+
+                override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                    view?.hideLoading()
+                    verificationId=id
+                    view?.navigateVerification(verificationId,fullPhoneNumber)
+                }
+
+            }).build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    override fun isUserLoggedIn(): Boolean {
+        return auth.currentUser !=null
     }
 
     private fun isAdminNumber(fullPhoneNumber: String): Boolean {

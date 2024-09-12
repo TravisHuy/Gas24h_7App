@@ -10,6 +10,7 @@ interface LoginContract {
         fun showCountries(countries:List<Country>)
         fun navigateVerification(verificationId:String,phoneNumber: String)
         fun navigateAdmin()
+        fun navigateMainActivity()
     }
     interface Presenter{
         fun attachView(view: LoginContract.View)
@@ -17,5 +18,6 @@ interface LoginContract {
         fun loadCountries()
         fun onCountrySelected(country: Country)
         fun sendVerification(phoneNumber:String)
+        fun isUserLoggedIn() : Boolean
     }
 }
