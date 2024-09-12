@@ -77,21 +77,21 @@ class VoucherRepository @Inject constructor(private val db: FirebaseFirestore) {
                     val userUsageCount = userUsages[userId] ?: 0
                     userUsages[userId] = userUsageCount +1
 
-                    val newCurrentUsage = voucher.currentUsage
+                    val newCurrentUsage = voucher.currentUsage +1
 
                     if (newCurrentUsage > voucher.maxUsage) {
                         throw Exception("Voucher usage limit exceeded")
                     }
 
                     transaction.update(voucherRef,
-                        "currentUsage", voucher.currentUsage + 1,
+                        "currentUsage", newCurrentUsage,
                         "userUsages", userUsages
                     )
 
-                    userUsages[userId] ?: 0
+                    remainingUsages = voucher.maxUsagePreUser - (userUsageCount + 1)
                 }.await()
 
-                Result.success(1)
+                Result.success(remainingUsages)
             } catch (e: Exception) {
                 Result.failure(e)
             }

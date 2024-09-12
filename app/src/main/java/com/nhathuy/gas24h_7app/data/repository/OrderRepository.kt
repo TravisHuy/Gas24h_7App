@@ -13,13 +13,6 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             val orderRef = db.collection("orders").document()
             val orderId = orderRef.id
 
-            if(order.appliedVoucherId !=null){
-                val voucherResult = voucherRepository.updateVoucherUsage(order.appliedVoucherId,order.userId)
-                if(voucherResult.isFailure){
-                    throw voucherResult.exceptionOrNull() ?: Exception("Failed to update voucher usage")
-                }
-            }
-
             orderRef.set(order.copy(id = orderId).toMap()).await()
 
             Result.success(orderId)

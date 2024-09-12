@@ -33,6 +33,10 @@ class LoginActivity : AppCompatActivity(),LoginContract.View {
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
+        if (presenter.isUserLoggedIn()) {
+            navigateMainActivity()
+            return
+        }
 
         setupCountrySpinner()
         setupSubmitButton()

@@ -62,56 +62,32 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
                 view?.navigateAdmin()
                 return
             }
-            checkPhoneNumberRegistration(fullPhoneNumber)
+
+            val options=PhoneAuthOptions.newBuilder(auth)
+                .setTimeout(60L,TimeUnit.SECONDS)
+                .setActivity(view as Activity)
+                .setPhoneNumber(fullPhoneNumber)
+                .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+
+                    override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
+                        view?.hideLoading()
+                        signWithPhoneCredential(phoneAuthCredential)
+                    }
+
+                    override fun onVerificationFailed(e: FirebaseException) {
+                        view?.hideLoading()
+                        view?.showError("Verification failed: "+e.message)
+                    }
+
+                    override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                        view?.hideLoading()
+                        verificationId=id
+                        view?.navigateVerification(verificationId,fullPhoneNumber)
+                    }
+
+                }).build()
+            PhoneAuthProvider.verifyPhoneNumber(options)
         }
-    }
-
-    private fun checkPhoneNumberRegistration(phoneNumber: String) {
-        db.collection("users")
-            .whereEqualTo("phoneNumber",phoneNumber)
-            .get()
-            .addOnSuccessListener {
-                documents ->
-                if(documents.isEmpty){
-                    startPhoneNumberVerification(phoneNumber)
-                }
-                else{
-                    view?.hideLoading()
-                    view?.navigateMainActivity()
-                }
-            }
-            .addOnFailureListener {
-                e->
-                view?.hideLoading()
-                view?.showError("Error checking registration : ${e.message}")
-            }
-    }
-
-    private fun startPhoneNumberVerification(phoneNumber: String) {
-        val options=PhoneAuthOptions.newBuilder(auth)
-            .setTimeout(60L,TimeUnit.SECONDS)
-            .setActivity(view as Activity)
-            .setPhoneNumber(phoneNumber)
-            .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
-
-                override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                    view?.hideLoading()
-                    signWithPhoneCredential(phoneAuthCredential)
-                }
-
-                override fun onVerificationFailed(e: FirebaseException) {
-                    view?.hideLoading()
-                    view?.showError("Verification failed: "+e.message)
-                }
-
-                override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                    view?.hideLoading()
-                    verificationId=id
-                    view?.navigateVerification(verificationId,fullPhoneNumber)
-                }
-
-            }).build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     override fun isUserLoggedIn(): Boolean {
