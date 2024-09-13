@@ -1,14 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.privacy_policy.PrivacyPolicyFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_marginHorizontal="5dp"
+        android:orientation="vertical"
+        tools:context=".fragment.privacy_policy.PrivacyPolicyFragment">
 
-</FrameLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="1. Mục đích và phạm vi thu nhập:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Việc thu nhập dữ liệu chủ yếu trên TRAVIS HUY GAS bao gồm điện thoại, tên đăng nhập, mật khẩu đăng nhập, địa chỉ khách hàng (thành viên). Đây là thông tin mà TRAVIS HUY GAS cần thanh viên cung cấp bắt buộc mà TRAVIS HUY GAS cần thành viên cung cấp bắt buộc khi đăng ý sử dụng dịch vụ và để TRAVIS HUY GAS liên hệ xác khi khách hàng đăng ký sử dụng dịch vụ trên website nhằm đảm bảo quyền lợi cho người tiêu dùng." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Trong quá trình giao dịch thanh toán tại TRAVIS HUY GAS, chúng tôi chỉ giữ thông tin chi tiết về đơn hàng đã thanh toán của thành viên, các thông tin về số tài khoản ngân hàng của thành viên sẽ không được lưu giữ." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Cách thành viên sẽ tự chịu trách nhiệm về bảo mật và lưu giữ mọi hành động sử dụng dịch vụ dưới tên đăng ký, mật khẩu và hộp thư điện tử của mình. Ngoài ra, thành viên có trách nhiệm thông báo kịp thời cho website TRAVIS HUY GAS về những hành vi sử dụng trái phép, lạm dụng, vi phạm bảo mật, lưu giữ tên đăng ký và mật khẩu của bên thứ ba để có biện pháp giải quyết phù hợp." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="2. Phạm vi sử dụng thông tin:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Công ty sử dụng thông tin thành viên cung cấp để:" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Cung cấp các dịch vụ đến thành viên." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Gửi hàng hóa theo địa chỉ thành viên mua cung cấp." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Gừi các thông tin quảng cáo , khuyến mại nếu thành viên chấp nhập điều khoản này trong khi đăng ký." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Gửi các thông báo về các hoạt động trao đổi thông tin giữa thành viên và TRAVIS HUY GAS." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Ngăn ngừa các hoạt động phá hủy tài khoản người dùng của thành viên hoặc các hoạt dộng giả mạo thành viên." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Liên lạc và giải quyết với thành viên trong những trường hợp đặc biệt." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Không sử dụng thông tin các nhân của thành viên ngoài mục đích xác nhận và liên hệ có liên quan đến giao dịch tại TRAVIS HUY GAS ." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Trong trường hợp có yêu cầu của pháp luật: Công ty có trách nhiệm hợp tác cung cấp thông tin các nhân thành viên khi có yêu cầu từ cơ quan tư pháp bao gồm: Viện kiểm sát , tóa án, cơ quan công an điều tra liên quan đến hành vi vi phạm pháp luât nào đó của khách hàng. Ngoài ra, không có ai có quyền xâm phạm vào thông tin cá nhân của thành viên. ." />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="3. Thời gian lưu trữ thông tin:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Dữ liệu cá nhân của thành viên sẽ được lưu trữ cho đến khi có yêu cầu hủy bỏ hoặc tự thành vien đăng và thực hiện hủy bỏ. Còn lại trong mọi trường hợp thông tin cá nhân thành viên sẽ được bảo mật trên máy chủ của TRAVIS HUY GAS." />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="4. Địa chỉ của đơn vị thu thập và quản lý thông tin cá nhân:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#FBEA50"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="CÔNG TY CỔ PHẦN LPG TRAVIS HUY......"
+            app:fontFamily="@font/kalam_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#FBEA50"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Địa chỉ: 3 đường số 1, khu phố 2, phường Linh Xuân, Thủ Đức, Hồ Chí Minh"
+            app:fontFamily="@font/kalam_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#FBEA50"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Email: honhathuy098@gmail.com"
+            app:fontFamily="@font/kalam_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#FBEA50"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="Điện thoại: 0349929163"
+            app:fontFamily="@font/kalam_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="5. Phương tiện và công cụ để người dùng tiếp cận và chỉnh sửa dữ liệu cá nhân của mình:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Thành viên có quyền tự kiểm tra, cập nhật ,điều chỉnh hoặc hủy bỏ thông tin cá nhân của mình bằng cách đăng nhập vào tài khoản và chỉnh sửa thông tin cá nhân hoặc yêu cầu TRAVIS HUY GAS thực hiện việc này." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Thành viên có quyền khiếu nại về chât lượng hàng hóa, thơi gian giao hàng đến Ban quản trị của TRAVIS HUY GAS sẽ xác nhận lại thông tin, trường hợp đúng như phản ánh cảu thành viên tùy theo mức độ, TRAVIS HUY GAS sẽ có nhứng biện pháp xử lý kịp thời" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="6. Cam kết bảo mật thông tin cá nhân khách hàng:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Thông tin cá nhân của thành viên trên TRAVIS HUY GAS được TRAVIS HUY GAS cam kết bảo mật tuyệt đối theo chính sách bảo vệ thông tin cá nhân của TRAVIS HUY GAS. Việc thu thập và sử dụng thoogn tin của mỗi thành viên chỉ được thực hiện khi có sự đồng ý của khách hàng đó trừ những trường hộp pháp luật có quy định khác." />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Không sử dụng , không chuyển giao, cung cấp hay tiết lộ cho bên thứ ba nào về thông tin cá nhân của thành viên khi không có sự cho phép đồng ý từ thành viên."/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Trong trường hơp máy chủ lưu trữ thông tin bị hacker tấn công dẫn đến mất mát dữ liệu cá nhân thành viên, TRAVIS HUY GAS sẽ có trách nhiệm thong báo vụ việc cho cơ quan chức năng có trách nhiệm thông báo vụ việc cho cơ quan chứ năng điều tra xử lý kịp thời và thông bbaos cho thành viên được biêt."/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:justificationMode="inter_word"
+            android:lineSpacingExtra="3dp"
+            android:text="- Ban quản lý TRAVIS HUY GAS yêu cầu các cá nhân khi đăng ký/ mua hàng là Thành viên , phải cung cấp đầy đủ thông tin cá nhân có liên quan như Họ và tên, địa chỉ liên lạc, email, số chứng minh nhân dân, điện thoại, số tài khoản, số thẻ thanh toán..., và chịu trách nhiệm về tính pháp lý của những thông tin trên. Ban quản lý TRAVIS HUY GAS không chịu trác nhiệm cũng như không giải quyết mọi khiếu nại có liên quan đến quyền lợi của thành viên đó nếu xét thấy tất cả thông tin cá nhân của thành viên đó cung cấp khi đăng ký ban đầu là không chính xác."/>
+    </LinearLayout>
+</ScrollView>
