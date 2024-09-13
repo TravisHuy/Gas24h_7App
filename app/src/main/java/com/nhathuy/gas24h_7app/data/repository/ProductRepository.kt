@@ -25,8 +25,22 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
 
         }
     }
-
-    suspend fun getProductsByCategory(categoryId:String,count: Int =6): Result<List<Product>>{
+    suspend fun getProductsByCategory(categoryId:String): Result<List<Product>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("products").whereEqualTo("categoryId",categoryId)
+                    .get().await()
+                val products = querySnapshot.documents.mapNotNull {
+                    it.toObject(Product::class.java)
+                }
+                Result.success(products)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+    suspend fun getProductsByCategoryLimitCount(categoryId:String,count: Int =6): Result<List<Product>>{
 
         return withContext(Dispatchers.IO){
             try {

@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_hotline2"
             app:destination="@id/nav_hotline" />
+        <action
+            android:id="@+id/action_nav_home_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_order"
@@ -37,6 +40,9 @@
         <action
             android:id="@+id/action_nav_order_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_order_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment
@@ -47,6 +53,9 @@
         <action
             android:id="@+id/action_nav_notification_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_notification_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_profile"
@@ -59,32 +68,55 @@
         <action
             android:id="@+id/action_nav_profile_to_nav_home2"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_profile_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_history_order"
         android:name="com.nhathuy.gas24h_7app.fragment.history_order.HistoryOrderFragment"
         android:label="History Order"
-        tools:layout="@layout/fragment_history_order" />
+        tools:layout="@layout/fragment_history_order" >
+        <action
+            android:id="@+id/action_nav_history_order_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_access_record"
         android:name="com.nhathuy.gas24h_7app.fragment.access_record.AccessRecordFragment"
         android:label="Access Record"
-        tools:layout="@layout/fragment_access_record" />
+        tools:layout="@layout/fragment_access_record" >
+        <action
+            android:id="@+id/action_nav_access_record_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_company_information"
         android:name="com.nhathuy.gas24h_7app.fragment.company_information.CompanyInformationFragment"
         android:label="Company Information"
-        tools:layout="@layout/fragment_company_information" />
+        tools:layout="@layout/fragment_company_information" >
+        <action
+            android:id="@+id/action_nav_company_information_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_delete_account"
         android:name="com.nhathuy.gas24h_7app.fragment.delete.DeleteAccountFragment"
         android:label="Delete Account"
-        tools:layout="@layout/fragment_delete_account" />
+        tools:layout="@layout/fragment_delete_account" >
+        <action
+            android:id="@+id/action_nav_delete_account_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_feedback"
         android:name="com.nhathuy.gas24h_7app.fragment.feedback.FeedBackFragment"
         android:label="Feed Back"
-        tools:layout="@layout/fragment_feed_back" />
+        tools:layout="@layout/fragment_feed_back" >
+        <action
+            android:id="@+id/action_nav_feedback_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_hotline"
         android:name="com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment"
@@ -93,36 +125,64 @@
         <action
             android:id="@+id/action_nav_hotline_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_hotline_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_logout"
         android:name="com.nhathuy.gas24h_7app.fragment.logout.LogoutFragment"
         android:label="Logout"
-        tools:layout="@layout/fragment_logout" />
+        tools:layout="@layout/fragment_logout" >
+        <action
+            android:id="@+id/action_nav_logout_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_privacy_policy"
         android:name="com.nhathuy.gas24h_7app.fragment.privacy_policy.PrivacyPolicyFragment"
         android:label="Privacy Policy"
-        tools:layout="@layout/fragment_privacy_policy" />
+        tools:layout="@layout/fragment_privacy_policy" >
+        <action
+            android:id="@+id/action_nav_privacy_policy_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_promotion"
         android:name="com.nhathuy.gas24h_7app.fragment.promotion.PromotionFragment"
         android:label="Promotion"
-        tools:layout="@layout/fragment_promotion" />
+        tools:layout="@layout/fragment_promotion" >
+        <action
+            android:id="@+id/action_nav_promotion_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_sale_policy"
         android:name="com.nhathuy.gas24h_7app.fragment.sales_policy.SalesPolicyFragment"
         android:label="Sales Policy"
-        tools:layout="@layout/fragment_sales_policy" />
+        tools:layout="@layout/fragment_sales_policy" >
+        <action
+            android:id="@+id/action_nav_sale_policy_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/nav_setting"
         android:name="com.nhathuy.gas24h_7app.fragment.setting.SettingFragment"
         android:label="Setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_nav_setting_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/productListCategoryFragment"
         android:name="com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment"
         android:label="fragment_product_list_category"
         tools:layout="@layout/fragment_product_list_category" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.nhathuy.gas24h_7app.ui.main.MainActivity"
+        android:label="app_bar_main"
+        tools:layout="@layout/app_bar_main" />
 
 </navigation>

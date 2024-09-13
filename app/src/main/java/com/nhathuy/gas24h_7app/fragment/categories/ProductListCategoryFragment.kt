@@ -78,7 +78,17 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
             }
 
     }
-
+    fun updateProducts(products: List<Product>) {
+        if (!::productAdapter.isInitialized) {
+            productAdapter = ProductAdapter(products, this)
+            binding.recyclerViewProducts.adapter = productAdapter
+        } else {
+            productAdapter.updateData(products)
+        }
+        view?.post {
+            (parentFragment as? HomeFragment)?.updateViewPagerHeight()
+        }
+    }
     override fun onResume() {
         super.onResume()
 

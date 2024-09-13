@@ -9,6 +9,7 @@ import com.nhathuy.gas24h_7app.di.module.FirebaseModule
 import com.nhathuy.gas24h_7app.di.module.GasModule
 import com.nhathuy.gas24h_7app.di.module.PresenterModule
 import com.nhathuy.gas24h_7app.di.module.RepositoryModule
+import com.nhathuy.gas24h_7app.di.module.ViewModelModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileFragment
@@ -21,12 +22,13 @@ import com.nhathuy.gas24h_7app.ui.order.OrderActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import com.nhathuy.gas24h_7app.ui.splash.SplashActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
+import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
 import dagger.Component
 import dagger.Module
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [GasModule::class,RetrofitClient::class,FirebaseModule::class,PresenterModule::class,RepositoryModule::class])
+@Component(modules = [GasModule::class,RetrofitClient::class,FirebaseModule::class,PresenterModule::class,RepositoryModule::class,ViewModelModule::class])
 interface GasComponent {
     fun inject(loginActivity: LoginActivity)
     fun inject(verifyActivity: VerificationActivity)
@@ -45,4 +47,5 @@ interface GasComponent {
     fun inject(voucherAllProductActivity: VoucherAllProductActivity)
     fun inject(voucherDetailProductActivity: VoucherDetailProductActivity)
     fun inject(chooseVoucherActivity: ChooseVoucherActivity)
+    fun viewModelFactory(): ViewModelFactory
 }
