@@ -1,14 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="20dp"
+    android:orientation="vertical"
     tools:context=".fragment.company_information.CompanyInformationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="Tên công ty:"
+        android:fontFamily="@font/kalam_bold"
+        android:textColor="#051777" />
 
-</FrameLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="công ty cổ phần LPG TRAVIS HUY"
+        android:fontFamily="@font/roboto"
+        android:textSize="15sp"
+        android:textColor="#051777"
+        android:layout_marginTop="5dp"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="(TRAVIS HUY LPG join stock company)"
+        android:fontFamily="@font/roboto"
+        android:textSize="15sp"
+        android:textColor="#051777"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ trụ sở chính:"
+        android:fontFamily="@font/kalam_bold"
+        android:layout_marginTop="10dp"
+        android:textColor="#051777"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#051777"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:text="03 đường số 1, phường linh xuân, Tp.thủ đức , hồ chí minh"
+        android:fontFamily="@font/roboto"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#051777"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/kalam_bold"
+        android:text="Điện thoại:" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#051777"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/roboto"
+        android:text="0349929163"
+        android:textSize="15sp"
+        android:textAllCaps="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#051777"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/kalam_bold"
+        android:text="Email:" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#051777"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:fontFamily="@font/roboto"
+        android:text="honhathuy098@gmail.com"
+         />
+</LinearLayout>
