@@ -31,9 +31,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.internal.ViewUtils.dpToPx
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
+import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
@@ -41,22 +43,26 @@ import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
 
-class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
+class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
 
-    private lateinit var binding:ActivityDetailProductBinding
+    private lateinit var binding: ActivityDetailProductBinding
     private var isDescriptionExpanded = false
 
     private lateinit var currentProduct: Product
-    private lateinit var cartBadge:BadgeDrawable
+    private lateinit var cartBadge: BadgeDrawable
 
 
     private lateinit var bottomSheetDialog: BottomSheetDialog
+
     @Inject
     lateinit var presenter: DetailProductPresenter
+
+    private lateinit var adapter: ProductAdapter
+
     @com.google.android.material.badge.ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityDetailProductBinding.inflate(layoutInflater)
+        binding = ActivityDetailProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Inject dependencies and attach the presenter to the view
@@ -64,12 +70,12 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         presenter.attachView(this)
 
         //Inject dependencies and attach the presenter to the view
-        val productId = intent.getStringExtra("PRODUCT_ID")?:""
-        val categoryId = intent.getStringExtra("CATEGORY_ID")?:""
+        val productId = intent.getStringExtra("PRODUCT_ID") ?: ""
+        val categoryId = intent.getStringExtra("CATEGORY_ID") ?: ""
 
         // Load product details, suggestions , cartItem count
         presenter.loadProductDetails(productId)
-        presenter.loadSuggestProducts(categoryId)
+        presenter.loadSuggestProducts(productId)
         presenter.loadCartItemCount()
 
         //set up UI components
@@ -99,21 +105,20 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     //toggle product description visibility
     private fun setupDescriptionToggle() {
         binding.layoutDescriptionProduct.seeMoreLayout.setOnClickListener {
-            isDescriptionExpanded=!isDescriptionExpanded
+            isDescriptionExpanded = !isDescriptionExpanded
             updateDescriptionVisibility()
         }
     }
 
     // Update description visibility based on the toggle state
     private fun updateDescriptionVisibility() {
-        with(binding.layoutDescriptionProduct){
-            if(isDescriptionExpanded){
-                shortDescription.visibility=View.GONE
-                fullDescription.visibility=View.VISIBLE
+        with(binding.layoutDescriptionProduct) {
+            if (isDescriptionExpanded) {
+                shortDescription.visibility = View.GONE
+                fullDescription.visibility = View.VISIBLE
                 seeMoreButton.text = "Thu gọn"
                 seeMoreIcon.setImageResource(R.drawable.ic_up)
-            }
-            else{
+            } else {
                 shortDescription.visibility = View.VISIBLE
                 fullDescription.visibility = View.GONE
                 seeMoreButton.text = "Xem thêm"
@@ -132,100 +137,67 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         )
         binding.imageSlider.setImageList(listImage)
     }
-    class SuggestProductAdapter(private val products: List<SuggestProduct>) :
-        RecyclerView.Adapter<SuggestProductAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val imageView: ImageView = view.findViewById(R.id.productImage)
-            val nameText: TextView = view.findViewById(R.id.productName)
-            val priceText: TextView = view.findViewById(R.id.productPrice)
-            val soldText: TextView = view.findViewById(R.id.productSold)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.suggest_product_item, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val product = products[position]
-            holder.imageView.setImageResource(product.image)
-            holder.nameText.text = product.name
-//            holder.priceText.text = product.price
-            holder.soldText.text = product.sold
-        }
-
-        override fun getItemCount() = products.size
-    }
-    data class SuggestProduct(
-        val image: Int,
-        val name: String,
-        val price: Double,
-        val sold: String
-    )
-
 
     // MVP View method implementations
     override fun showLoading() {
-        binding.progressBar.visibility=View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        binding.progressBar.visibility=View.GONE
+        binding.progressBar.visibility = View.GONE
     }
 
     override fun showSuccess(message: String) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showError(message:String) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+    override fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun showProductDetails(product: Product) {
-        currentProduct=product
-        binding.detailProductName.text=product.name
-        binding.layoutDescriptionProduct.shortDescription.text=product.description
-        binding.layoutDescriptionProduct.fullDescription.text=product.description
+        currentProduct = product
+        binding.detailProductName.text = product.name
+        binding.layoutDescriptionProduct.shortDescription.text = product.description
+        binding.layoutDescriptionProduct.fullDescription.text = product.description
 
 
         val originalPrice = product.price
         val discountedPrice = product.getDiscountedPrice()
 
         if (product.offerPercentage > 0.0) {
-            binding.priceOriginalProduct.paintFlags = binding.priceOriginalProduct.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.priceOriginalProduct.text  = NumberFormatUtils.formatPrice(originalPrice)
+            binding.priceOriginalProduct.paintFlags =
+                binding.priceOriginalProduct.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.priceOriginalProduct.text = NumberFormatUtils.formatPrice(originalPrice)
             binding.priceReduceProduct.text = NumberFormatUtils.formatPrice(discountedPrice)
-            binding.discountPercentage.text= String.format("-%.0f%%", product.offerPercentage)
+            binding.discountPercentage.text = String.format("-%.0f%%", product.offerPercentage)
         } else {
             binding.priceReduceProduct.text = NumberFormatUtils.formatPrice(originalPrice)
-            binding.priceOriginalProduct.visibility=View.GONE
-            binding.discountPercentage.visibility=View.GONE
+            binding.priceOriginalProduct.visibility = View.GONE
+            binding.discountPercentage.visibility = View.GONE
         }
     }
 
     override fun setupImageSlider(detailImages: List<String>) {
-        val imageList= detailImages.map {
-            imageUrl->
-            SlideModel(imageUrl,ScaleTypes.FIT)
+        val imageList = detailImages.map { imageUrl ->
+            SlideModel(imageUrl, ScaleTypes.FIT)
         }
         binding.imageSlider.setImageList(imageList)
     }
 
     override fun setupSuggestProduct(products: List<Product>) {
-//        val layoutManager = GridLayoutManager(this, 2)
-//        binding.layoutSuggestProduct.root.findViewById<RecyclerView>(R.id.suggest_rec).apply {
-//            this.layoutManager = layoutManager
-//            adapter = SuggestProductAdapter(products.map { product ->
-//                SuggestProduct(
-//                    image = R.drawable.placeholder_image, // Sử dụng hình placeholder nếu không có hình
-//                    name = product.name,
-//                    price = product.price,
-//                    sold = product.soldCount // Giả sử `soldCount` là một thuộc tính của `Product`
-//                )
-//            })
-//        }
+        val suggestRecyclerView = findViewById<RecyclerView>(R.id.suggest_rec)
+        suggestRecyclerView.layoutManager = GridLayoutManager(this,2)
+
+        val adapter = ProductAdapter(products, object : ProductClickListener {
+            override fun onProductClick(product: Product) {
+                val intent = Intent(this@DetailProductActivity, DetailProductActivity::class.java)
+                intent.putExtra("PRODUCT_ID", product.id)
+                intent.putExtra("CATEGORY_ID", product.categoryId)
+                startActivity(intent)
+            }
+        })
+        suggestRecyclerView.adapter = adapter
     }
 
     override fun backHome() {
@@ -248,24 +220,25 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
             cartBadge.isVisible = false
         }
     }
+
     @com.google.android.material.badge.ExperimentalBadgeUtils
     override fun setupCartBadge() {
-        cartBadge=BadgeDrawable.create(this)
-        cartBadge.isVisible=false
-        cartBadge.backgroundColor=ContextCompat.getColor(this,R.color.badge_background_color)
+        cartBadge = BadgeDrawable.create(this)
+        cartBadge.isVisible = false
+        cartBadge.backgroundColor = ContextCompat.getColor(this, R.color.badge_background_color)
         cartBadge.horizontalOffset = dpToPx(10)
-        cartBadge.verticalOffset= dpToPx(2)
+        cartBadge.verticalOffset = dpToPx(2)
         val cartIcon = binding.detailCartItem
-        BadgeUtils.attachBadgeDrawable(cartBadge,cartIcon,binding.detailCartItemContainer)
+        BadgeUtils.attachBadgeDrawable(cartBadge, cartIcon, binding.detailCartItemContainer)
     }
 
     override fun navigateCart() {
-        startActivity(Intent(this,CartActivity::class.java))
+        startActivity(Intent(this, CartActivity::class.java))
     }
 
     override fun navigateHotline() {
-        val intent = Intent(this,MainActivity::class.java).apply {
-            putExtra("navigate_to","hotline")
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("navigate_to", "hotline")
         }
         startActivity(intent)
         finish()
@@ -273,7 +246,7 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
 
     override fun showAddToCartDialog(product: Product) {
         bottomSheetDialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.bottomsheet_add_product_to_cart_layout,null)
+        val view = layoutInflater.inflate(R.layout.bottomsheet_add_product_to_cart_layout, null)
         bottomSheetDialog.setContentView(view)
 
         // Initialize views in the dialog
@@ -286,16 +259,15 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         val addToCartBtn = view.findViewById<Button>(R.id.btn_add_to_cart)
         val closeBtn = view.findViewById<ImageView>(R.id.close_btn)
 
-        val price = if(product.offerPercentage>0){
+        val price = if (product.offerPercentage > 0) {
             product.getDiscountedPrice()
-        }
-        else{
+        } else {
             product.price
         }
 
 
-        priceText.text=String.format("đ%.3f",price)
-        stockText.text=product.stockCount.toString()
+        priceText.text = String.format("đ%.3f", price)
+        stockText.text = product.stockCount.toString()
 
         Glide.with(this)
             .load(product.coverImageUrl)
@@ -304,34 +276,38 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
             showFullscreenImage(product.coverImageUrl)
         }
         decreaseBtn.setOnClickListener {
-            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            presenter.onDecreaseQuantity(quantity,product.stockCount)
+            var quantity = quantityEdit.text.toString().toIntOrNull() ?: 1
+            presenter.onDecreaseQuantity(quantity, product.stockCount)
         }
         increaseBtn.setOnClickListener {
-            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            presenter.onIncreaseQuantity(quantity,product.stockCount)
+            var quantity = quantityEdit.text.toString().toIntOrNull() ?: 1
+            presenter.onIncreaseQuantity(quantity, product.stockCount)
         }
-        quantityEdit.addTextChangedListener(object:TextWatcher{
+        quantityEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
+
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun afterTextChanged(e: Editable?) {
-                val inputText=e.toString()
-                val quantity=inputText.toIntOrNull()?:0
-                if(quantity>product.stockCount){
+                val inputText = e.toString()
+                val quantity = inputText.toIntOrNull() ?: 0
+                if (quantity > product.stockCount) {
                     quantityEdit.setText(product.stockCount.toString())
                     quantityEdit.setSelection(product.stockCount.toString().length)
                 }
-                presenter.onQuantityChanged(quantity.coerceAtMost(product.stockCount),product.stockCount)
+                presenter.onQuantityChanged(
+                    quantity.coerceAtMost(product.stockCount),
+                    product.stockCount
+                )
             }
 
         })
 
         addToCartBtn.setOnClickListener {
-            var quantity = quantityEdit.text.toString().toIntOrNull()?:1
-            presenter.onAddToCartClicked(product.id,quantity,price)
+            var quantity = quantityEdit.text.toString().toIntOrNull() ?: 1
+            presenter.onAddToCartClicked(product.id, quantity, price)
         }
 
         closeBtn.setOnClickListener {
@@ -355,7 +331,8 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
     }
 
     override fun showQuantityExceededDialog(currentQuantity: Int) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.error_limit_stock_count_add_cart, null)
+        val dialogView =
+            LayoutInflater.from(this).inflate(R.layout.error_limit_stock_count_add_cart, null)
         val dialogBuilder = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(false)
@@ -398,9 +375,11 @@ class DetailProductActivity : AppCompatActivity() ,DetailProductContract.View{
         }
         dialogs.show()
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

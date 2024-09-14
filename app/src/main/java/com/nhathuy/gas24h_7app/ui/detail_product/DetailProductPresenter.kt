@@ -48,9 +48,9 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
         }
     }
 
-    override fun loadSuggestProducts(categoryId: String) {
+    override fun loadSuggestProducts(currentProductId: String) {
         coroutineScope.launch {
-            val result = productRepository.getProductsByCategoryLimitCount(categoryId)
+            val result = productRepository.getProductsByCategoryLimitCount(currentProductId,6)
             result.fold(
                 onSuccess = {
                     products ->

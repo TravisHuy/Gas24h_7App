@@ -23,7 +23,7 @@
             android:scaleType="fitXY"
             />
             <TextView
-                android:id="@+id/delete_image"
+                android:id="@+id/tv_product_offerPercentage"
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:text="-37%"
@@ -32,6 +32,7 @@
                 android:padding="4dp"
                 android:background="#ECD7D7"
                 android:textColor="@color/red"
+                android:fontFamily="@font/roboto"
                 />
         </RelativeLayout>
         <LinearLayout
