@@ -39,9 +39,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnLogout.setOnClickListener {
-            userRepository.logout()
-            Toast.makeText(requireContext(),"Logout successfully",Toast.LENGTH_SHORT).show()
-        }
+//        binding.btnLogout.setOnClickListener {
+//            userRepository.logout()
+//            Toast.makeText(requireContext(),"Logout successfully",Toast.LENGTH_SHORT).show()
+//        }
     }
 }
