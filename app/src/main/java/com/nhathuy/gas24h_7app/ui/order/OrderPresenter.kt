@@ -208,7 +208,7 @@
                     }
 
                     view?.showSuccess()
-                    view?.navigateHome()
+                    view?.navigatePendingPayment()
                 } else {
                     view?.showError(result.exceptionOrNull()?.message ?: "Unknown error")
                 }

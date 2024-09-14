@@ -60,6 +60,26 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
             }
         }
     }
+
+    suspend fun getSuggestProductLimitCount(count: Int =8): Result<List<Product>>{
+
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("products").get().await()
+
+                val allProduct=querySnapshot.documents.mapNotNull {
+                    it.toObject(Product::class.java)
+                }
+
+                val randomProducts= allProduct.shuffled().take(count)
+
+                Result.success(randomProducts)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+
     suspend fun getAllProducts() : Result<List<Product>>{
         return withContext(Dispatchers.IO){
             try {

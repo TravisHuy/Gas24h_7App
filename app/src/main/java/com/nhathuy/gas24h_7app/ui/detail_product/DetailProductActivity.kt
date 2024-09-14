@@ -57,7 +57,6 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
     @Inject
     lateinit var presenter: DetailProductPresenter
 
-    private lateinit var adapter: ProductAdapter
 
     @com.google.android.material.badge.ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {

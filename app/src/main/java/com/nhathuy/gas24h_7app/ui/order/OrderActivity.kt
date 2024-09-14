@@ -19,6 +19,7 @@ import com.nhathuy.gas24h_7app.databinding.ActivityOrderBinding
 import com.nhathuy.gas24h_7app.fragment.sales_policy.SalesPolicyFragment
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
+import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentActivity
 import com.nhathuy.gas24h_7app.util.Constants
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
@@ -146,8 +147,8 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         Toast.makeText(this, "Bạn còn $remainingUsages lần sử dụng voucher này", Toast.LENGTH_SHORT).show()
     }
 
-    override fun navigateHome() {
-        startActivity(Intent(this, MainActivity::class.java))
+    override fun navigatePendingPayment() {
+        startActivity(Intent(this, PendingPaymentActivity::class.java))
         finish()
     }
 

@@ -14,7 +14,7 @@ interface OrderContract {
         fun showUserInfo(user:User)
         fun showSuccess()
         fun showRemainingVoucherUsages(remainingUsages:Int)
-        fun navigateHome()
+        fun navigatePendingPayment()
         fun navigateSalesPolicy()
     }
     interface Presenter{

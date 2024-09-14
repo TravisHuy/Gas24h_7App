@@ -73,7 +73,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
             if (isLoading) showLoading() else hideLoading()
         }
         homeSharedViewModel.error.observe(viewLifecycleOwner) { error ->
-            showError(error)
+//            showError(error)
         }
     }
 
