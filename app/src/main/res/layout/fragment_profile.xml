@@ -109,7 +109,7 @@
                 android:layout_marginStart="15dp"
                 >
                 <ImageView
-                    android:layout_width="38dp"
+                    android:layout_width="28dp"
                     android:layout_height="38dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_envelope"/>
@@ -131,15 +131,15 @@
                 android:layout_marginStart="20dp"
                 >
                 <ImageView
-                    android:layout_width="38dp"
+                    android:layout_width="28dp"
                     android:layout_height="38dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_envelope"/>
+                    android:src="@drawable/ic_envelope_paper_heart"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Chờ lấy hàng"
+                    android:text="Đã tiếp nhận"
                     android:layout_gravity="center"
                     />
             </LinearLayout>
@@ -153,10 +153,10 @@
                 android:layout_marginStart="20dp"
                 >
                 <ImageView
-                    android:layout_width="38dp"
+                    android:layout_width="28dp"
                     android:layout_height="38dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_envelope"/>
+                    android:src="@drawable/ic_truck"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -174,10 +174,10 @@
                 android:layout_marginEnd="25dp"
                 >
                 <ImageView
-                    android:layout_width="38dp"
+                    android:layout_width="28dp"
                     android:layout_height="38dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_envelope"/>
+                    android:src="@drawable/ic_star"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -199,8 +199,8 @@
             android:layout_marginTop="10dp"
             >
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:src="@drawable/ic_voucher"
                 android:layout_gravity="center"
                 />
@@ -287,8 +287,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_wallet2"
-                />
+                android:src="@drawable/ic_star"
+                app:tint="#14AC9E" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -321,7 +321,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_wallet2"
+                android:src="@drawable/ic_person"
+                app:tint="#156EB5"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -355,7 +356,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_wallet2"
+                android:src="@drawable/ic_question_circle"
+                app:tint="#14AC9E"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -391,7 +393,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_wallet2"
+                android:src="@drawable/ic_headset"
+                app:tint="@color/red"
                 />
             <TextView
                 android:layout_width="match_parent"

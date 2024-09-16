@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class VerificationPresenter @Inject constructor(private val auth:FirebaseAuth,
-                                                ):VerificationContract.Presenter{
+):VerificationContract.Presenter{
 
     private var view:VerificationContract.View? =null
     private var verificationId: String =""
@@ -108,7 +108,7 @@ class VerificationPresenter @Inject constructor(private val auth:FirebaseAuth,
     private fun signWithPhoneCredential(phoneAutCredential: PhoneAuthCredential) {
         auth.signInWithCredential(phoneAutCredential)
             .addOnCompleteListener {
-                task ->
+                    task ->
                 view?.hideLoading()
                 if(task.isSuccessful){
                     view?.navigateRegister()

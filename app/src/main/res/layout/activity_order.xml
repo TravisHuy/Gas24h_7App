@@ -337,6 +337,15 @@
                 android:background="#ECECEC"  />
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C6C6"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout_bottom"
+        />
     <LinearLayout
         android:id="@+id/linearLayout_bottom"
         android:layout_width="match_parent"
