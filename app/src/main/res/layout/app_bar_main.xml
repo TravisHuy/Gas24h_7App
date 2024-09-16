@@ -15,8 +15,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            />
+           />
+<!--            app:theme="@style/AppTheme.Toolbar"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--            />-->
 
     </com.google.android.material.appbar.AppBarLayout>
 

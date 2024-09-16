@@ -1,5 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.main
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -52,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         homeSharedViewModel = ViewModelProvider(this,viewModelFactory)[HomeSharedViewModel::class.java]
 
         setSupportActionBar(binding.appBarMain.toolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
+//        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_white)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         drawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_order, R.id.nav_hotline, R.id.nav_notification, R.id.nav_profile),
+            setOf(R.id.nav_home, R.id.nav_video, R.id.nav_hotline, R.id.nav_notification, R.id.nav_profile),
             drawerLayout
         )
 
@@ -70,6 +75,9 @@ class MainActivity : AppCompatActivity() {
                 _, destination, _ ->
             if(destination.id == R.id.nav_home){
                 homeSharedViewModel.refreshData()
+            }
+            else{
+                supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
             }
         }
 
@@ -79,6 +87,10 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+//        // Thay đổi màu chữ của tiêu đề toolbar
+//        binding.appBarMain.toolbar.setTitleTextColor(Color.WHITE)
+//        binding.appBarMain.toolbar.navigationIcon?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+//        binding.appBarMain.toolbar.overflowIcon?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)

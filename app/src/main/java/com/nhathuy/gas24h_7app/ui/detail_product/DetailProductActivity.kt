@@ -265,7 +265,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         }
 
 
-        priceText.text = String.format("đ%.3f", price)
+        priceText.text = NumberFormatUtils.formatPrice(price)
         stockText.text = product.stockCount.toString()
 
         Glide.with(this)

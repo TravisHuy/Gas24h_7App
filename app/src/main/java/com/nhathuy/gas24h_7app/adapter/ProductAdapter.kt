@@ -41,12 +41,17 @@ class ProductAdapter(private var products: List<Product>,private  val listener: 
         with(holder.binding){
             tvProductName.text=product.name
 
-            tvProductPrice.text = NumberFormatUtils.formatPrice(product.price)
+            val originalPrice = product.price
+            val discountedPrice = product.getDiscountedPrice()
+
+
             Glide.with(holder.itemView.context).load(product.coverImageUrl).into(ivProduct)
             if(product.offerPercentage>0.0){
                 tvProductOfferPercentage.text= String.format("-%.0f%%", product.offerPercentage)
+                tvProductPrice.text=NumberFormatUtils.formatPrice(discountedPrice)
             }
             else{
+                tvProductPrice.text = NumberFormatUtils.formatPrice(originalPrice)
                 tvProductOfferPercentage.visibility=View.GONE
             }
         }
