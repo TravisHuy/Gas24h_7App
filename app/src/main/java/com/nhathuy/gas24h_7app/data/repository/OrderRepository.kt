@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -33,6 +34,19 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
                 }
 
                 Result.success(orders)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+    suspend fun updateOrderStatus(orderId:String,newStatus:OrderStatus): Result<Unit>{
+        return withContext(Dispatchers.IO){
+            try {
+                db.collection("orders").document(orderId)
+                    .update("status",newStatus.name)
+                    .await()
+                Result.success(Unit)
             }
             catch (e:Exception){
                 Result.failure(e)

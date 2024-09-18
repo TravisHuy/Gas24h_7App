@@ -2,6 +2,8 @@ package com.nhathuy.gas24h_7app.admin.order.pending_confirmation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,15 +35,37 @@ class PendingConfirmationActivity : AppCompatActivity(),PendingConfirmationContr
 
         setupRec()
         setupListeners()
+        setupSearchView()
 
         presenter.attachView(this)
         presenter.loadOrders("PENDING")
 
     }
 
+    private fun setupSearchView() {
+        binding.searchEditText.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                presenter.searchOrders(s.toString())
+            }
+
+        })
+    }
+
     private fun setupListeners() {
         binding.selectAllCheckbox.setOnCheckedChangeListener { _, isChecked ->
             presenter.toggleSelectAll(isChecked)
+        }
+        binding.btnCancel.setOnClickListener {
+            presenter.clearSelection()
+        }
+        binding.btnConfirm.setOnClickListener {
+            presenter.confirmSelectOrders()
         }
     }
 
@@ -49,12 +73,27 @@ class PendingConfirmationActivity : AppCompatActivity(),PendingConfirmationContr
         adapter= PendingConfirmationAdapter(onItemChecked = {
                 orderId,isChecked ->
             presenter.updateItemSelection(orderId,isChecked)
+        }, onItemClicked = {
+            orderId ->
+
         })
         binding.recyclerViewOrder.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewOrder.adapter = adapter
     }
 
+    override fun showLoading() {
+        binding.progressBar.visibility=View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        binding.progressBar.visibility=View.GONE
+    }
+
     override fun showError(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showMessage(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
@@ -78,6 +117,10 @@ class PendingConfirmationActivity : AppCompatActivity(),PendingConfirmationContr
 
     override fun updateSelectAllCheckbox(isAllSelected: Boolean) {
         binding.selectAllCheckbox.isChecked = isAllSelected
+    }
+
+    override fun clearSelectItems() {
+        adapter.clearSelection()
     }
 
     override fun onDestroy() {

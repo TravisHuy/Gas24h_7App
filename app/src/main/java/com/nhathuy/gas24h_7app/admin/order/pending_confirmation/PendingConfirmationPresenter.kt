@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.admin.order.pending_confirmation
 
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
@@ -28,6 +29,9 @@ class PendingConfirmationPresenter @Inject constructor(private val orderReposito
 
     private var isAllSelected =false
 
+    private var filteredOrders = listOf<Order>()
+    private var productMap = mapOf<String,Product>()
+    private var userMap = mapOf<String,User>()
     override fun attachView(view: PendingConfirmationContract.View) {
         this.view=view
     }
@@ -38,49 +42,42 @@ class PendingConfirmationPresenter @Inject constructor(private val orderReposito
     }
 
     override fun loadOrders(status: String) {
+
         coroutineScope.launch {
-            val result = orderRepository.getOrders(status)
+            try {
+                view?.showLoading()
+                val result = orderRepository.getOrders(status)
+                result.fold(
+                    onSuccess = {
+                            orders ->
+                        //update allOrders
+                        allOrders=orders
+                        val productIds= orders.flatMap { it.items.map { item-> item .productId} }.distinct()
 
-            result.fold(
-                onSuccess = {
-                        orders ->
-                    //update allOrders
-                    allOrders=orders
-                    val productIds= orders.flatMap { it.items.map { item-> item .productId} }.distinct()
-                    val productMap= mutableMapOf<String, Product>()
-                    val userMap = mutableMapOf<String, User>()
-
-                    //load information product
-                    val productJobs= productIds.map {
-                            productId->
-                        async(Dispatchers.IO){
+                        productMap = productIds.mapNotNull { productId ->
                             val productResult = productRepository.getProductById(productId)
-                            productResult.getOrNull()?.let {
-                                    product -> productMap[productId] = product
-                            }
-                        }
-                    }
+                            productResult.getOrNull()?.let { productId to it }
+                        }.toMap()
 
-                    //load information user
-                    val userJobs = orders.map { order ->
-                        async(Dispatchers.IO) {
+                        userMap = orders.mapNotNull { order ->
                             val userResult = userRepository.getUser(order.userId)
-                            userResult.getOrNull()?.let { 
-                                user -> userMap[order.userId]= user
-                            }
-                        }
-                    }
+                            userResult.getOrNull()?.let { order.userId to it }
+                        }.toMap()
 
 
-                    productJobs.forEach { it.await() }
-                    userJobs.forEach { it.await() }
+                        view?.showOrders(orders,productMap,userMap)
+                    },
+                    onFailure = {e->
+                        view?.showError("Failed to load order: ${e.message}")
+                    })
+            }
+            catch (e:Exception){
+                view?.showError("Failed to load orders: ${e.message}")
+            }
+            finally {
+                view?.hideLoading()
+            }
 
-                    view?.showOrders(orders,productMap,userMap)
-                },
-                onFailure = {e->
-                    view?.showError("Failed to load order: ${e.message}")
-                }
-            )
         }
     }
 
@@ -109,6 +106,49 @@ class PendingConfirmationPresenter @Inject constructor(private val orderReposito
             selectedOrders.clear()
         }
         view?.updateOrderList(allOrders, selectedOrders)
+    }
+
+    override fun searchOrders(query: String) {
+        val lowercaseQuery = query.toLowerCase()
+        filteredOrders = allOrders.filter { 
+            order ->
+            val user = userMap[order.userId]
+            user?.fullName?.toLowerCase()?.contains(lowercaseQuery) == true
+        }
+        view?.showOrders(filteredOrders, productMap, userMap)
+    }
+
+    override fun confirmSelectOrders() {
+        val selectedOrderIds = selectedOrders.toList()
+
+        coroutineScope.launch {
+            view?.showLoading()
+           try {
+               selectedOrderIds.map {
+                       orderId -> orderRepository.updateOrderStatus(orderId,OrderStatus.PROCESSING)
+                   allOrders = allOrders.filter {
+                       it.id != orderId
+                   }
+                   selectedOrders.remove(orderId)
+               }
+               view?.showOrders(allOrders,productMap,userMap)
+               view?.updateOrderList(allOrders,selectedOrders)
+               view?.showMessage("Selected orders have been confirmed")
+           }
+           catch (e:Exception){
+               view?.showError("Failed to confirm orders: ${e.message}")
+           }
+           finally {
+               view?.hideLoading()
+           }
+        }
+    }
+
+    override fun clearSelection() {
+        selectedOrders.clear()
+        isAllSelected=false
+        view?.clearSelectItems()
+        view?.updateSelectAllCheckbox(false)
     }
 
 }
