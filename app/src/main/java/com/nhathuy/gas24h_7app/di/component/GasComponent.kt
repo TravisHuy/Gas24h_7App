@@ -20,6 +20,7 @@ import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order.OrderActivity
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentActivity
+import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import com.nhathuy.gas24h_7app.ui.splash.SplashActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
@@ -51,4 +52,5 @@ interface GasComponent {
     fun viewModelFactory(): ViewModelFactory
 
     fun inject(paymentActivity: PendingPaymentActivity)
+    fun inject(purchasedOrderActivity: PurchasedOrderActivity)
 }

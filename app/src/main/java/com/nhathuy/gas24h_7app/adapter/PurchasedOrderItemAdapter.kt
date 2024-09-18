@@ -15,10 +15,9 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
 class PurchasedOrderItemAdapter(
-    private val order: MutableList<Order> = mutableListOf(),
-    private val orderItems: MutableList<OrderItem> = mutableListOf(),
-    private val products: MutableMap<String, Product> = mutableMapOf(),
-    private val listener: OrderClickListener
+    private var orders: List<Order> = mutableListOf(),
+    private var products: Map<String, Product> = emptyMap(),
+    private val listener: OrderClickListener?
 ) : RecyclerView.Adapter<PurchasedOrderItemAdapter.PurchaseOrderViewHolder>() {
 
     inner class PurchaseOrderViewHolder(val binding: PurchasedorderItemBinding) :
@@ -28,7 +27,7 @@ class PurchasedOrderItemAdapter(
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    listener.onOrderClick(order[position])
+                    listener?.onOrderClick(orders[position])
                 }
             }
         }
@@ -48,42 +47,55 @@ class PurchasedOrderItemAdapter(
         holder: PurchasedOrderItemAdapter.PurchaseOrderViewHolder,
         position: Int
     ) {
-        val order = orderItems[position]
-        val product = products[order.productId]
+        val order = orders[position]
+        val firstItem = order.items.firstOrNull()
 
-        with(holder.binding) {
-            product?.let {
-                purchasedOrderItemName.text = it.name
-                purchasedOrderCountItem.text = "x${orderItems.size}"
+        firstItem?.let { orderItem ->
+            val product = products[orderItem.productId]
 
-                val originalPrice = it.price
-                val discountedPrice = it.getDiscountedPrice()
+            with(holder.binding) {
+                product?.let {
+                    purchasedOrderItemName.text = it.name
+                    purchasedOrderCountItem.text = "x${orderItem.quantity}"
 
-                if (it.offerPercentage > 0.0) {
-                    purchasedOrderOriginalPrice.text = NumberFormatUtils.formatPrice(originalPrice)
-                    purchasedOrderDiscountPrice.text =
-                        NumberFormatUtils.formatPrice(discountedPrice)
-                } else {
-                    purchasedOrderDiscountPrice.text = NumberFormatUtils.formatPrice(originalPrice)
-                    purchasedOrderOriginalPrice.visibility = View.GONE
+                    val originalPrice = it.price
+                    val discountedPrice = it.getDiscountedPrice()
 
+                    if (it.offerPercentage > 0.0) {
+                        purchasedOrderOriginalPrice.text = NumberFormatUtils.formatPrice(originalPrice)
+                        purchasedOrderDiscountPrice.text =
+                            NumberFormatUtils.formatPrice(discountedPrice)
+                    } else {
+                        purchasedOrderDiscountPrice.text = NumberFormatUtils.formatPrice(originalPrice)
+                        purchasedOrderOriginalPrice.visibility = View.GONE
+
+                    }
+
+                    Glide.with(holder.itemView.context).load(product.coverImageUrl)
+                        .into(purchaseOrderImage)
+                    val totalPrice =
+                        orderItem.quantity * (if (it.offerPercentage > 0) it.getDiscountedPrice() else it.price)
+
+                    purchasedOrderTotalPrice.text = NumberFormatUtils.formatPrice(totalPrice)
+
+                    purchaseCountProduct.text =
+                        holder.binding.root.context.getString(R.string.count_product, orderItem.quantity)
                 }
-
-                Glide.with(holder.itemView.context).load(product.coverImageUrl)
-                    .into(purchaseOrderImage)
-                val totalPrice =
-                    order.quantity * (if (it.offerPercentage > 0) it.getDiscountedPrice() else it.price)
-
-                purchasedOrderTotalPrice.text = NumberFormatUtils.formatPrice(totalPrice)
-
-                purchaseCountProduct.text =
-                    holder.binding.root.context.getString(R.string.count_product, order.quantity)
             }
         }
+
+
     }
 
-    override fun getItemCount(): Int = order.size
-
+    override fun getItemCount(): Int = orders.size
+    fun updateOrders(newOrders: List<Order>) {
+        orders=newOrders
+        notifyDataSetChanged()
+    }
+    fun updateProducts(newProducts: Map<String, Product>) {
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }
 
 interface OrderClickListener {

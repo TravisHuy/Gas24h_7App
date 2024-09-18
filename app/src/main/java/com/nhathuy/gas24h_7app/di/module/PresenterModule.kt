@@ -21,7 +21,6 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
-import com.nhathuy.gas24h_7app.fragment.hotline.HotlineContract
 import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherContract
@@ -34,6 +33,8 @@ import com.nhathuy.gas24h_7app.ui.order.OrderContract
 import com.nhathuy.gas24h_7app.ui.order.OrderPresenter
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentContract
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentPresenter
+import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderContract
+import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
 import dagger.Module
@@ -111,5 +112,11 @@ class PresenterModule {
     @Singleton
     fun providePendingPaymentPresenter(repository: ProductRepository,cartRepository: CartRepository,userRepository: UserRepository): PendingPaymentContract.Presenter{
         return PendingPaymentPresenter(repository,cartRepository,userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providePurchasedOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository):PurchasedOrderContract.Presenter{
+        return PurchasedOrderPresenter(orderRepository,productRepository)
     }
 }
