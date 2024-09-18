@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
+import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
@@ -53,4 +54,5 @@ interface GasComponent {
 
     fun inject(paymentActivity: PendingPaymentActivity)
     fun inject(purchasedOrderActivity: PurchasedOrderActivity)
+    fun inject(pendingConfirmationActivity: PendingConfirmationActivity)
 }

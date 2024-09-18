@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
+import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationContract
+import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
@@ -118,5 +120,11 @@ class PresenterModule {
     @Singleton
     fun providePurchasedOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository):PurchasedOrderContract.Presenter{
         return PurchasedOrderPresenter(orderRepository,productRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providePendingConfirmationOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository):PendingConfirmationContract.Presenter{
+        return PendingConfirmationPresenter(orderRepository,productRepository,userRepository)
     }
 }

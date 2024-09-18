@@ -26,7 +26,7 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
-            android:name=".ui.purchased_order.PurchasedOrderActivity"
+            android:name=".admin.order.pending_confirmation.PendingConfirmationActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,12 +34,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.purchased_order.PurchasedOrderActivity"
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".ui.pending_payment.PendingPaymentActivity"
             android:exported="false" />
         <activity
             android:name=".ui.choose_voucher.ChooseVoucherActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".ui.order.OrderActivity"
             android:exported="false" />
@@ -51,10 +57,10 @@
             android:exported="false" />
         <activity
             android:name=".admin.voucher.detail_product.VoucherDetailProductActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".admin.voucher.all_product.VoucherAllProductActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".ui.detail_product.DetailProductActivity"
             android:exported="false" />
@@ -63,7 +69,7 @@
             android:exported="false" />
         <activity
             android:name=".admin.AdminActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />
@@ -78,9 +84,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
