@@ -8,6 +8,8 @@ import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationContract
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationPresenter
+import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingContract
+import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
@@ -126,5 +128,11 @@ class PresenterModule {
     @Singleton
     fun providePendingConfirmationOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository):PendingConfirmationContract.Presenter{
         return PendingConfirmationPresenter(orderRepository,productRepository,userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideShippingOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository):ShippingContract.Presenter{
+        return ShippingPresenter(orderRepository,productRepository,userRepository)
     }
 }
