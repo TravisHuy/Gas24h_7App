@@ -43,6 +43,14 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         presenter.loadSuggestProducts()
     }
 
+    override fun showLoading() {
+        binding.progressBar.visibility=View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        binding.progressBar.visibility=View.GONE
+    }
+
     override fun showError(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }

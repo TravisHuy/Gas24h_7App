@@ -27,29 +27,39 @@ class PurchasedOrderPresenter @Inject constructor(private val orderRepository: O
 
     override fun loadOrders(status: String) {
         coroutineScope.launch {
-            val result = orderRepository.getOrders(status)
 
-            result.fold(
-                onSuccess = {
-                    orders ->
-                    val productIds= orders.flatMap { it.items.map { item-> item .productId} }.distinct()
-                    val productMap= mutableMapOf<String,Product>()
-                    val productJobs= productIds.map {
-                        productId->
-                        async(Dispatchers.IO){
-                            val productResult = productRepository.getProductById(productId)
-                            productResult.getOrNull()?.let {
-                                product -> productMap[productId] = product
+            try {
+                val result = orderRepository.getOrders(status)
+                view?.showLoading()
+                result.fold(
+                    onSuccess = {
+                            orders ->
+                        val productIds= orders.flatMap { it.items.map { item-> item .productId} }.distinct()
+                        val productMap= mutableMapOf<String,Product>()
+                        val productJobs= productIds.map {
+                                productId->
+                            async(Dispatchers.IO){
+                                val productResult = productRepository.getProductById(productId)
+                                productResult.getOrNull()?.let {
+                                        product -> productMap[productId] = product
+                                }
                             }
                         }
+                        productJobs.forEach { it.await() }
+                        view?.showOrders(orders,productMap)
+                    },
+                    onFailure = {e->
+                        view?.showError("Failed to load order: ${e.message}")
                     }
-                    productJobs.forEach { it.await() }
-                    view?.showOrders(orders,productMap)
-                },
-                onFailure = {e->
-                    view?.showError("Failed to load order: ${e.message}")
-                }
-            )
+                )
+            }
+            catch (e:Exception){
+                view?.showError("Failed to load order: ${e.message}")
+            }
+            finally {
+                view?.hideLoading()
+            }
+
         }
     }
 
