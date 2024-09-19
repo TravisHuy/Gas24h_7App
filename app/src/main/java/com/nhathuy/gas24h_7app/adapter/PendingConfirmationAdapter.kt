@@ -74,9 +74,25 @@ class PendingConfirmationAdapter(private var orders:List<Order> = emptyList(),
             val layoutManager = LinearLayoutManager(holder.itemView.context)
             orderItemsRec.layoutManager= layoutManager
 
-            val orderItemsAdapter = PurchasedProductAdapter(order.items,products)
+            val orderItemsAdapter = PurchasedProductAdapter(order.items,products){
+                toogleCheckbox(order.id)
+            }
             orderItemsRec.adapter=orderItemsAdapter
         }
+    }
+
+    private fun toogleCheckbox(orderId: String) {
+        val newSelectedItemIds = selectedItemIds.toMutableSet()
+
+        if(newSelectedItemIds.contains(orderId)){
+            newSelectedItemIds.remove(orderId)
+        }
+        else{
+            newSelectedItemIds.add(orderId)
+        }
+        selectedItemIds=newSelectedItemIds
+        onItemChecked(orderId,newSelectedItemIds.contains(orderId))
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = orders.size

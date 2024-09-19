@@ -12,11 +12,19 @@ import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
 class PurchasedProductAdapter(
     private val orderItems: List<OrderItem>,
-    private val products: Map<String, Product>
+    private val products: Map<String, Product>,
+    private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PurchasedProductAdapter.PurchasedViewHolder>() {
 
     inner class PurchasedViewHolder(val binding: PurchasedProductItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root){
+            init {
+                itemView.setOnClickListener {
+                    val orderItem = orderItems[adapterPosition]
+                    onItemClicked(orderItem.productId)
+                }
+            }
+        }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
