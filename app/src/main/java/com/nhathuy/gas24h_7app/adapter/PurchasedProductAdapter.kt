@@ -16,6 +16,7 @@ class PurchasedProductAdapter(
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PurchasedProductAdapter.PurchasedViewHolder>() {
 
+
     inner class PurchasedViewHolder(val binding: PurchasedProductItemBinding) :
         RecyclerView.ViewHolder(binding.root){
             init {
@@ -58,9 +59,14 @@ class PurchasedProductAdapter(
 
                 Glide.with(holder.itemView.context).load(product.coverImageUrl)
                     .into(productImage)
+
+
             }
+
         }
     }
 
     override fun getItemCount(): Int = orderItems.size
+
+
 }

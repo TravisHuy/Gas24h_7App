@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.ui.purchased_order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -11,7 +12,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PurchasedOrderPresenter @Inject constructor(private val orderRepository: OrderRepository,
-                                                  private  val productRepository: ProductRepository):PurchasedOrderContract.Presenter{
+                                                  private  val productRepository: ProductRepository,
+                                                  private val userRepository: UserRepository,
+):PurchasedOrderContract.Presenter{
 
     private var view:PurchasedOrderContract.View? = null
     private val job = SupervisorJob()
@@ -29,7 +32,9 @@ class PurchasedOrderPresenter @Inject constructor(private val orderRepository: O
         coroutineScope.launch {
 
             try {
-                val result = orderRepository.getOrders(status)
+                val userId= userRepository.getCurrentUserId()
+
+                val result = orderRepository.getOrdersForUser(userId!!,status)
                 view?.showLoading()
                 result.fold(
                     onSuccess = {

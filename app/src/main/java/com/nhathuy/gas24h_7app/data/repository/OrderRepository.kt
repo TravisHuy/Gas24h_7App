@@ -40,6 +40,25 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             }
         }
     }
+    suspend fun getOrdersForUser(userId:String,status:String) : Result<List<Order>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val snapshot = db.collection("orders")
+                    .whereEqualTo("userId",userId)
+                    .whereEqualTo("status",status)
+                    .get().await()
+
+                val orders = snapshot.documents.mapNotNull {
+                    it.toObject(Order::class.java)
+                }
+
+                Result.success(orders)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
     suspend fun updateOrderStatus(orderId:String,newStatus:OrderStatus): Result<Unit>{
         return withContext(Dispatchers.IO){
             try {

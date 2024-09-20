@@ -14,6 +14,7 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.OrderClickListener
 import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.adapter.PurchasedOrderItemAdapter
+import com.nhathuy.gas24h_7app.adapter.PurchasedProductAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityPurchasedOrderBinding
@@ -28,6 +29,16 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
     @Inject
     lateinit var presenter: PurchasedOrderPresenter
+
+
+    private val statusMap = mapOf(
+        "PENDING" to "Chờ xác nhận",
+        "PROCESSING" to "Đã tiếp nhận",
+        "SHIPPED" to "Đang vận chuyển",
+        "DELIVERED" to "Đã giao",
+        "CANCELLED" to "Đã hủy"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityPurchasedOrderBinding.inflate(layoutInflater)
@@ -90,13 +101,9 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
     private fun setupTabLayout() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.position){
-                    0-> presenter.loadOrders("PENDING")
-                    1 -> presenter.loadOrders("PROCESSING")
-                    2 -> presenter.loadOrders("SHIPPED")
-                    3 -> presenter.loadOrders("DELIVERED")
-                    4 -> presenter.loadOrders("CANCELLED")
-                }
+                val status = statusMap.entries.elementAt(tab?.position ?: 0).key
+                presenter.loadOrders(status)
+                (binding.purchasedRec.adapter as? PurchasedOrderItemAdapter)?.updateStatus(status)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {

@@ -20,6 +20,9 @@ class PurchasedOrderItemAdapter(
     private val listener: OrderClickListener?
 ) : RecyclerView.Adapter<PurchasedOrderItemAdapter.PurchaseOrderViewHolder>() {
 
+
+    private var currentStatus = "PENDING"
+
     inner class PurchaseOrderViewHolder(val binding: PurchasedorderItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -80,6 +83,26 @@ class PurchasedOrderItemAdapter(
 
                     purchaseCountProduct.text =
                         holder.binding.root.context.getString(R.string.count_product, orderItem.quantity)
+
+                    when (currentStatus) {
+                        "PENDING" -> btnStatus.text = "Đang xử lý"
+                        "PROCESSING" ->{
+                            btnStatus.text = "Đang tiếp nhận"
+                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                        }
+                        "SHIPPED" -> {
+                            btnStatus.text = "Đã tiếp nhận"
+                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                        }
+                        "DELIVERED" ->{
+                            btnStatus.text = "Đã giao"
+                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                        }
+                        "CANCELLED" -> btnStatus.text = "Đã hủy"
+                        else -> btnStatus.text = "Xem chi tiết"
+                    }
+
+
                 }
             }
         }
@@ -94,6 +117,10 @@ class PurchasedOrderItemAdapter(
     }
     fun updateProducts(newProducts: Map<String, Product>) {
         products = newProducts
+        notifyDataSetChanged()
+    }
+    fun updateStatus(newStatus:String){
+        currentStatus=newStatus
         notifyDataSetChanged()
     }
 }
