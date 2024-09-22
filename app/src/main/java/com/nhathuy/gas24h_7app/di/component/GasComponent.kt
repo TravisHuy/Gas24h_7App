@@ -58,4 +58,5 @@ interface GasComponent {
     fun inject(pendingConfirmationActivity: PendingConfirmationActivity)
 
     fun inject(shippingActivity: ShippingActivity)
+
 }

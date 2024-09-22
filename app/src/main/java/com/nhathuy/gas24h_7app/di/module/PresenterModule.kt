@@ -25,6 +25,8 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
+import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
+import com.nhathuy.gas24h_7app.fragment.profile.ProfilePresenter
 import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherContract
@@ -134,5 +136,11 @@ class PresenterModule {
     @Singleton
     fun provideShippingOrderPresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository):ShippingContract.Presenter{
         return ShippingPresenter(orderRepository,productRepository,userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfilePresenter(firebaseStorage: FirebaseStorage,userRepository: UserRepository):ProfileContract.Presenter{
+        return ProfilePresenter(firebaseStorage,userRepository)
     }
 }
