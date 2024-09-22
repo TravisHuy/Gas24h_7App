@@ -72,4 +72,21 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             }
         }
     }
+    suspend fun getOrderId(orderId: String) : Result<Order>{
+        return withContext(Dispatchers.IO){
+            try {
+                val snapshot= db.collection("orders").document(orderId).get().await()
+                val order = snapshot.toObject(Order::class.java)
+                if(order!=null){
+                    Result.success(order)
+                }
+                else {
+                    Result.failure(Exception("Failed to convert snapshot to Order"))
+                }
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }

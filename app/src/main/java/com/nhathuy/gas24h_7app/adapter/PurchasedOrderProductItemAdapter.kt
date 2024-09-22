@@ -10,9 +10,9 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.PurchaseorderProductItemBinding
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
-class PurchasedOrderProductItemAdapter(private val orderItems: List<OrderItem> = listOf(),
-                                       private val products: Map<String, Product> = emptyMap(),
-                                       private val onItemClicked: (String) -> Unit):RecyclerView.Adapter<PurchasedOrderProductItemAdapter.PurchasedOrderProductViewHolder>() {
+class PurchasedOrderProductItemAdapter(private var orderItems: List<OrderItem> = listOf(),
+                                       private var products: Map<String, Product> = emptyMap(),
+                                       private var onItemClicked: (String) -> Unit):RecyclerView.Adapter<PurchasedOrderProductItemAdapter.PurchasedOrderProductViewHolder>() {
 
     inner class PurchasedOrderProductViewHolder(val binding:PurchaseorderProductItemBinding):RecyclerView.ViewHolder(binding.root){
         init {
@@ -63,4 +63,10 @@ class PurchasedOrderProductItemAdapter(private val orderItems: List<OrderItem> =
     }
 
     override fun getItemCount(): Int = orderItems.size
+
+    fun updateOrderItems(newOrderItems: List<OrderItem>, newProducts: Map<String, Product>) {
+        orderItems = newOrderItems
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }

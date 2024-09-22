@@ -20,6 +20,8 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityPurchasedOrderBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
+import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationContract
 import javax.inject.Inject
 
 class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, OrderClickListener {
@@ -116,10 +118,15 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
     }
 
     override fun onOrderClick(orderId: String) {
-        Toast.makeText(this,"test",Toast.LENGTH_SHORT).show()
+        val intent = Intent(this,OrderInformationActivity::class.java)
+        intent.putExtra("ORDER_ID", orderId)
+        startActivity(intent)
     }
 
     override fun onProductClick(orderId: String, productId: String) {
-        Toast.makeText(this,"test",Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, OrderInformationActivity::class.java)
+        intent.putExtra("ORDER_ID", orderId)
+        intent.putExtra("PRODUCT_ID", productId)
+        startActivity(intent)
     }
 }

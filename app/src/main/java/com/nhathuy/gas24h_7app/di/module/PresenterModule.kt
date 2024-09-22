@@ -37,6 +37,8 @@ import com.nhathuy.gas24h_7app.ui.login.LoginContract
 import com.nhathuy.gas24h_7app.ui.login.LoginPresenter
 import com.nhathuy.gas24h_7app.ui.order.OrderContract
 import com.nhathuy.gas24h_7app.ui.order.OrderPresenter
+import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationContract
+import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationPresenter
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentContract
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentPresenter
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderContract
@@ -142,5 +144,11 @@ class PresenterModule {
     @Singleton
     fun provideProfilePresenter(firebaseStorage: FirebaseStorage,userRepository: UserRepository):ProfileContract.Presenter{
         return ProfilePresenter(firebaseStorage,userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOrderInformationPresenter(userRepository: UserRepository,orderRepository: OrderRepository,productRepository: ProductRepository):OrderInformationContract.Presenter{
+        return OrderInformationPresenter(userRepository,orderRepository,productRepository)
     }
 }

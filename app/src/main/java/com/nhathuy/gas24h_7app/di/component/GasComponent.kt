@@ -21,6 +21,7 @@ import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order.OrderActivity
+import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
@@ -58,5 +59,5 @@ interface GasComponent {
     fun inject(pendingConfirmationActivity: PendingConfirmationActivity)
 
     fun inject(shippingActivity: ShippingActivity)
-
+    fun inject(orderInformationActivity: OrderInformationActivity)
 }
