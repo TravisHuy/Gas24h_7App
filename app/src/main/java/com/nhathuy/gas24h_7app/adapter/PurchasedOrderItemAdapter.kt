@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.R
@@ -30,7 +31,7 @@ class PurchasedOrderItemAdapter(
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    listener?.onOrderClick(orders[position])
+                    listener?.onOrderClick(orders[position].id)
                 }
             }
         }
@@ -54,56 +55,51 @@ class PurchasedOrderItemAdapter(
         val firstItem = order.items.firstOrNull()
 
         firstItem?.let { orderItem ->
-            val product = products[orderItem.productId]
 
             with(holder.binding) {
-                product?.let {
-                    purchasedOrderItemName.text = it.name
-                    purchasedOrderCountItem.text = "x${orderItem.quantity}"
-
-                    val originalPrice = it.price
-                    val discountedPrice = it.getDiscountedPrice()
-
-                    if (it.offerPercentage > 0.0) {
-                        purchasedOrderOriginalPrice.text = NumberFormatUtils.formatPrice(originalPrice)
-                        purchasedOrderDiscountPrice.text =
-                            NumberFormatUtils.formatPrice(discountedPrice)
-                    } else {
-                        purchasedOrderDiscountPrice.text = NumberFormatUtils.formatPrice(originalPrice)
-                        purchasedOrderOriginalPrice.visibility = View.GONE
-
-                    }
-
-                    Glide.with(holder.itemView.context).load(product.coverImageUrl)
-                        .into(purchaseOrderImage)
-                    val totalPrice =
-                        orderItem.quantity * (if (it.offerPercentage > 0) it.getDiscountedPrice() else it.price)
-
-                    purchasedOrderTotalPrice.text = NumberFormatUtils.formatPrice(totalPrice)
-
-                    purchaseCountProduct.text =
-                        holder.binding.root.context.getString(R.string.count_product, orderItem.quantity)
-
-                    when (currentStatus) {
-                        "PENDING" -> btnStatus.text = "Đang xử lý"
-                        "PROCESSING" ->{
-                            btnStatus.text = "Đang tiếp nhận"
-                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
-                        }
-                        "SHIPPED" -> {
-                            btnStatus.text = "Đã tiếp nhận"
-                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
-                        }
-                        "DELIVERED" ->{
-                            btnStatus.text = "Đã giao"
-                            btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
-                        }
-                        "CANCELLED" -> btnStatus.text = "Đã hủy"
-                        else -> btnStatus.text = "Xem chi tiết"
-                    }
-
-
+                val layoutManager = LinearLayoutManager(holder.itemView.context)
+                purchaseOrderProductRec.layoutManager = layoutManager
+                val orderItemsAdapter = PurchasedOrderProductItemAdapter(order.items, products) {productId ->
+                    listener?.onProductClick(order.id, productId)
                 }
+                purchaseOrderProductRec.adapter = orderItemsAdapter
+
+                val totalPrice = order.items.sumOf { orderItem ->
+                    val product = products[orderItem.productId]
+                    orderItem.quantity * (product?.let { if (it.offerPercentage > 0) it.getDiscountedPrice() else it.price } ?: 0.0)
+                }
+                purchasedOrderTotalPrice.text = NumberFormatUtils.formatPrice(totalPrice)
+
+
+                val totalQuantity = order.items.sumOf { it.quantity }
+                purchaseCountProduct.text =
+                    holder.binding.root.context.getString(
+                        R.string.count_product,
+                        totalQuantity
+                    )
+
+                when (currentStatus) {
+                    "PENDING" -> btnStatus.text = "Đang xử lý"
+                    "PROCESSING" -> {
+                        btnStatus.text = "Đang tiếp nhận"
+                        btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                    }
+
+                    "SHIPPED" -> {
+                        btnStatus.text = "Đã tiếp nhận"
+                        btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                    }
+
+                    "DELIVERED" -> {
+                        btnStatus.text = "Đã giao"
+                        btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
+                    }
+
+                    "CANCELLED" -> btnStatus.text = "Đã hủy"
+                    else -> btnStatus.text = "Xem chi tiết"
+                }
+
+
             }
         }
 
@@ -112,19 +108,22 @@ class PurchasedOrderItemAdapter(
 
     override fun getItemCount(): Int = orders.size
     fun updateOrders(newOrders: List<Order>) {
-        orders=newOrders
+        orders = newOrders
         notifyDataSetChanged()
     }
+
     fun updateProducts(newProducts: Map<String, Product>) {
         products = newProducts
         notifyDataSetChanged()
     }
-    fun updateStatus(newStatus:String){
-        currentStatus=newStatus
+
+    fun updateStatus(newStatus: String) {
+        currentStatus = newStatus
         notifyDataSetChanged()
     }
 }
 
 interface OrderClickListener {
-    fun onOrderClick(order: Order)
+    fun onOrderClick(orderId: String)
+    fun onProductClick(orderId: String, productId: String)
 }

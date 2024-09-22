@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view_cart"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintStart_toEndOf="@+id/checkBox"
+            app:layout_constraintTop_toTopOf="@+id/checkBox">
+
+            <ImageView
+                android:id="@+id/purchase_order_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/test_image" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/card_view_cart"
+            app:layout_constraintTop_toTopOf="@+id/card_view_cart">
+
+            <TextView
+                android:id="@+id/purchased_order_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans_medium"
+                android:maxLines="1"
+                android:text="Gian nan đi tìm lăng mộ Hoàng đế Quang Trung" />
+            <TextView
+                android:id="@+id/purchased_order_count_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x4"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="end"
+                >
+                <TextView
+                    android:id="@+id/purchased_order_original_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="đ90.000"
+                    android:layout_marginEnd="5dp"
+                    />
+
+                <TextView
+                    android:id="@+id/purchased_order_discount_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="đ90.000"
+                    android:layout_marginEnd="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_light_primary"
+                    android:layout_gravity="end"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+</LinearLayout>

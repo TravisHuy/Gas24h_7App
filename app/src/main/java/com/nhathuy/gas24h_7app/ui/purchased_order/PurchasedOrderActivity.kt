@@ -115,7 +115,11 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         })
     }
 
-    override fun onOrderClick(order: Order) {
+    override fun onOrderClick(orderId: String) {
+        Toast.makeText(this,"test",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onProductClick(orderId: String, productId: String) {
         Toast.makeText(this,"test",Toast.LENGTH_SHORT).show()
     }
 }
