@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.purchased_order
 
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
@@ -11,20 +12,21 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PurchasedOrderPresenter @Inject constructor(private val orderRepository: OrderRepository,
-                                                  private  val productRepository: ProductRepository,
-                                                  private val userRepository: UserRepository,
-):PurchasedOrderContract.Presenter{
+class PurchasedOrderPresenter @Inject constructor(
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository,
+    private val userRepository: UserRepository,
+) : PurchasedOrderContract.Presenter {
 
-    private var view:PurchasedOrderContract.View? = null
+    private var view: PurchasedOrderContract.View? = null
     private val job = SupervisorJob()
-    private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
     override fun attachView(view: PurchasedOrderContract.View) {
-        this.view=view
+        this.view = view
     }
 
     override fun detachView() {
-        view=null
+        view = null
         job.cancel()
     }
 
@@ -32,36 +34,33 @@ class PurchasedOrderPresenter @Inject constructor(private val orderRepository: O
         coroutineScope.launch {
 
             try {
-                val userId= userRepository.getCurrentUserId()
+                val userId = userRepository.getCurrentUserId()
 
-                val result = orderRepository.getOrdersForUser(userId!!,status)
+                val result = orderRepository.getOrdersForUser(userId!!, status)
                 view?.showLoading()
                 result.fold(
-                    onSuccess = {
-                            orders ->
-                        val productIds= orders.flatMap { it.items.map { item-> item .productId} }.distinct()
-                        val productMap= mutableMapOf<String,Product>()
-                        val productJobs= productIds.map {
-                                productId->
-                            async(Dispatchers.IO){
+                    onSuccess = { orders ->
+                        val productIds =
+                            orders.flatMap { it.items.map { item -> item.productId } }.distinct()
+                        val productMap = mutableMapOf<String, Product>()
+                        val productJobs = productIds.map { productId ->
+                            async(Dispatchers.IO) {
                                 val productResult = productRepository.getProductById(productId)
-                                productResult.getOrNull()?.let {
-                                        product -> productMap[productId] = product
+                                productResult.getOrNull()?.let { product ->
+                                    productMap[productId] = product
                                 }
                             }
                         }
                         productJobs.forEach { it.await() }
-                        view?.showOrders(orders,productMap)
+                        view?.showOrders(orders, productMap)
                     },
-                    onFailure = {e->
+                    onFailure = { e ->
                         view?.showError("Failed to load order: ${e.message}")
                     }
                 )
-            }
-            catch (e:Exception){
+            } catch (e: Exception) {
                 view?.showError("Failed to load order: ${e.message}")
-            }
-            finally {
+            } finally {
                 view?.hideLoading()
             }
 
@@ -72,15 +71,32 @@ class PurchasedOrderPresenter @Inject constructor(private val orderRepository: O
         coroutineScope.launch {
             val result = productRepository.getSuggestProductLimitCount(8)
             result.fold(
-                onSuccess = {
-                        products ->
+                onSuccess = { products ->
                     view?.setupSuggestProduct(products)
                 },
-                onFailure = {
-                        e ->
+                onFailure = { e ->
                     view?.showError("${e.message}")
                 }
             )
+        }
+    }
+
+    override fun updateOrderStatus(orderId: String, newStatus: OrderStatus) {
+        coroutineScope.launch {
+            try {
+                val result = orderRepository.updateOrderStatus(orderId, newStatus)
+                result.fold(
+                    onSuccess = {
+                        view?.showOrderStatusUpdateSuccess()
+                        loadOrders(OrderStatus.SHIPPED.name)
+                    },
+                    onFailure = { e->
+                        view?.showError("Failed to update order status: ${e.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                view?.showError("Failed to update order status: ${e.message}")
+            }
         }
     }
 

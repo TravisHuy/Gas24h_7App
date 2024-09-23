@@ -19,6 +19,7 @@ import com.nhathuy.gas24h_7app.databinding.ActivityOrderInformationBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import java.text.SimpleDateFormat
@@ -97,7 +98,9 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
     }
 
     override fun navigateCall() {
-        startActivity(Intent(this,HotlineFragment::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("navigate_to", "hotline")
+        startActivity(intent)
         finish()
     }
 

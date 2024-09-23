@@ -30,7 +30,9 @@
             android:exported="false" />
         <activity
             android:name=".admin.order.shipping.ShippingActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".admin.order.pending_confirmation.PendingConfirmationActivity"
             android:exported="false" />

@@ -16,6 +16,7 @@ import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.adapter.PurchasedOrderItemAdapter
 import com.nhathuy.gas24h_7app.adapter.PurchasedProductAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityPurchasedOrderBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
@@ -95,6 +96,11 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         suggestRecyclerView.adapter = adapter
     }
 
+    override fun showOrderStatusUpdateSuccess() {
+        Toast.makeText(this, "Order status updated successfully", Toast.LENGTH_SHORT).show()
+//
+    }
+
     private fun setupRec() {
         adapter=PurchasedOrderItemAdapter(listener = this)
         binding.purchasedRec.layoutManager = LinearLayoutManager(this)
@@ -128,5 +134,9 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         intent.putExtra("ORDER_ID", orderId)
         intent.putExtra("PRODUCT_ID", productId)
         startActivity(intent)
+    }
+
+    override fun onUpdateOrderStatus(orderId: String, newStatus: String) {
+        presenter.updateOrderStatus(orderId,OrderStatus.valueOf(newStatus))
     }
 }

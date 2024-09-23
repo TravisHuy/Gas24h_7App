@@ -34,6 +34,16 @@ class PurchasedOrderItemAdapter(
                     listener?.onOrderClick(orders[position].id)
                 }
             }
+            binding.btnStatus.setOnClickListener {
+                val position = adapterPosition
+                if(position!= RecyclerView.NO_POSITION){
+                    val order = orders[position]
+                    when(order.status.name){
+                        "SHIPPED" -> listener?.onUpdateOrderStatus(order.id, "DELIVERED")
+                        else -> listener?.onOrderClick(order.id)
+                    }
+                }
+            }
         }
     }
 
@@ -126,4 +136,5 @@ class PurchasedOrderItemAdapter(
 interface OrderClickListener {
     fun onOrderClick(orderId: String)
     fun onProductClick(orderId: String, productId: String)
+    fun onUpdateOrderStatus(orderId: String,newStatus: String)
 }
