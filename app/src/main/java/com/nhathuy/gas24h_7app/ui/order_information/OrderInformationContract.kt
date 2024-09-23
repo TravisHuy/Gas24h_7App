@@ -11,6 +11,8 @@ interface OrderInformationContract {
         fun showUserInfo(user: User)
         fun showOrder(order:Order, products:Map<String, Product>)
         fun setupSuggestProduct(products: List<Product>)
+        fun navigateCall()
+        fun navigatePurchase()
     }
     interface Presenter{
         fun attachView(view:View)
@@ -18,5 +20,6 @@ interface OrderInformationContract {
         fun loadUserInfo()
         fun loadOrder(orderId:String)
         fun loadSuggestProducts()
+        fun cancelOrder(orderId: String)
     }
 }

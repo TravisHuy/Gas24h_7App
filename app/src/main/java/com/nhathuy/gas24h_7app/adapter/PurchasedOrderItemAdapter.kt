@@ -81,17 +81,17 @@ class PurchasedOrderItemAdapter(
                 when (currentStatus) {
                     "PENDING" -> btnStatus.text = "Đang xử lý"
                     "PROCESSING" -> {
-                        btnStatus.text = "Đang tiếp nhận"
+                        btnStatus.text = "Đang chờ vận chuyển"
                         btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
                     }
 
                     "SHIPPED" -> {
-                        btnStatus.text = "Đã tiếp nhận"
+                        btnStatus.text = "Đã nhận hàng"
                         btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
                     }
 
                     "DELIVERED" -> {
-                        btnStatus.text = "Đã giao"
+                        btnStatus.text = "Đánh giá"
                         btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
                     }
 

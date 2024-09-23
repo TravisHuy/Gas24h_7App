@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.order_information
 
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
@@ -85,6 +86,27 @@ class OrderInformationPresenter @Inject constructor(private val userRepository: 
                     view?.showError("Failed load suggest products ${e.message}")
                 }
             )
+        }
+    }
+
+    override fun cancelOrder(orderId: String) {
+        coroutineScope.launch {
+            try {
+                val result = orderRepository.updateOrderStatus(orderId,OrderStatus.CANCELLED)
+                result.fold(
+                    onSuccess = {
+                        loadOrder(orderId)
+                        view?.navigatePurchase()
+                        view?.showMessage("Cancel order successfully")
+                    },
+                    onFailure = {e->
+                        view?.showError("Can't cancel order ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showError("Can't cancel order ${e.message}")
+            }
         }
     }
 

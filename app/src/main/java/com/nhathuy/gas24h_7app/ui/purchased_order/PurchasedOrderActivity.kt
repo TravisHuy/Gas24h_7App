@@ -34,7 +34,7 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
 
     private val statusMap = mapOf(
-        "PENDING" to "Chờ xác nhận",
+        "PENDING" to "Đặt hàng thành công",
         "PROCESSING" to "Đã tiếp nhận",
         "SHIPPED" to "Đang vận chuyển",
         "DELIVERED" to "Đã giao",

@@ -17,7 +17,9 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderInformationBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
+import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -45,7 +47,15 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
         presenter.loadOrder(orderId)
 
         setupToolbar()
+        setupListeners()
+
+        // handle cancel order
+        binding.btnConfirmCancel.setOnClickListener {
+            presenter.cancelOrder(orderId)
+        }
     }
+
+
 
 
     override fun showError(message: String) {
@@ -85,6 +95,17 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
         })
         suggestRecyclerView.adapter = adapter
     }
+
+    override fun navigateCall() {
+        startActivity(Intent(this,HotlineFragment::class.java))
+        finish()
+    }
+
+    override fun navigatePurchase() {
+        startActivity(Intent(this,PurchasedOrderActivity::class.java))
+        finish()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             android.R.id.home -> {
@@ -108,7 +129,12 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
+    private fun setupListeners() {
+        binding.btnCall.setOnClickListener {
+            navigateCall()
+        }
 
+    }
     override fun onBackPressed() {
         super.onBackPressed()
     }
