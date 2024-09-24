@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.databinding.ActivityVerificationBinding
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import javax.inject.Inject
 
@@ -157,6 +158,11 @@ class VerificationActivity : AppCompatActivity(),VerificationContract.View {
 
     override fun updateResendButtonText(text: String) {
         binding.resendOtp.text = text
+    }
+
+    override fun navigateMain() {
+        startActivity(Intent(this,MainActivity::class.java))
+        finish()
     }
 
 

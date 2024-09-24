@@ -45,6 +45,8 @@ import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderContract
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
+import com.nhathuy.gas24h_7app.ui.verify.VerificationContract
+import com.nhathuy.gas24h_7app.ui.verify.VerificationPresenter
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +59,11 @@ class PresenterModule {
     fun provideLoginPresenter(auth: FirebaseAuth,db: FirebaseFirestore, countryRepository: CountryRepository): LoginContract.Presenter {
         return LoginPresenter(auth,db, countryRepository)
     }
-
+    @Provides
+    @Singleton
+    fun provideVerifyPresenter(auth: FirebaseAuth,userRepository: UserRepository): VerificationContract.Presenter {
+        return VerificationPresenter(auth,userRepository)
+    }
     @Provides
     @Singleton
     fun provideRegisterPresenter(locationApiService: LocationApiService, userRepository: UserRepository, coroutineScope: CoroutineScope, context: Context): RegisterContract.Presenter {

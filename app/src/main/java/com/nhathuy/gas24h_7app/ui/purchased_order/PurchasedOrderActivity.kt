@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.ui.purchased_order
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityPurchasedOrderBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationContract
 import javax.inject.Inject
@@ -51,11 +53,13 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
         setupRec()
         setupTabLayout()
-
+        setupBack()
         presenter.attachView(this)
         presenter.loadOrders("PENDING")
         presenter.loadSuggestProducts()
     }
+
+
 
     override fun showLoading() {
         binding.progressBar.visibility=View.VISIBLE
@@ -122,7 +126,15 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
         })
     }
+    private fun setupBack() {
+        binding.backButton.setOnClickListener {
+            onBackPressed()
+        }
+    }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
     override fun onOrderClick(orderId: String) {
         val intent = Intent(this,OrderInformationActivity::class.java)
         intent.putExtra("ORDER_ID", orderId)

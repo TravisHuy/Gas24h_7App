@@ -7,10 +7,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class VerificationPresenter @Inject constructor(private val auth:FirebaseAuth,
+                                                private val userRepository: UserRepository
 ):VerificationContract.Presenter{
 
     private var view:VerificationContract.View? =null
@@ -111,12 +117,40 @@ class VerificationPresenter @Inject constructor(private val auth:FirebaseAuth,
                     task ->
                 view?.hideLoading()
                 if(task.isSuccessful){
-                    view?.navigateRegister()
+                    checkUserExistence()
                 }
                 else{
                     view?.showError("Authentication failed: ${task.exception?.message}")
                 }
             }
+    }
+
+    private fun checkUserExistence() {
+        val userId  = auth.currentUser?.uid?: return
+        view?.showLoading()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = userRepository.getUser(userId)
+                result.fold(
+                    onSuccess = {
+                        view?.navigateMain()
+                    },
+                    onFailure = {
+                        view?.navigateRegister()
+                    }
+                )
+            }
+            catch (e:Exception){
+                withContext(Dispatchers.Main) {
+                    view?.showError("Error checking user: ${e.message}")
+                }
+            }
+            finally {
+                withContext(Dispatchers.Main) {
+                    view?.hideLoading()
+                }
+            }
+        }
     }
 
     private val callbacks = object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){

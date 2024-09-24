@@ -44,12 +44,45 @@
                     android:src="@drawable/ic_person_circle"
                     app:civ_border_width="2dp"
                     app:civ_border_color="#FF000000"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="Đăng nhập"
+                        app:backgroundTint="@color/white"
+                        app:strokeColor="#000000"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="4dp"
+                        android:textColor="@color/black"
+                        style="@style/Widget.Material3.Button.ElevatedButton"
+                        />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="Đăng ký"
+                        app:backgroundTint="@color/md_theme_light_primary"
+                        app:strokeColor="@color/white"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="4dp"
+                        android:textColor="@color/white"
+                        style="@style/Widget.Material3.Button.ElevatedButton"
+                        />
+                </LinearLayout>
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="20sp"
+                    android:visibility="gone"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
                     android:text="Ho Nhat Huy"/>
@@ -94,98 +127,95 @@
             android:layout_marginTop="5dp"
             android:background="@color/dark_text_secondary"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            >
 
             <LinearLayout
                 android:id="@+id/linear_waiting_confirm"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                >
+                android:gravity="center">
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="38dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_envelope"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:text="Chờ xác nhận"
-                    />
+                    android:gravity="center"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linear_has_received"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_toRightOf="@+id/linear_waiting_confirm"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="20dp"
+                android:gravity="center"
                 >
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="38dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_envelope_paper_heart"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Đã tiếp nhận"
-                    android:layout_gravity="center"
-                    />
+                    android:gravity="center"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linear_waiting_delivery"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_toRightOf="@+id/linear_has_received"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="20dp"
+                android:gravity="center"
                 >
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="38dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_truck"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Chờ lấy hàng "
-                    />
+                    android:text="Chờ lấy hàng"
+                    android:gravity="center"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linear_review"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="25dp"
+                android:gravity="center"
                 >
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="38dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_star"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Đánh giá"
-                    />
+                    android:gravity="center"/>
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

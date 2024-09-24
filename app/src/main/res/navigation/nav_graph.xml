@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_nav_order_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_nav_video_to_nav_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment

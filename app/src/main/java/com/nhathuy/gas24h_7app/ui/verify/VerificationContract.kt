@@ -16,6 +16,7 @@ interface VerificationContract {
         fun showResendButton()
         fun hideResendButton()
         fun updateResendButtonText(text: String)
+        fun navigateMain()
 
     }
     interface Presenter{
