@@ -148,8 +148,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideProfilePresenter(firebaseStorage: FirebaseStorage,userRepository: UserRepository):ProfileContract.Presenter{
-        return ProfilePresenter(firebaseStorage,userRepository)
+    fun provideProfilePresenter(firebaseStorage: FirebaseStorage,userRepository: UserRepository,orderRepository: OrderRepository,productRepository: ProductRepository):ProfileContract.Presenter{
+        return ProfilePresenter(firebaseStorage,userRepository,orderRepository,productRepository)
     }
 
     @Provides

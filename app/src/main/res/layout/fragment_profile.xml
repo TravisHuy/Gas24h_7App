@@ -326,9 +326,15 @@
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:background="@color/dark_text_secondary"/>
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/product_purchase_rec"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_buy_back" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

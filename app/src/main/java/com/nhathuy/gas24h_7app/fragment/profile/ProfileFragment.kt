@@ -10,10 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.adapter.BuyBackAdapter
+import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
+import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.FragmentProductListCategoryBinding
@@ -27,6 +32,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var adapter: BuyBackAdapter
 
     @Inject
     lateinit var presenter: ProfilePresenter
@@ -45,6 +52,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
         presenter.attachView(this)
 
+        setupListeners()
+        setupRecyclerview()
+
+        presenter.loadOrders("DELIVERED")
+        return binding.root
+    }
+
+    private fun setupRecyclerview() {
+        adapter = BuyBackAdapter()
+        binding.productPurchaseRec.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.productPurchaseRec.adapter = adapter
+    }
+
+    private fun setupListeners() {
         binding.linearWaitingConfirm.setOnClickListener {
             navigatePurchaseOrder()
         }
@@ -56,7 +77,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         binding.btnLogout.setOnClickListener {
             showDialogLogout()
         }
-        return binding.root
     }
 
     private fun openImagePicker() {
@@ -127,6 +147,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
             }.setNegativeButton("No"){ dialog,_ ->
                 dialog.dismiss()
             }.show()
+    }
+
+    override fun showOrders(orders: List<Order>, products: Map<String, Product>) {
+        adapter.updateOrderProducts(orders,products)
     }
 
     private fun logout() {

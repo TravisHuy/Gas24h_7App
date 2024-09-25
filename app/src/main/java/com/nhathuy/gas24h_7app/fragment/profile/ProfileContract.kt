@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.fragment.profile
 
 import android.net.Uri
+import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 
 interface ProfileContract {
@@ -14,6 +16,7 @@ interface ProfileContract {
         fun showBtnLogin()
         fun hideBtnLogin()
         fun showDialogLogout()
+        fun showOrders(orders:List<Order>, products:Map<String, Product>)
     }
     interface Presenter{
         fun attachView(view:View)
@@ -21,5 +24,6 @@ interface ProfileContract {
         fun updateProfileImage(imageUri: Uri)
 
         fun loadUserInfo()
+        fun loadOrders(status:String)
     }
 }
