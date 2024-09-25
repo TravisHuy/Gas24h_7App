@@ -14,6 +14,7 @@ import com.nhathuy.gas24h_7app.di.module.RepositoryModule
 import com.nhathuy.gas24h_7app.di.module.ViewModelModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
+import com.nhathuy.gas24h_7app.fragment.logout.LogoutFragment
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileFragment
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity

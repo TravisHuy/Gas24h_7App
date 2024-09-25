@@ -1,14 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#DCD8D8"
     tools:context=".fragment.logout.LogoutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:layout_marginHorizontal="50dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bạn có muốn đăng xuất không?"
+            android:fontFamily="@font/kalam_bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_refuse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:text="Không"
+                app:backgroundTint="@color/white"
+                app:strokeColor="#000000"
+                app:strokeWidth="1dp"
+                app:cornerRadius="4dp"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_yes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:text="Có"
+                app:backgroundTint="@color/md_theme_light_primary"
+                app:strokeColor="#000000"
+                app:strokeWidth="1dp"
+                app:cornerRadius="4dp"
+                android:textColor="@color/white"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

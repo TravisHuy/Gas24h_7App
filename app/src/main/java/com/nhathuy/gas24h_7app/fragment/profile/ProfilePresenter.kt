@@ -20,6 +20,7 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
 
     override fun attachView(view: ProfileContract.View) {
         this.view=view
+        loadUserInfo()
     }
 
     override fun detachView() {
@@ -46,11 +47,35 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
        }
     }
 
+    override fun loadUserInfo() {
+        coroutineScope.launch {
+            try {
+                val result = userRepository.getUser(userRepository.getCurrentUserId()!!)
+                result.fold(
+                    onSuccess = { user ->
+                        view?.showUserInfo(user)
+                        view?.hideBtnLogin()
+                    },
+                    onFailure = {
+                        view?.showBtnLogin()
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showError("Failed to load user information ${e.message}")
+            }
+        }
+    }
+
     private suspend fun updateImageToFirebaseStorage(imageUri: Uri): String = withContext(Dispatchers.IO) {
         val filename = UUID.randomUUID().toString()
         val ref = storage.reference.child("profile_images/$filename")
 
         val uploadTask = ref.putFile(imageUri).await()
         return@withContext ref.downloadUrl.await().toString()
+    }
+    fun  logout(){
+        userRepository.logout()
+
     }
 }

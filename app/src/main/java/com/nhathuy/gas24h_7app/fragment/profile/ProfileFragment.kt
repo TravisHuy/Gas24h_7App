@@ -11,11 +11,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.FragmentProductListCategoryBinding
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import javax.inject.Inject
 
@@ -48,6 +51,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
         binding.profileImage.setOnClickListener{
             openImagePicker()
+        }
+
+        binding.btnLogout.setOnClickListener {
+            showDialogLogout()
         }
         return binding.root
     }
@@ -90,6 +97,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     override fun showMessage(message: String) {
         Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
     }
+
+    override fun showUserInfo(user: User) {
+        Glide.with(this)
+            .load(user.imageUser)
+            .placeholder(R.drawable.ic_person_circle)
+            .into(binding.profileImage)
+        binding.tvUserName.text= user.fullName
+    }
+
+    override fun showBtnLogin() {
+        binding.linearLogin.visibility=View.VISIBLE
+        binding.linearUserInformation.visibility=View.GONE
+    }
+
+    override fun hideBtnLogin() {
+        binding.linearLogin.visibility=View.GONE
+        binding.linearUserInformation.visibility=View.VISIBLE
+    }
+
+    override fun showDialogLogout() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes"){
+                dialog,_ ->
+                logout()
+                dialog.dismiss()
+            }.setNegativeButton("No"){ dialog,_ ->
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun logout() {
+        presenter.logout()
+        startActivity(Intent(requireContext(),MainActivity::class.java))
+    }
+
     companion object {
         private const val IMAGE_PICK_CODE = 1000
     }
