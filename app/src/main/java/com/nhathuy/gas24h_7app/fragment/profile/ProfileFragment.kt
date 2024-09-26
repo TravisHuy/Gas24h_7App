@@ -15,13 +15,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
-import com.nhathuy.gas24h_7app.adapter.BuyBackAdapter
-import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
+import com.nhathuy.gas24h_7app.adapter.BuyBackItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
-import com.nhathuy.gas24h_7app.data.repository.UserRepository
-import com.nhathuy.gas24h_7app.databinding.FragmentProductListCategoryBinding
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
@@ -33,7 +30,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: BuyBackAdapter
+    private lateinit var adapter: BuyBackItemAdapter
 
     @Inject
     lateinit var presenter: ProfilePresenter
@@ -60,7 +57,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     }
 
     private fun setupRecyclerview() {
-        adapter = BuyBackAdapter()
+        adapter = BuyBackItemAdapter()
         binding.productPurchaseRec.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.productPurchaseRec.adapter = adapter
     }
