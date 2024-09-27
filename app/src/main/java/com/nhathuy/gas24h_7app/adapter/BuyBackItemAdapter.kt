@@ -12,11 +12,25 @@ import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
 class BuyBackItemAdapter(
     private var orders: List<Order> = listOf(),
-    private var products: Map<String, Product> = emptyMap()
+    private var products: Map<String, Product> = emptyMap(),
+    private val listener: BuyBackAdapter.BuyBackClickListener
 ) : RecyclerView.Adapter<BuyBackItemAdapter.BuyBackViewHolder>() {
 
     inner class BuyBackViewHolder(val binding: ItemBuyBackBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val order = orders[position]
+                    val firstItem = order.items.firstOrNull()
+                    firstItem?.let { orderItem ->
+                        listener.onProductClick(orderItem.productId)
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -61,7 +75,7 @@ class BuyBackItemAdapter(
     private fun calculatePurchaseCount(productId: String): Int {
         return orders.count { order ->
             order.items.any {
-                it.productId== productId
+                it.productId == productId
             }
         }
     }

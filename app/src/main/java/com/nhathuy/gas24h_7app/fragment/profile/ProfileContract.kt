@@ -12,12 +12,16 @@ interface ProfileContract {
         fun showError(message: String)
         fun showLoading(isLoading: Boolean)
         fun showMessage(message: String)
-        fun showUserInfo(user:User)
-        fun showBtnLogin()
-        fun hideBtnLogin()
+        fun showUserInfo(isLoggedIn:Boolean)
+        fun updateProfileImage(imageUrl: String)
+        fun updateUserName(name:String)
+        fun updateCartItemCount(count: Int)
+        fun updateOrderCount( processingCount: Int,pendingCount: Int, shippedCount: Int, deliveredCount: Int)
         fun showDialogLogout()
         fun showOrders(orders:List<Order>, products:Map<String, Product>)
         fun navigateBuyBack()
+        fun navigateCart()
+
     }
     interface Presenter{
         fun attachView(view:View)
@@ -26,5 +30,7 @@ interface ProfileContract {
 
         fun loadUserInfo()
         fun loadOrders(status:String)
+        fun loadCartItemCount()
+        fun loadOrderCount()
     }
 }

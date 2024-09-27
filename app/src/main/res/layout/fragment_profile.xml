@@ -15,16 +15,45 @@
             android:layout_height="wrap_content"
             android:background="@color/md_theme_light_primary"
             >
-            <ImageView
-                android:id="@+id/btn_cart"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_cart2"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+            <FrameLayout
+                android:id="@+id/buy_back_cart_item_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                />
+                >
+
+                <ImageView
+                    android:id="@+id/btn_cart"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_cart2"
+                   />
+
+                <TextView
+                    android:id="@+id/cart_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/cart_badge_background"
+                    android:backgroundTint="@color/white"
+                    android:gravity="center"
+                    android:minWidth="18dp"
+                    android:minHeight="18dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:text="99+"
+                    tools:visibility="visible" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,7 +61,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_cart"
+                app:layout_constraintTop_toBottomOf="@+id/buy_back_cart_item_container"
                 >
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -168,10 +197,37 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center">
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/ic_envelope"/>
+                <FrameLayout
+                    android:id="@+id/frame_waiting_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_envelope"/>
+
+                    <TextView
+                        android:id="@+id/tv_waiting_confirm_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="-1dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -188,10 +244,36 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 >
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/ic_envelope_paper_heart"/>
+                <FrameLayout
+                    android:id="@+id/frame_has_received"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_envelope_paper_heart"/>
+
+                    <TextView
+                        android:id="@+id/tv_has_received_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="-1dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -208,10 +290,37 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 >
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/ic_truck"/>
+                <FrameLayout
+                    android:id="@+id/frame_waiting_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_truck"/>
+
+                    <TextView
+                        android:id="@+id/tv_waiting_delivery_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="-1dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -228,10 +337,37 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 >
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/ic_star"/>
+                <FrameLayout
+                    android:id="@+id/frame_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_star"/>
+
+                    <TextView
+                        android:id="@+id/tv_review_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="-1dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

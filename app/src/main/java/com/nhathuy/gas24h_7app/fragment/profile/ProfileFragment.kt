@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,18 +16,21 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.adapter.BuyBackAdapter
 import com.nhathuy.gas24h_7app.adapter.BuyBackItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
 import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackActivity
+import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import javax.inject.Inject
 
 
-class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View {
+class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View,BuyBackAdapter.BuyBackClickListener {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -54,11 +58,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         setupRecyclerview()
 
         presenter.loadOrders("DELIVERED")
+        presenter.loadCartItemCount()
+        presenter.loadOrderCount()
         return binding.root
     }
 
     private fun setupRecyclerview() {
-        adapter = BuyBackItemAdapter()
+        adapter = BuyBackItemAdapter(listener = this)
         binding.productPurchaseRec.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.productPurchaseRec.adapter = adapter
     }
@@ -119,23 +125,64 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
     }
 
-    override fun showUserInfo(user: User) {
+    override fun showUserInfo(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
+            binding.linearLogin.visibility = View.GONE
+            binding.linearUserInformation.visibility = View.VISIBLE
+        } else {
+            binding.linearLogin.visibility = View.VISIBLE
+            binding.linearUserInformation.visibility = View.GONE
+            // Reset profile image and name
+            binding.profileImage.setImageResource(R.drawable.ic_person_circle)
+            binding.tvUserName.text = ""
+        }
+    }
+
+    override fun updateProfileImage(imageUrl: String) {
         Glide.with(this)
-            .load(user.imageUser)
+            .load(imageUrl)
             .placeholder(R.drawable.ic_person_circle)
             .into(binding.profileImage)
-        binding.tvUserName.text= user.fullName
     }
 
-    override fun showBtnLogin() {
-        binding.linearLogin.visibility=View.VISIBLE
-        binding.linearUserInformation.visibility=View.GONE
+    override fun updateUserName(name: String) {
+        binding.tvUserName.text= name
     }
 
-    override fun hideBtnLogin() {
-        binding.linearLogin.visibility=View.GONE
-        binding.linearUserInformation.visibility=View.VISIBLE
+    override fun updateCartItemCount(count: Int) {
+        val cartBadge = binding.buyBackCartItemContainer.findViewById<TextView>(R.id.cart_badge)
+        if(count>0){
+            cartBadge.visibility = View.VISIBLE
+            cartBadge.text = if (count > 99) "99+" else count.toString()
+        }
+        else{
+            cartBadge.visibility= View.GONE
+        }
     }
+
+    override fun updateOrderCount(
+        processingCount: Int,
+        pendingCount: Int,
+        shippedCount: Int,
+        deliveredCount: Int
+    ) {
+        // Update pending orders count
+        binding.tvWaitingConfirmCount.text = pendingCount.toString()
+        binding.tvWaitingConfirmCount.visibility = if (pendingCount > 0) View.VISIBLE else View.GONE
+
+        // Update processing orders count
+        binding.tvHasReceivedCount.text = processingCount.toString()
+        binding.tvHasReceivedCount.visibility = if (processingCount > 0) View.VISIBLE else View.GONE
+
+        // Update shipped orders count
+        binding.tvWaitingDeliveryCount.text = shippedCount.toString()
+        binding.tvWaitingDeliveryCount.visibility = if (shippedCount > 0) View.VISIBLE else View.GONE
+
+        // Update delivered orders count
+        binding.tvReviewCount.text = deliveredCount.toString()
+        binding.tvReviewCount.visibility = if (deliveredCount > 0) View.VISIBLE else View.GONE
+    }
+
 
     override fun showDialogLogout() {
         MaterialAlertDialogBuilder(requireContext())
@@ -152,10 +199,16 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     override fun showOrders(orders: List<Order>, products: Map<String, Product>) {
         adapter.updateOrderProducts(orders,products)
+
+
     }
 
     override fun navigateBuyBack() {
         startActivity(Intent(requireContext(),BuyBackActivity::class.java))
+    }
+
+    override fun navigateCart() {
+        TODO("Not yet implemented")
     }
 
     private fun logout() {
@@ -165,5 +218,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
+    }
+
+    override fun onProductClick(productId: String) {
+        val intent = Intent(requireContext(), DetailProductActivity::class.java).apply {
+            putExtra("PRODUCT_ID", productId)
+        }
+        startActivity(intent)
     }
 }

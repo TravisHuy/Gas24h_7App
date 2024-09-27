@@ -2,7 +2,9 @@ package com.nhathuy.gas24h_7app.fragment.profile
 
 import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                                            private val userRepository: UserRepository,
                                            private val orderRepository: OrderRepository,
-                                           private val productRepository: ProductRepository
+                                           private val productRepository: ProductRepository,
+                                           private val cartRepository: CartRepository
 ):ProfileContract.Presenter {
 
     private var view:ProfileContract.View? =null
@@ -61,11 +64,13 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                 val result = userRepository.getUser(userRepository.getCurrentUserId()!!)
                 result.fold(
                     onSuccess = { user ->
-                        view?.showUserInfo(user)
-                        view?.hideBtnLogin()
+                        view?.updateProfileImage(user.imageUser?:"")
+                        view?.updateUserName(user.fullName ?:"")
+                        view?.showUserInfo(true)
                     },
                     onFailure = {
-                        view?.showBtnLogin()
+                        view?.showUserInfo(false)
+                        view?.showError("Failed to load user profile")
                     }
                 )
             }
@@ -107,6 +112,49 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
             } finally {
             }
 
+        }
+    }
+
+    override fun loadCartItemCount() {
+        coroutineScope.launch {
+            try {
+                val userId = userRepository.getCurrentUserId()
+                if(userId!=null){
+                    val result = cartRepository.getCartItemCount(userId)
+                    result.fold(
+                        onSuccess = { count ->
+                            view?.updateCartItemCount(count)
+                        },
+                        onFailure = { e->
+                            view?.showError(e.message?:"Failed to load cart item count")
+                        }
+                    )
+                }
+            }
+            catch (e:Exception){
+                view?.showError(e.message?:"Failed to load cart item count")
+            }
+        }
+    }
+
+    override fun loadOrderCount() {
+        coroutineScope.launch {
+            try {
+                val userId = userRepository.getCurrentUserId()
+
+                if(userId!=null){
+                    val pendingCount = orderRepository.getOrderCountForUser(userId,OrderStatus.PENDING.name).getOrDefault(0)
+                    val processingCount = orderRepository.getOrderCountForUser(userId,OrderStatus.PROCESSING.name).getOrDefault(0)
+                    val shippedCount = orderRepository.getOrderCountForUser(userId, OrderStatus.SHIPPED.name).getOrDefault(0)
+                    val deliveredCount = orderRepository.getOrderCountForUser(userId, OrderStatus.DELIVERED.name).getOrDefault(0)
+
+
+                    view?.updateOrderCount( processingCount,pendingCount, shippedCount, deliveredCount)
+                }
+            }
+            catch (e:Exception){
+                view?.showError(e.message?:"Failed to load order counts")
+            }
         }
     }
 

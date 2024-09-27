@@ -11,6 +11,7 @@ import kotlin.Exception
 
 class OrderRepository @Inject constructor(private val db:FirebaseFirestore,private  val voucherRepository: VoucherRepository) {
 
+    //tạo order
     suspend fun createOrder(order:Order):Result<String>{
         return try {
             val orderRef = db.collection("orders").document()
@@ -24,6 +25,7 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             Result.failure(e)
         }
     }
+    //lấy ra danh sách order theo status
     suspend fun getOrders(status:String) : Result<List<Order>>{
         return withContext(Dispatchers.IO){
             try {
@@ -40,6 +42,7 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             }
         }
     }
+    //lấy ra danh sách order đã đặt của người dùng
     suspend fun getOrdersForUser(userId:String,status:String) : Result<List<Order>>{
         return withContext(Dispatchers.IO){
             try {
@@ -59,6 +62,7 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             }
         }
     }
+    //cập nhập lại trạng thái của order
     suspend fun updateOrderStatus(orderId:String,newStatus:OrderStatus): Result<Unit>{
         return withContext(Dispatchers.IO){
             try {
@@ -72,6 +76,7 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
             }
         }
     }
+    //lấy order the id
     suspend fun getOrderId(orderId: String) : Result<Order>{
         return withContext(Dispatchers.IO){
             try {
@@ -83,6 +88,22 @@ class OrderRepository @Inject constructor(private val db:FirebaseFirestore,priva
                 else {
                     Result.failure(Exception("Failed to convert snapshot to Order"))
                 }
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+    // lấy ra số lượng của order the trạng thái của order
+    suspend fun getOrderCountForUser(userId: String,status: String):Result<Int>{
+        return withContext(Dispatchers.IO){
+            try {
+                val snapshot =db.collection("orders")
+                    .whereEqualTo("userId",userId)
+                    .whereEqualTo("status",status)
+                    .get()
+                    .await()
+                Result.success(snapshot.count())
             }
             catch (e:Exception){
                 Result.failure(e)
