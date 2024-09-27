@@ -41,22 +41,49 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/btn_chat"
+                <FrameLayout
+                    android:id="@+id/buy_back_cart_item_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="15dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_cart2"
-                    app:tint="@color/md_theme_light_primary" />
+                    android:layout_marginEnd="10dp"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:id="@+id/btn_cart"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_cart2"
+                        app:tint="@color/md_theme_light_primary" />
+
+                    <TextView
+                        android:id="@+id/cart_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="99+"
+                        tools:visibility="visible" />
+                </FrameLayout>
 
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,8 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Đang tải"
             android:layout_marginTop="10dp"
+            android:text="Đang tải"
             android:textAlignment="center"
             android:textColor="@color/md_theme_light_primary"
             android:visibility="visible" />

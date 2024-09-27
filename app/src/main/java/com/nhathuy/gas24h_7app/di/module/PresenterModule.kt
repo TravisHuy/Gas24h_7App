@@ -27,6 +27,8 @@ import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
 import com.nhathuy.gas24h_7app.fragment.profile.ProfilePresenter
+import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackContract
+import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackPresenter
 import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherContract
@@ -157,5 +159,9 @@ class PresenterModule {
     fun provideOrderInformationPresenter(userRepository: UserRepository,orderRepository: OrderRepository,productRepository: ProductRepository):OrderInformationContract.Presenter{
         return OrderInformationPresenter(userRepository,orderRepository,productRepository)
     }
-
+    @Provides
+    @Singleton
+    fun provideBuyBackPresenter(orderRepository: OrderRepository,userRepository: UserRepository,productRepository: ProductRepository,cartRepository: CartRepository):BuyBackContract.Presenter{
+        return BuyBackPresenter(orderRepository,userRepository,productRepository,cartRepository)
+    }
 }

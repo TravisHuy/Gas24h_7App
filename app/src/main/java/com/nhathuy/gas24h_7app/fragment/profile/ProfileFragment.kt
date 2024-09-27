@@ -20,6 +20,7 @@ import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
+import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import javax.inject.Inject
@@ -73,6 +74,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
         binding.btnLogout.setOnClickListener {
             showDialogLogout()
+        }
+        binding.linearWatchingProduct.setOnClickListener {
+            navigateBuyBack()
         }
     }
 
@@ -148,6 +152,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     override fun showOrders(orders: List<Order>, products: Map<String, Product>) {
         adapter.updateOrderProducts(orders,products)
+    }
+
+    override fun navigateBuyBack() {
+        startActivity(Intent(requireContext(),BuyBackActivity::class.java))
     }
 
     private fun logout() {

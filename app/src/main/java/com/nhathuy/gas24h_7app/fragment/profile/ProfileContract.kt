@@ -17,6 +17,7 @@ interface ProfileContract {
         fun hideBtnLogin()
         fun showDialogLogout()
         fun showOrders(orders:List<Order>, products:Map<String, Product>)
+        fun navigateBuyBack()
     }
     interface Presenter{
         fun attachView(view:View)
