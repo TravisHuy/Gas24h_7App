@@ -65,8 +65,8 @@ class BuyBackActivity : AppCompatActivity(),BuyBackContract.View,BuyBackAdapter.
     }
 
     override fun hideLoading() {
-        binding.loadingTextView.visibility=View.GONE
-        binding.contentScrollView.visibility=View.VISIBLE
+        binding.loadingTextView.visibility=View.VISIBLE
+        binding.contentScrollView.visibility=View.GONE
     }
 
     override fun showError(message: String) {

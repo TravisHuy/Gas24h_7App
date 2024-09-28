@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.adapter.AllVoucherAdapter
 import com.nhathuy.gas24h_7app.adapter.BuyBackAdapter
 import com.nhathuy.gas24h_7app.adapter.BuyBackItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
@@ -23,8 +24,11 @@ import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
+import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherActivity
 import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackActivity
+import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
+import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import javax.inject.Inject
@@ -83,6 +87,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         }
         binding.linearWatchingProduct.setOnClickListener {
             navigateBuyBack()
+        }
+        binding.btnLogin.setOnClickListener {
+            navigateLogin()
+        }
+        binding.btnCart.setOnClickListener {
+            navigateCart()
+        }
+        binding.linearAllVoucher.setOnClickListener {
+            navigateAllVouchers()
         }
     }
 
@@ -208,7 +221,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     }
 
     override fun navigateCart() {
-        TODO("Not yet implemented")
+        startActivity(Intent(requireContext(),CartActivity::class.java))
+    }
+
+    override fun navigateLogin() {
+        startActivity(Intent(requireContext(),LoginActivity::class.java))
+    }
+
+    override fun navigateAllVouchers() {
+        startActivity(Intent(requireContext(),AllVoucherActivity::class.java))
     }
 
     private fun logout() {

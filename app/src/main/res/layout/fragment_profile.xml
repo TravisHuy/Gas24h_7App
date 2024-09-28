@@ -384,6 +384,7 @@
             android:layout_marginTop="10dp"
             android:background="@color/dark_text_secondary"/>
         <LinearLayout
+            android:id="@+id/linear_all_voucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -391,6 +392,7 @@
             android:layout_marginTop="10dp"
             >
             <ImageView
+                android:id="@+id/all_voucher"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:src="@drawable/ic_voucher"

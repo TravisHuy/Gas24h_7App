@@ -21,7 +21,8 @@ interface ProfileContract {
         fun showOrders(orders:List<Order>, products:Map<String, Product>)
         fun navigateBuyBack()
         fun navigateCart()
-
+        fun navigateLogin()
+        fun navigateAllVouchers()
     }
     interface Presenter{
         fun attachView(view:View)
