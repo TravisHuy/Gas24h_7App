@@ -56,7 +56,7 @@
             android:name=".ui.cart.CartActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.review.AddReviewActivity"
+            android:name=".ui.add_review.AddReviewActivity"
             android:exported="false" />
         <activity
             android:name=".admin.voucher.detail_product.VoucherDetailProductActivity"

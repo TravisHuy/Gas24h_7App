@@ -1,5 +1,5 @@
 
-package com.nhathuy.gas24h_7app.ui.review
+package com.nhathuy.gas24h_7app.ui.add_review
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
