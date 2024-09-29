@@ -40,6 +40,7 @@ class PurchasedOrderItemAdapter(
                     val order = orders[position]
                     when(order.status.name){
                         "SHIPPED" -> listener?.onUpdateOrderStatus(order.id, "DELIVERED")
+                        "DELIVERED" -> listener?.onReviewOrder(order.id)
                         else -> listener?.onOrderClick(order.id)
                     }
                 }
@@ -137,4 +138,5 @@ interface OrderClickListener {
     fun onOrderClick(orderId: String)
     fun onProductClick(orderId: String, productId: String)
     fun onUpdateOrderStatus(orderId: String,newStatus: String)
+    fun onReviewOrder(orderId: String)
 }

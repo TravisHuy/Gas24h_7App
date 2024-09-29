@@ -21,6 +21,7 @@ import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityPurchasedOrderBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
+import com.nhathuy.gas24h_7app.ui.add_review.AddReviewActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
@@ -150,5 +151,12 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
     override fun onUpdateOrderStatus(orderId: String, newStatus: String) {
         presenter.updateOrderStatus(orderId,OrderStatus.valueOf(newStatus))
+    }
+
+    override fun onReviewOrder(orderId: String) {
+        val intent = Intent(this, AddReviewActivity::class.java).apply {
+            putExtra("ORDER_ID", orderId)
+        }
+        startActivity(intent)
     }
 }

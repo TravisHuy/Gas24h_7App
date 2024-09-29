@@ -19,6 +19,7 @@ import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
+import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
@@ -27,6 +28,8 @@ import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
 import com.nhathuy.gas24h_7app.fragment.profile.ProfilePresenter
+import com.nhathuy.gas24h_7app.ui.add_review.AddReviewContract
+import com.nhathuy.gas24h_7app.ui.add_review.AddReviewPresenter
 import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherContract
 import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherPresenter
 import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackContract
@@ -169,7 +172,12 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideAllVoucher(voucherRepository: VoucherRepository):AllVoucherContract.Presenter{
+    fun provideAllVoucherPresenter(voucherRepository: VoucherRepository):AllVoucherContract.Presenter{
         return AllVoucherPresenter(voucherRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideAddReviewPresenter(reviewRepository: ReviewRepository,userRepository: UserRepository,productRepository: ProductRepository,orderRepository: OrderRepository):AddReviewContract.Presenter{
+        return AddReviewPresenter(reviewRepository,userRepository, productRepository, orderRepository)
     }
 }

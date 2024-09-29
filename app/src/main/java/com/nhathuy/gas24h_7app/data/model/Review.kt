@@ -8,9 +8,10 @@ data class Review(
     val comment:String,
     val timestamp:Long,
     val images: List<String> = emptyList(),
-    val video: String
+    val video: String,
+    val reviewStatus:ReviewStatus
 ){
-    constructor():this("","","",0f,"",0, emptyList(),"")
+    constructor():this("","","",0f,"",0, emptyList(),"",ReviewStatus.FIVE_STARS)
     fun toMap():Map<String,Any>{
         return hashMapOf("id" to id,
             "productId" to productId,
@@ -19,7 +20,8 @@ data class Review(
             "comment" to comment,
             "timestamp" to 0,
             "images" to images,
-            "video" to video
+            "video" to video,
+            "reviewStatus" to reviewStatus.name
         )
     }
 }
