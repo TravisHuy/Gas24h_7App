@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.add_review
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.media.MediaMetadata
 import android.media.MediaMetadataRetriever
@@ -228,7 +229,8 @@ class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
     }
 
     override fun navigateBack() {
-        onBackPressed()
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     override fun onDestroy() {

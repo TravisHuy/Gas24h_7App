@@ -2,6 +2,7 @@
 package com.nhathuy.gas24h_7app.ui.add_review
 
 import android.net.Uri
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.ReviewStatus
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
@@ -27,7 +29,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
     private var productId:String?=null
-
+    private var orderId_current:String? = null
     private val images = mutableListOf<Uri>()
     private var video: Uri? = null
 
@@ -47,6 +49,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
         coroutineScope.launch {
             try {
                 val result = orderRepository.getOrderId(orderId)
+                orderId_current=orderId
                 result.fold(
                     onSuccess = {order->
                         productId = order.items.firstOrNull()?.productId
@@ -130,7 +133,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
                     userId = userId!!,
                     rating = rating,
                     comment = comment,
-                    timestamp = System.currentTimeMillis(),
+                    date = Date(),
                     images = emptyList(),
                     video = "",
                     reviewStatus = ReviewStatus.fromStars(rating.toInt())
@@ -139,6 +142,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
                 val result = reviewRepository.createReview(review,images,video)
                 result.fold(
                     onSuccess = {
+                        orderRepository.updateOrderStatus(orderId_current!!,OrderStatus.RATED)
                         view?.showMessage("Review submitted successfully")
                         view?.clearInputField()
                         view?.clearImages()

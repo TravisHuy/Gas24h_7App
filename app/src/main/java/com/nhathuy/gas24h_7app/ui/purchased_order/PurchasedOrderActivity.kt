@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.purchased_order
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -26,6 +27,7 @@ import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationContract
+import com.nhathuy.gas24h_7app.util.Constants
 import javax.inject.Inject
 
 class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, OrderClickListener {
@@ -157,6 +159,16 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         val intent = Intent(this, AddReviewActivity::class.java).apply {
             putExtra("ORDER_ID", orderId)
         }
-        startActivity(intent)
+        startActivityForResult(intent, Constants.REVIEW_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // Refresh the orders list
+            val currentTab = binding.tabLayout.selectedTabPosition
+            val status = statusMap.entries.elementAt(currentTab).key
+            presenter.loadOrders(status)
+        }
     }
 }
