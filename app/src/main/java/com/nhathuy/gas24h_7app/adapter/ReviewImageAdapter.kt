@@ -1,28 +1,29 @@
 package com.nhathuy.gas24h_7app.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.nhathuy.gas24h_7app.databinding.ReviewProductImageBinding
 
 class ReviewImageAdapter(private val images:List<String>):RecyclerView.Adapter<ReviewImageAdapter.ReviewItemViewHolder>() {
 
-    inner class ReviewItemViewHolder(val imageView:androidx.appcompat.widget.AppCompatImageView):RecyclerView.ViewHolder(imageView)
+    inner class ReviewItemViewHolder(val binding:ReviewProductImageBinding):RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ReviewImageAdapter.ReviewItemViewHolder {
-        val imageView = androidx.appcompat.widget.AppCompatImageView(parent.context).apply {
-            layoutParams = ViewGroup.LayoutParams(100,90)
-            scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
-        }
-        return ReviewItemViewHolder(imageView)
+        val binding = ReviewProductImageBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ReviewItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ReviewImageAdapter.ReviewItemViewHolder, position: Int) {
-        Glide.with(holder.imageView.context)
-            .load(images[position])
-            .into(holder.imageView)
+        with(holder.binding){
+            Glide.with(holder.itemView.context)
+                .load(images[position])
+                .into(productImage)
+        }
     }
 
     override fun getItemCount(): Int  = images.size

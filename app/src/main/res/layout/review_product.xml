@@ -33,6 +33,7 @@
                 android:orientation="horizontal"
                 >
                 <RatingBar
+                    android:id="@+id/rating_product_star"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:numStars="5"
@@ -40,12 +41,14 @@
                     style="?android:attr/ratingBarStyleSmall"
                     android:progressTint="#FFA500"/>
                 <TextView
+                    android:id="@+id/tv_number_stars"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4.8/5"
                     android:layout_marginLeft="8dp"
                     />
                 <TextView
+                    android:id="@+id/count_review"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="(2,7k đánh giá)"
@@ -72,9 +75,9 @@
         android:layout_marginTop="10dp"
         />
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_reviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/review_product_item"
         />
     <View
         android:layout_width="match_parent"
@@ -83,6 +86,7 @@
         android:layout_marginTop="10dp"
         />
     <TextView
+        android:id="@+id/tv_all_count_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Xem Tất Cả (2.87k) >"

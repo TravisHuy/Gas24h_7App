@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.ui.detail_product
 
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.Review
+import com.nhathuy.gas24h_7app.data.model.User
 
 interface DetailProductContract {
     interface View{
@@ -18,6 +20,7 @@ interface DetailProductContract {
         fun navigateCart()
         fun navigateHotline()
         fun showAddToCartDialog(product: Product)
+        fun showReviews(reviews: List<Review>,users:Map<String,User>)
         fun updateQuantity(quantity: Int)
         fun dismissAddToCartDialog()
         fun setAddToCartButtonEnabled(isEnabled:Boolean)
@@ -34,5 +37,8 @@ interface DetailProductContract {
         fun onIncreaseQuantity(currentQuantity: Int,stockCount: Int)
         fun onQuantityChanged(quantity: Int,stockCount:Int)
         fun onAddToCartClicked(productId: String,quantity: Int,price: Double)
+
+        //load review
+        fun loadReviews(productId: String)
     }
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.Review
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -46,5 +47,39 @@ class ReviewRepository @Inject constructor(private val db:FirebaseFirestore,
         return ref.downloadUrl.await().toString()
     }
 
+    //get all review
+    suspend fun getAllReviews(): Result<List<Review>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("reviews").get().await()
+                val reviews = querySnapshot.documents.mapNotNull {
+                    it.toObject(Review::class.java)
+                }
+                Result.success(reviews)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 
+    // get all review with productId
+    suspend fun getAllReviewsWithProductId(productId:String) : Result<List<Review>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("reviews")
+                    .whereEqualTo("productId" , productId)
+                    .get().await()
+
+                val reviews = querySnapshot.documents.mapNotNull {
+                    it.toObject(Review::class.java)
+                }
+
+                Result.success(reviews)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }

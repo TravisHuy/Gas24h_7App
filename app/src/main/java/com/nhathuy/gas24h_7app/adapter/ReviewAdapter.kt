@@ -15,9 +15,11 @@ import com.nhathuy.gas24h_7app.databinding.ReviewProductItemBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class ReviewAdapter(private val reviews:List<Review> = listOf(),
-                    private val users:Map<String,User> = mapOf()
+class ReviewAdapter(private var reviews:List<Review> = listOf(),
+                    private var users:Map<String,User> = mapOf()
 ):RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
+
+    private var isShowingAll = false
 
     inner class ReviewViewHolder(val binding:ReviewProductItemBinding):RecyclerView.ViewHolder(binding.root)
 
@@ -58,7 +60,7 @@ class ReviewAdapter(private val reviews:List<Review> = listOf(),
                     reviewVideo.setOnPreparedListener {
                         mp ->
                         reviewVideo.start()
-
+                        mp.setVolume(0f,0f)
                         val duration = mp.duration
                         val durationInSeconds =duration/1000
                         val minutes = durationInSeconds/60
@@ -85,6 +87,14 @@ class ReviewAdapter(private val reviews:List<Review> = listOf(),
         }
     }
 
-    override fun getItemCount(): Int = reviews.size
-
+    override fun getItemCount(): Int = if (isShowingAll) reviews.size else minOf(2, reviews.size)
+    fun showAllReviews(){
+        isShowingAll= true
+        notifyDataSetChanged()
+    }
+    fun updateData(newReviews: List<Review>,newUsers:Map<String,User>){
+        reviews= newReviews
+        users=newUsers
+        notifyDataSetChanged()
+    }
 }

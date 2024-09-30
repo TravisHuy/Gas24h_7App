@@ -32,7 +32,10 @@ import com.google.android.material.internal.ViewUtils.dpToPx
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductAdapter
+import com.nhathuy.gas24h_7app.adapter.ReviewAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.Review
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
@@ -51,6 +54,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
     private lateinit var currentProduct: Product
     private lateinit var cartBadge: BadgeDrawable
 
+    private lateinit var adapter: ReviewAdapter
 
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
@@ -76,6 +80,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         presenter.loadProductDetails(productId)
         presenter.loadSuggestProducts(productId)
         presenter.loadCartItemCount()
+        presenter.loadReviews(productId)
 
         //set up UI components
         setupDescriptionToggle()
@@ -84,8 +89,9 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         setupCart()
         backHome()
         setupHotline()
-
+        setupRecReview()
     }
+
 
     // set up the hotline button click listener
     private fun setupHotline() {
@@ -124,6 +130,12 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
                 seeMoreIcon.setImageResource(R.drawable.ic_down)
             }
         }
+    }
+    private fun setupRecReview() {
+        val reviewRecyclerView = findViewById<RecyclerView>(R.id.recycler_reviews)
+        reviewRecyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = ReviewAdapter()
+        reviewRecyclerView.adapter = adapter
     }
 
     private fun setupImageSlider() {
@@ -314,6 +326,19 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         }
 
         bottomSheetDialog.show()
+    }
+
+    override fun showReviews(reviews: List<Review>, users: Map<String, User>) {
+        val layoutReviewProduct = binding.layoutReviewProduct
+        adapter.updateData(reviews,users)
+
+        val averageRating = reviews.map { it.rating }.average().toFloat()
+        layoutReviewProduct.ratingProductStar.rating = averageRating
+        layoutReviewProduct.tvNumberStars.text = String.format("%.1f/5", averageRating)
+        layoutReviewProduct.countReview.text = "(${reviews.size} đánh giá)"
+
+
+        layoutReviewProduct.tvAllCountReview.text = "Xem Tất Cả (${reviews.size}) >"
     }
 
     override fun updateQuantity(quantity: Int) {

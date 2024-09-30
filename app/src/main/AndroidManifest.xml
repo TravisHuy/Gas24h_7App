@@ -36,10 +36,14 @@
             android:exported="false" />
         <activity
             android:name=".admin.order.shipping.ShippingActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".admin.order.pending_confirmation.PendingConfirmationActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".ui.purchased_order.PurchasedOrderActivity"
             android:exported="false" />

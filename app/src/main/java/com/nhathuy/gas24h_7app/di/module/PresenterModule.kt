@@ -96,8 +96,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideProductDetailPresenter(repository: ProductRepository,cartRepository: CartRepository,userRepository: UserRepository): DetailProductContract.Presenter{
-        return DetailProductPresenter(repository,cartRepository,userRepository)
+    fun provideProductDetailPresenter(repository: ProductRepository,cartRepository: CartRepository,userRepository: UserRepository,reviewRepository: ReviewRepository): DetailProductContract.Presenter{
+        return DetailProductPresenter(repository,cartRepository,userRepository,reviewRepository)
     }
 
     @Provides

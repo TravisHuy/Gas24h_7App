@@ -2,19 +2,24 @@ package com.nhathuy.gas24h_7app.ui.detail_product
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
+import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DetailProductPresenter @Inject constructor(private val productRepository: ProductRepository,
                                                 private val cartRepository: CartRepository,
-                                                private val userRepository: UserRepository):DetailProductContract.Presenter{
+                                                private val userRepository: UserRepository,
+                                                private val reviewRepository: ReviewRepository
+):DetailProductContract.Presenter{
 
     private var view:DetailProductContract.View?=null
     private val job = SupervisorJob()
@@ -170,6 +175,41 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
                     view?.showError(e.message ?: "Unknown error occurred")
                 }
             )
+        }
+    }
+
+    override fun loadReviews(productId: String) {
+        coroutineScope.launch {
+            try {
+                val result = reviewRepository.getAllReviewsWithProductId(productId)
+                result.fold(
+                    onSuccess = { reviews->
+                        val userId = reviews.map {
+                            it.userId
+                        }
+                        val userMap = mutableMapOf<String,User>()
+                        val userJobs = userId.map {
+                                userId ->
+                            async(Dispatchers.IO) {
+                                val userResult = userRepository.getUser(userId)
+                                userResult.getOrNull()?.let {
+                                        user -> userMap[userId] = user
+                                }
+                            }
+                        }
+                        userJobs.forEach {
+                            it.await()
+                        }
+                        view?.showReviews(reviews,userMap)
+                    },
+                    onFailure = { e->
+                        view?.showError("Failed load review ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showError("Failed load review ${e.message}")
+            }
         }
     }
 }
