@@ -118,6 +118,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:numStars="5"
+                        android:stepSize="1"
+                        android:rating ="0"
+                        android:isIndicator="false"
                         android:progressTint="#FFA500"
                         />
 
@@ -205,20 +208,35 @@
                         android:layout_margin="4dp"
                         android:visibility="gone">
 
-                        <VideoView
-                            android:id="@+id/product_review_video"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/image_test" />
+                            android:layout_height="match_parent">
 
-                        <ImageView
-                            android:id="@+id/delete_review_video"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="top|end"
-                            android:background="#80000000"
-                            android:padding="4dp"
-                            android:src="@android:drawable/ic_delete" />
+                            <VideoView
+                                android:id="@+id/product_review_video"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/image_test" />
+
+                            <ImageView
+                                android:id="@+id/video_thumbnail"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/test_image"
+                                android:visibility="gone" />
+
+                            <ImageView
+                                android:id="@+id/delete_review_video"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="top|end"
+                                android:background="#80000000"
+                                android:padding="4dp"
+                                android:src="@android:drawable/ic_delete" />
+
+                        </FrameLayout>
+
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 

@@ -8,10 +8,12 @@ import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import com.nhathuy.gas24h_7app.util.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 class AddReviewPresenter @Inject constructor(private val reviewRepository: ReviewRepository,
@@ -82,7 +84,9 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
     override fun onImageAdded(uri: Uri) {
         if(images.size<MAX_IMAGES){
             images.add(uri)
-            view?.updateImageCount(images.size,MAX_IMAGES)
+            view?.addImageToAdapter(uri.toString())
+            view?.updateImageCount(images.size, Constants.MAX_IMAGE_COUNT)
+            view?.enableImageAddButton(images.size < Constants.MAX_IMAGE_COUNT)
         }
         else{
             view?.showMessage("Maximum number of images reached")
@@ -92,20 +96,26 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
     override fun onImageRemoved(position: Int) {
         if (position in 0 until images.size) {
             images.removeAt(position)
+            view?.removeImageFromAdapter(position)
             view?.updateImageCount(images.size, MAX_IMAGES)
+            view?.enableImageAddButton(true)
         }
     }
 
     override fun onVideoAdded(uri: Uri) {
         if(video==null){
             video=uri
-            view?.updateImageCount(1,MAX_VIDEOS)
+            view?.onVideoAdded(uri)
+            view?.enableCoverImageAddButton(false)
+            view?.updateVideoCount(1,MAX_VIDEOS)
         }
     }
 
     override fun onVideoRemoved() {
         video=null
-        view?.updateImageCount(0,MAX_VIDEOS)
+        view?.clearVideo()
+        view?.enableCoverImageAddButton(true)
+        view?.updateVideoCount(0,MAX_VIDEOS)
     }
 
     override fun submitReview(rating: Float, comment: String) {
@@ -115,7 +125,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
                 val userId=userRepository.getCurrentUserId()
 
                 val review= Review(
-                    id = "",
+                    id = UUID.randomUUID().toString(),
                     productId = productId!!,
                     userId = userId!!,
                     rating = rating,
@@ -135,6 +145,7 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
                         view?.clearVideo()
                         images.clear()
                         video = null
+                        view?.navigateBack()
                     },
                     onFailure = { e ->
                         view?.showMessage("Failed to submit review: ${e.message}")

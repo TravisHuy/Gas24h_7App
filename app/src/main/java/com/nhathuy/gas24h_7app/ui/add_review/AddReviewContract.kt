@@ -12,9 +12,16 @@ interface AddReviewContract {
         fun showInformationProduct(product:Product)
         fun updateImageCount(count:Int,max:Int)
         fun updateVideoCount(count: Int, max: Int)
+        fun onImageAdded(uri: Uri)
+        fun onVideoAdded(uri: Uri)
+        fun addImageToAdapter(imageUrl: String)
+        fun removeImageFromAdapter(position: Int)
+        fun enableImageAddButton(enable:Boolean)
+        fun enableCoverImageAddButton(enable: Boolean)
         fun clearInputField()
         fun clearImages()
         fun clearVideo()
+        fun navigateBack()
     }
     interface Presenter{
         fun attachView(view:View)

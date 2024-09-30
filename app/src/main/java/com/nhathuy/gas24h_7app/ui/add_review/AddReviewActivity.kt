@@ -1,6 +1,8 @@
-
 package com.nhathuy.gas24h_7app.ui.add_review
 
+import android.graphics.Bitmap
+import android.media.MediaMetadata
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,49 +17,64 @@ import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ReviewStatus
 import com.nhathuy.gas24h_7app.databinding.ActivityAddReviewBinding
+import com.nhathuy.gas24h_7app.util.Constants
 import javax.inject.Inject
 
-class AddReviewActivity : AppCompatActivity(),AddReviewContract.View {
-    private lateinit var binding:ActivityAddReviewBinding
+class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
+    private lateinit var binding: ActivityAddReviewBinding
     private var orderId: String? = null
     private lateinit var adapter: ProductImageAdapter
+
     @Inject
     lateinit var presenter: AddReviewPresenter
 
-    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { presenter.onImageAdded(it) }
-    }
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { presenter.onImageAdded(it) }
+        }
 
-    private val videoPickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { presenter.onVideoAdded(it) }
-    }
+    private val videoPickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { presenter.onVideoAdded(it) }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityAddReviewBinding.inflate(layoutInflater)
+        binding = ActivityAddReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        orderId=intent.getStringExtra("ORDER_ID")
+        orderId = intent.getStringExtra("ORDER_ID")
 
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
         setupListeners()
         setupRecyclerView()
+        setupRatingBar()
+        updateImageCount(0, Constants.MAX_IMAGE_COUNT)
 
         orderId?.let {
             presenter.loadOrder(it)
-        } ?:run {
+        } ?: run {
             showMessage("Order ID not found")
             finish()
         }
     }
+
+    private fun setupRatingBar() {
+        binding.ratingStart.rating = 5f
+        updateReviewStatus(5f)
+    }
+
     private fun setupRecyclerView() {
         adapter = ProductImageAdapter(mutableListOf()) { position ->
             presenter.onImageRemoved(position)
         }
-        binding.productImagesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.productImagesRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.productImagesRecyclerView.adapter = adapter
     }
+
     private fun setupListeners() {
         binding.btnSend.setOnClickListener {
             val rating = binding.ratingStart.rating
@@ -78,10 +95,13 @@ class AddReviewActivity : AppCompatActivity(),AddReviewContract.View {
         binding.backButton.setOnClickListener {
             finish()
         }
-        binding.ratingStart.setOnRatingBarChangeListener { _, rating, _ ->
-            updateReviewStatus(rating)
+        binding.ratingStart.setOnRatingBarChangeListener { _, rating, fromUser ->
+            if (fromUser) {
+                updateReviewStatus(rating)
+            }
         }
     }
+
     private fun updateReviewStatus(rating: Float) {
         val reviewStatus = ReviewStatus.fromStars(rating.toInt())
         binding.tvQuality.text = reviewStatus.displayName
@@ -95,16 +115,17 @@ class AddReviewActivity : AppCompatActivity(),AddReviewContract.View {
             ReviewStatus.FOUR_STARS, ReviewStatus.FIVE_STARS -> getColor(android.R.color.holo_green_light)
         }
     }
+
     override fun showLoading() {
-        binding.progressBar.visibility=View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        binding.progressBar.visibility=View.GONE
+        binding.progressBar.visibility = View.GONE
     }
 
     override fun showMessage(message: String) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun showInformationProduct(product: Product) {
@@ -130,23 +151,92 @@ class AddReviewActivity : AppCompatActivity(),AddReviewContract.View {
         }
     }
 
+    override fun onImageAdded(uri: Uri) {
+        adapter.addImage(uri)
+        updateImageCount(adapter.itemCount, Constants.MAX_IMAGE_COUNT)
+    }
+
+    private fun createVideoThumbnail(videoUri: Uri): Bitmap? {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            retriever.setDataSource(this, videoUri)
+            retriever.getFrameAtTime(1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        } finally {
+            retriever.release()
+        }
+    }
+
+    override fun onVideoAdded(uri: Uri) {
+        val thumbnail = createVideoThumbnail(uri)
+        if (thumbnail != null) {
+            binding.productReviewVideo.visibility = View.GONE
+            binding.videoThumbnail.apply {
+                visibility = View.VISIBLE
+                setImageBitmap(thumbnail)
+            }
+        } else {
+            binding.productReviewVideo.apply {
+                visibility = View.VISIBLE
+                setVideoURI(uri)
+            }
+        }
+        updateVideoCount(1, 1)
+    }
+
+    override fun addImageToAdapter(imageUrl: String) {
+        adapter.addImage(Uri.parse(imageUrl))
+    }
+
+    override fun removeImageFromAdapter(position: Int) {
+        adapter.removeImage(position)
+    }
+
+    override fun enableImageAddButton(enable: Boolean) {
+        binding.addProductImage.isEnabled = enable
+        binding.addProductImage.alpha = if (enable) 1.0f else 0.5f
+    }
+
+    override fun enableCoverImageAddButton(enable: Boolean) {
+        binding.addProductReviewVideo.isEnabled = enable
+        binding.addProductReviewVideo.alpha = if (enable) 1.0f else 0.5f
+    }
+
     override fun clearInputField() {
         binding.edComment.text.clear()
         binding.ratingStart.rating = 0f
     }
 
     override fun clearImages() {
-       updateImageCount(0,3)
+        adapter.clearImages()
+        updateImageCount(0, 3)
     }
 
     override fun clearVideo() {
-        binding.productReviewVideo.stopPlayback()
-        binding.productReviewVideo.setVideoURI(null)
+        binding.productReviewVideo.apply {
+            stopPlayback()
+            setVideoURI(null)
+            visibility = View.GONE
+        }
+        binding.videoThumbnail.apply {
+            setImageBitmap(null)
+            visibility = View.GONE
+        }
         updateVideoCount(0, 1)
+    }
+
+    override fun navigateBack() {
+        onBackPressed()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
