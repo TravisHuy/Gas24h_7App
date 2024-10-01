@@ -19,6 +19,7 @@ interface DetailProductContract {
         fun setupCartBadge()
         fun navigateCart()
         fun navigateHotline()
+        fun navigateAllReviews()
         fun showAddToCartDialog(product: Product)
         fun showReviews(reviews: List<Review>,users:Map<String,User>)
         fun updateQuantity(quantity: Int)

@@ -40,6 +40,7 @@ import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
+import com.nhathuy.gas24h_7app.ui.all_review.AllReviewActivity
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
@@ -57,7 +58,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
     private lateinit var adapter: ReviewAdapter
 
     private lateinit var bottomSheetDialog: BottomSheetDialog
-
+    private var productId: String?= null
     @Inject
     lateinit var presenter: DetailProductPresenter
 
@@ -73,14 +74,14 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         presenter.attachView(this)
 
         //Inject dependencies and attach the presenter to the view
-        val productId = intent.getStringExtra("PRODUCT_ID") ?: ""
+        productId = intent.getStringExtra("PRODUCT_ID") ?: ""
         val categoryId = intent.getStringExtra("CATEGORY_ID") ?: ""
 
         // Load product details, suggestions , cartItem count
-        presenter.loadProductDetails(productId)
-        presenter.loadSuggestProducts(productId)
+        presenter.loadProductDetails(productId!!)
+        presenter.loadSuggestProducts(productId!!)
         presenter.loadCartItemCount()
-        presenter.loadReviews(productId)
+        presenter.loadReviews(productId!!)
 
         //set up UI components
         setupDescriptionToggle()
@@ -90,8 +91,8 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         backHome()
         setupHotline()
         setupRecReview()
+        setupListeners()
     }
-
 
     // set up the hotline button click listener
     private fun setupHotline() {
@@ -137,7 +138,15 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         adapter = ReviewAdapter()
         reviewRecyclerView.adapter = adapter
     }
-
+    private fun setupListeners() {
+        val layoutReviewProduct = binding.layoutReviewProduct
+        layoutReviewProduct.tvShowAll.setOnClickListener {
+            navigateAllReviews()
+        }
+        layoutReviewProduct.tvAllCountReview.setOnClickListener {
+            navigateAllReviews()
+        }
+    }
     private fun setupImageSlider() {
         val listImage = listOf(
             SlideModel(R.drawable.image_test, ScaleTypes.FIT),
@@ -250,6 +259,14 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
     override fun navigateHotline() {
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra("navigate_to", "hotline")
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    override fun navigateAllReviews() {
+        val intent = Intent(this,AllReviewActivity::class.java).apply {
+            putExtra("PRODUCT_ID",productId)
         }
         startActivity(intent)
         finish()
