@@ -1,22 +1,28 @@
 package com.nhathuy.gas24h_7app.ui.all_review
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ReviewAdapter
 import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.ActivityAllReviewBinding
+import com.nhathuy.gas24h_7app.databinding.DialogReviewStarsBinding
+import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import javax.inject.Inject
 
 class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
 
     private lateinit var binding:ActivityAllReviewBinding
     private lateinit var adapter: ReviewAdapter
+    private var productId:String? = null
     @Inject
     lateinit var presenter:AllReviewPresenter
 
@@ -28,10 +34,24 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
-        val productId = intent.getStringExtra("PRODUCT_ID") ?: ""
+        productId = intent.getStringExtra("PRODUCT_ID") ?: ""
 
         setupRecyclerView()
-        presenter.loadReviews(productId)
+        setupListeners()
+        presenter.loadReviews(productId!!)
+        presenter.loadCartItemCount()
+    }
+
+    private fun setupListeners() {
+        binding.linearReviewHaveImageVideo.setOnClickListener {
+            presenter.loadReviewsHaveVideoOrImage(productId!!)
+        }
+        binding.linearAllReview.setOnClickListener {
+            presenter.loadReviews(productId!!)
+        }
+        binding.linearFilterStar.setOnClickListener {
+            showDialogStar()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -60,5 +80,76 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
         val averageRating = reviews.map { it.rating }.average().toFloat()
         binding.ratingProductStar.rating = averageRating
         binding.tvNumberStars.text = String.format("%.1f/5", averageRating)
+        binding.tvCountReview.text = "(${reviews.size})"
+    }
+
+    override fun showReviewsHaveVideoOrImage(reviews: List<Review>, users: Map<String, User>) {
+        adapter.updateData(reviews,users)
+        adapter.showAllReviews()
+        binding.tvCountSizeImageVideo.text = "(${reviews.size})"
+    }
+
+    override fun showFilteredReviews(reviews: List<Review>, users: Map<String, User>) {
+        adapter.updateData(reviews,users)
+        adapter.showAllReviews()
+    }
+
+    override fun showDialogStar() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogReviewStarsBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        val checkBoxes = listOf(
+            binding.checkbox5Star,
+            binding.checkbox4Star,
+            binding.checkbox3Star,
+            binding.checkbox2Star,
+            binding.checkbox1Star
+        )
+
+        checkBoxes.forEachIndexed { index, checkBox ->
+            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    checkBoxes.forEachIndexed { otherIndex, otherCheckBox ->
+                        if (otherIndex != index) {
+                            otherCheckBox.isChecked = false
+                        }
+                    }
+                }
+            }
+        }
+        binding.btnApplyFilter.setOnClickListener {
+            val selectedRating = when {
+                binding.checkbox5Star.isChecked -> 5f
+                binding.checkbox4Star.isChecked -> 4f
+                binding.checkbox3Star.isChecked -> 3f
+                binding.checkbox2Star.isChecked -> 2f
+                binding.checkbox1Star.isChecked -> 1f
+                else -> null
+            }
+
+            presenter.loadReviewsByRating(productId!!, selectedRating!!)
+            bottomSheetDialog.dismiss()
+        }
+        binding.btnCancelFilter.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    override fun updateCartItemCount(count: Int) {
+        val cartBadge = binding.buyBackCartItemContainer.findViewById<TextView>(R.id.cart_badge)
+        if(count>0){
+            cartBadge.visibility = View.VISIBLE
+            cartBadge.text = if (count > 99) "99+" else count.toString()
+        }
+        else{
+            cartBadge.visibility= View.GONE
+        }
+    }
+
+    override fun navigateCart() {
+        startActivity(Intent(this, CartActivity::class.java))
     }
 }

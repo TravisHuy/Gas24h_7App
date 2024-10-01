@@ -9,8 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 
 class AllReviewPresenter @Inject constructor(private val userRepository: UserRepository,
                                              private val reviewRepository: ReviewRepository,
@@ -66,6 +66,96 @@ class AllReviewPresenter @Inject constructor(private val userRepository: UserRep
                 view?.showMessage("Failed load review: ${e.message}")
             }
             finally {
+                view?.hideLoading()
+            }
+        }
+    }
+
+    override fun loadCartItemCount() {
+        coroutineScope.launch {
+            try {
+                val userId = userRepository.getCurrentUserId()
+                if(userId!=null){
+                    val result = cartRepository.getCartItemCount(userId)
+                    result.fold(
+                        onSuccess = { count ->
+                            view?.updateCartItemCount(count)
+                        },
+                        onFailure = { e->
+                            view?.showMessage(e.message?:"Failed to load cart item count")
+                        }
+                    )
+                }
+            }
+            catch (e:Exception){
+                view?.showMessage(e.message?:"Failed to load cart item count")
+            }
+        }
+    }
+
+    override fun loadReviewsHaveVideoOrImage(productId: String) {
+        coroutineScope.launch {
+            try {
+                val result = reviewRepository.getAllReviewHaveVideoOrImage(productId)
+                result.fold(
+                    onSuccess = {reviews->
+                        val userId = reviews.map {
+                            it.userId
+                        }
+                        val userMap = mutableMapOf<String, User>()
+                        val userJobs = userId.map {
+                                userId ->
+                            async(Dispatchers.IO) {
+                                val userResult = userRepository.getUser(userId)
+                                userResult.getOrNull()?.let {
+                                        user -> userMap[userId] = user
+                                }
+                            }
+                        }
+                        userJobs.forEach {
+                            it.await()
+                        }
+                        view?.showReviewsHaveVideoOrImage(reviews,userMap)
+
+                    },
+                    onFailure = {
+                            e->
+                        view?.showMessage("Failed load review ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+
+            }
+        }
+    }
+
+    override fun loadReviewsByRating(productId: String, rating: Float) {
+        coroutineScope.launch {
+            try {
+                view?.showLoading()
+                val result = reviewRepository.getAllReviewsRating(productId, rating)
+
+                result.fold(
+                    onSuccess = { reviews ->
+                        val userIds = reviews.map { it.userId }.distinct()
+                        val userMap = mutableMapOf<String, User>()
+                        val userJobs = userIds.map { userId ->
+                            async(Dispatchers.IO) {
+                                val userResult = userRepository.getUser(userId)
+                                userResult.getOrNull()?.let { user -> userMap[userId] = user }
+                            }
+                        }
+                        userJobs.forEach { it.await() }
+                        view?.showFilteredReviews(reviews, userMap)
+                    },
+                    onFailure = { e ->
+                        view?.showMessage("Failed to load filtered reviews: ${e.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                view?.showMessage("Failed to load filtered reviews: ${e.message}")
+            } finally {
                 view?.hideLoading()
             }
         }

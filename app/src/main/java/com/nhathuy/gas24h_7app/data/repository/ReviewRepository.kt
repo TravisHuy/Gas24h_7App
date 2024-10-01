@@ -82,4 +82,46 @@ class ReviewRepository @Inject constructor(private val db:FirebaseFirestore,
             }
         }
     }
+    //get all review with productId and rating
+    suspend fun getAllReviewsRating(productId: String,rating:Float) :Result<List<Review>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("reviews")
+                    .whereEqualTo("productId" , productId)
+                    .whereEqualTo("rating", rating)
+                    .get().await()
+
+                val reviews = querySnapshot.documents.mapNotNull {
+                    it.toObject(Review::class.java)
+                }
+
+                Result.success(reviews)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+    //get all review with productId have image and video
+    suspend fun getAllReviewHaveVideoOrImage(productId: String) : Result<List<Review>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("reviews")
+                    .whereEqualTo("productId" , productId)
+                    .get().await()
+
+                val reviews = querySnapshot.documents.mapNotNull { document->
+                   val review = document.toObject(Review::class.java)
+                   review?.takeIf {
+                       (it.video.isNotEmpty() || it.images.isNotEmpty())
+                   }
+                }
+
+                Result.success(reviews)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
 }

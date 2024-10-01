@@ -103,7 +103,7 @@
             android:id="@+id/contentScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,6 +140,7 @@
                         android:progressTint="#FFA500"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/linear_all_review"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -162,6 +163,7 @@
                             android:layout_gravity="center"
                             />
                         <TextView
+                            android:id="@+id/tv_count_review"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(8,9k)"
@@ -170,6 +172,7 @@
                             />
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/linear_review_have_image_video"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -186,6 +189,7 @@
                             android:layout_gravity="center"
                             />
                         <TextView
+                            android:id="@+id/tv_count_size_image_video"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(8,9k)"
@@ -194,6 +198,7 @@
                             />
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/linear_filter_star"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
