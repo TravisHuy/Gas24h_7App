@@ -31,6 +31,7 @@ import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
+import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMeActivity
 import javax.inject.Inject
 
 
@@ -96,6 +97,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         }
         binding.linearAllVoucher.setOnClickListener {
             navigateAllVouchers()
+        }
+        binding.linearReviewOfMe.setOnClickListener {
+            navigateReviewOfMe()
         }
     }
 
@@ -230,6 +234,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     override fun navigateAllVouchers() {
         startActivity(Intent(requireContext(),AllVoucherActivity::class.java))
+    }
+
+    override fun navigateReviewOfMe() {
+        startActivity(Intent(requireActivity(),ReviewOfMeActivity::class.java))
     }
 
     private fun logout() {

@@ -480,6 +480,7 @@
             android:layout_marginTop="15dp"
             android:background="@color/dark_text_secondary"/>
         <LinearLayout
+            android:id="@+id/linear_review_of_me"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"

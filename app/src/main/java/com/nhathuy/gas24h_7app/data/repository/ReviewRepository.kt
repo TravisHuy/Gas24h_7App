@@ -62,7 +62,25 @@ class ReviewRepository @Inject constructor(private val db:FirebaseFirestore,
             }
         }
     }
+    // get all review with productId
+    suspend fun getAllReviewsUserId(userId:String) : Result<List<Review>>{
+        return withContext(Dispatchers.IO){
+            try {
+                val querySnapshot = db.collection("reviews")
+                    .whereEqualTo("userId" , userId)
+                    .get().await()
 
+                val reviews = querySnapshot.documents.mapNotNull {
+                    it.toObject(Review::class.java)
+                }
+
+                Result.success(reviews)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
     // get all review with productId
     suspend fun getAllReviewsWithProductId(productId:String) : Result<List<Review>>{
         return withContext(Dispatchers.IO){

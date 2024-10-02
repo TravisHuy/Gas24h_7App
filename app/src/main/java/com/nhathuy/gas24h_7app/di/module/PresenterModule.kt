@@ -53,6 +53,7 @@ import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderContract
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
+import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMePresenter
 import com.nhathuy.gas24h_7app.ui.verify.VerificationContract
 import com.nhathuy.gas24h_7app.ui.verify.VerificationPresenter
 import dagger.Module
@@ -186,5 +187,11 @@ class PresenterModule {
     @Singleton
     fun provideAllReviewPresenter(userRepository: UserRepository,reviewRepository: ReviewRepository, cartRepository: CartRepository):AllReviewPresenter{
         return AllReviewPresenter(userRepository,reviewRepository, cartRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewOfMePresenter(userRepository: UserRepository,reviewRepository: ReviewRepository, productRepository: ProductRepository, orderRepository: OrderRepository):ReviewOfMePresenter{
+        return ReviewOfMePresenter(userRepository, reviewRepository, productRepository, orderRepository)
     }
 }

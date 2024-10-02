@@ -23,6 +23,7 @@ interface ProfileContract {
         fun navigateCart()
         fun navigateLogin()
         fun navigateAllVouchers()
+        fun navigateReviewOfMe()
     }
     interface Presenter{
         fun attachView(view:View)
