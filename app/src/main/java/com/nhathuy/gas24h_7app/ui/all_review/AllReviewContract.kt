@@ -13,6 +13,8 @@ interface AllReviewContract {
         fun showFilteredReviews(reviews: List<Review>, users: Map<String, User>)
         fun showDialogStar()
         fun updateCartItemCount(count: Int)
+        fun updateReviewsCounts(totalCount: Int, imageVideoCount:Int)
+        fun updateStartCount(starCounts:  Map<Int,Int>)
         fun navigateCart()
     }
     interface Presenter{

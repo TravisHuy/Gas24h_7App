@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.all_review
 
+import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
@@ -55,7 +56,7 @@ class AllReviewPresenter @Inject constructor(private val userRepository: UserRep
                             it.await()
                         }
                         view?.showReviews(reviews,userMap)
-
+                        updateCounts(reviews)
                     },
                     onFailure = {
                             e->
@@ -69,6 +70,15 @@ class AllReviewPresenter @Inject constructor(private val userRepository: UserRep
                 view?.hideLoading()
             }
         }
+    }
+
+    private fun updateCounts(reviews: List<Review>) {
+        val totalCount = reviews.size
+        val imageVideoCount = reviews.count { it.images.isNotEmpty() || it.video.isNotEmpty() }
+        val starCounts = reviews.groupingBy { it.rating.toInt() }.eachCount()
+
+        view?.updateReviewsCounts(totalCount, imageVideoCount)
+        view?.updateStartCount(starCounts)
     }
 
     override fun loadCartItemCount() {
@@ -116,7 +126,6 @@ class AllReviewPresenter @Inject constructor(private val userRepository: UserRep
                             it.await()
                         }
                         view?.showReviewsHaveVideoOrImage(reviews,userMap)
-
                     },
                     onFailure = {
                             e->

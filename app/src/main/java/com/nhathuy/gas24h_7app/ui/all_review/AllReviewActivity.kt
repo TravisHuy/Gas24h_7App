@@ -22,7 +22,9 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
 
     private lateinit var binding:ActivityAllReviewBinding
     private lateinit var adapter: ReviewAdapter
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     private var productId:String? = null
+    private var starCounts: Map<Int, Int> = emptyMap()
     @Inject
     lateinit var presenter:AllReviewPresenter
 
@@ -51,6 +53,9 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
         }
         binding.linearFilterStar.setOnClickListener {
             showDialogStar()
+        }
+        binding.backButton.setOnClickListener {
+            onBackPressed()
         }
     }
 
@@ -95,9 +100,16 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
     }
 
     override fun showDialogStar() {
-        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog = BottomSheetDialog(this)
         val binding = DialogReviewStarsBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
+
+        // Update star counts here
+        binding.textCount5Star.text = starCounts[5]?.toString() ?: "0"
+        binding.textCount4Star.text = starCounts[4]?.toString() ?: "0"
+        binding.textCount3Star.text = starCounts[3]?.toString() ?: "0"
+        binding.textCount2Star.text = starCounts[2]?.toString() ?: "0"
+        binding.textCount1Star.text = starCounts[1]?.toString() ?: "0"
 
         val checkBoxes = listOf(
             binding.checkbox5Star,
@@ -149,7 +161,24 @@ class AllReviewActivity : AppCompatActivity(),AllReviewContract.View {
         }
     }
 
+    override fun updateReviewsCounts(totalCount: Int, imageVideoCount: Int) {
+        binding.tvCountReview.text = "($totalCount)"
+        binding.tvCountSizeImageVideo.text = "($imageVideoCount)"
+    }
+
+    override fun updateStartCount(starCounts: Map<Int, Int>) {
+        this.starCounts = starCounts
+        // If the dialog is showing, update it
+        if (::bottomSheetDialog.isInitialized && bottomSheetDialog.isShowing) {
+            showDialogStar()
+        }
+    }
+
     override fun navigateCart() {
         startActivity(Intent(this, CartActivity::class.java))
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
