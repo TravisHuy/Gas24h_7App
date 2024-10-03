@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.ui.add_review
 
 import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.OrderStatus
+import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.ReviewStatus
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
@@ -17,7 +18,6 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
-
 class AddReviewPresenter @Inject constructor(private val reviewRepository: ReviewRepository,
                                              private val userRepository: UserRepository,
                                              private val productRepository: ProductRepository,
@@ -28,13 +28,10 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
-    private var productId:String?=null
-    private var orderId_current:String? = null
-    private val images = mutableListOf<Uri>()
-    private var video: Uri? = null
+    private var orderId: String? = null
+    private val reviews = mutableListOf<Review>()
+    private val products = mutableListOf<Product>()
 
-    private val MAX_IMAGES = 3
-    private val MAX_VIDEOS = 1
     override fun attachView(view: AddReviewContract.View) {
         this.view = view
     }
@@ -46,115 +43,95 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
 
     //load information order
     override fun loadOrder(orderId: String) {
+        this.orderId= orderId
         coroutineScope.launch {
             try {
-                val result = orderRepository.getOrderId(orderId)
-                orderId_current=orderId
-                result.fold(
-                    onSuccess = {order->
-                        productId = order.items.firstOrNull()?.productId
-                        productId?.let { loadProduct(it) }
-                    },
-                    onFailure = {e->
-                        view?.showMessage("Failed to load order: ${e.message}")
-                    }
-                )
+                val order = orderRepository.getOrderId(orderId).getOrNull()
+                val productIds = order!!.items.map { it.productId }
+                products.clear()
+                reviews.clear()
+                productIds.forEach {
+                        productId ->
+                    val product = productRepository.getProductById(productId).getOrNull()
+                    products.add(product!!)
+                    reviews.add(createInitialReview(product.id))
+                }
+                view?.updateProductList(products)
+                reviews.forEachIndexed { index, _ ->
+                    view?.updateImageAddButton(index,true)
+                    view?.updateVideoAddButton(index, true)
+                }
             }
             catch (e:Exception){
                 view?.showMessage("Failed to load order: ${e.message}")
             }
         }
     }
-    //load information product
-    private fun loadProduct(productId:String) {
-        coroutineScope.launch {
-            try {
-                val result = productRepository.getProductById(productId)
-                result.fold(
-                    onSuccess = { product->
-                        view?.showInformationProduct(product)
-                    },
-                    onFailure = { e->
-                        view?.showMessage("Failed load product ${e.message}")
-                    }
-                )
-            }
-            catch (e:Exception){
-                view?.showMessage("Failed load product ${e.message}")
-            }
-        }
+
+    private fun createInitialReview(productId: String): Review {
+        return Review(
+            id = UUID.randomUUID().toString(),
+            productId = productId,
+            userId = userRepository.getCurrentUserId()?:"",
+            rating = 0f,
+            comment = "",
+            date = Date(),
+            images = emptyList(),
+            video = "",
+            reviewStatus = ReviewStatus.FIVE_STARS
+        )
     }
-    override fun onImageAdded(uri: Uri) {
-        if(images.size<MAX_IMAGES){
-            images.add(uri)
-            view?.addImageToAdapter(uri.toString())
-            view?.updateImageCount(images.size, Constants.MAX_IMAGE_COUNT)
-            view?.enableImageAddButton(images.size < Constants.MAX_IMAGE_COUNT)
+
+    override fun onImageAdded(position:Int,uri: Uri) {
+        if(reviews[position].images.size<Constants.MAX_IMAGES){
+            val updateImages = reviews[position].images.toMutableList().apply { add(uri.toString()) }
+            reviews[position] =reviews[position].copy(images = updateImages)
+
+            view?.updateReviewUI(position, reviews[position])
+            view?.updateImageAddButton(position,updateImages.size<Constants.MAX_IMAGES)
         }
         else{
-            view?.showMessage("Maximum number of images reached")
+            view?.showMessage("Maximum number of images reached for this product")
         }
     }
 
-    override fun onImageRemoved(position: Int) {
-        if (position in 0 until images.size) {
-            images.removeAt(position)
-            view?.removeImageFromAdapter(position)
-            view?.updateImageCount(images.size, MAX_IMAGES)
-            view?.enableImageAddButton(true)
-        }
+    override fun onImageRemoved(position: Int,imagePosition:Int) {
+        val updatedImages = reviews[position].images.toMutableList().apply { removeAt(imagePosition) }
+        reviews[position] = reviews[position].copy(images = updatedImages)
+        view?.updateReviewUI(position, reviews[position])
+        view?.updateImageAddButton(position, true)
     }
 
-    override fun onVideoAdded(uri: Uri) {
-        if(video==null){
-            video=uri
-            view?.onVideoAdded(uri)
-            view?.enableCoverImageAddButton(false)
-            view?.updateVideoCount(1,MAX_VIDEOS)
-        }
+    override fun onVideoAdded(position: Int,uri: Uri) {
+        reviews[position] = reviews[position].copy(video = uri.toString())
+        view?.updateReviewUI(position, reviews[position])
+        view?.updateVideoAddButton(position, false)
     }
 
-    override fun onVideoRemoved() {
-        video=null
-        view?.clearVideo()
-        view?.enableCoverImageAddButton(true)
-        view?.updateVideoCount(0,MAX_VIDEOS)
+    override fun onVideoRemoved(position: Int) {
+        reviews[position] = reviews[position].copy(video = "")
+        view?.updateReviewUI(position, reviews[position])
+        view?.updateVideoAddButton(position, true)
     }
-
-    override fun submitReview(rating: Float, comment: String) {
+    override fun updateReview(position: Int, rating: Float, comment: String) {
+        reviews[position] = reviews[position].copy(
+            rating = rating,
+            comment = comment,
+            reviewStatus = ReviewStatus.fromStars(rating.toInt())
+        )
+        view?.updateReviewUI(position, reviews[position])
+    }
+    override fun submitReviews() {
         view?.showLoading()
         coroutineScope.launch {
             try {
-                val userId=userRepository.getCurrentUserId()
-
-                val review= Review(
-                    id = UUID.randomUUID().toString(),
-                    productId = productId!!,
-                    userId = userId!!,
-                    rating = rating,
-                    comment = comment,
-                    date = Date(),
-                    images = emptyList(),
-                    video = "",
-                    reviewStatus = ReviewStatus.fromStars(rating.toInt())
-                )
-
-                val result = reviewRepository.createReview(review,images,video)
-                result.fold(
-                    onSuccess = {
-                        orderRepository.updateOrderStatus(orderId_current!!,OrderStatus.RATED)
-                        view?.showMessage("Review submitted successfully")
-                        view?.clearInputField()
-                        view?.clearImages()
-                        view?.clearVideo()
-                        images.clear()
-                        video = null
-                        view?.navigateBack()
-                    },
-                    onFailure = { e ->
-                        view?.showMessage("Failed to submit review: ${e.message}")
-                    }
-                )
+                reviews.forEach {
+                        review ->
+                    reviewRepository.createReview(review).getOrThrow()
+                }
+                orderRepository.updateOrderStatus(orderId!!,OrderStatus.RATED)
+                view?.showMessage("Reviews submitted successfully")
+                view?.navigateBack()
             }
             catch (e:Exception){
                 view?.showMessage("Failed to submit review: ${e.message}")

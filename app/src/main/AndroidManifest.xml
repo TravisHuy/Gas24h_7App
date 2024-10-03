@@ -26,6 +26,11 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".ui.test.MainActivity"
+            android:exported="false" >
+
+        </activity>
+        <activity
             android:name=".ui.review_of_me.ReviewOfMeActivity"
             android:exported="false" />
         <activity
@@ -42,14 +47,10 @@
             android:exported="false" />
         <activity
             android:name=".admin.order.shipping.ShippingActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".admin.order.pending_confirmation.PendingConfirmationActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".ui.purchased_order.PurchasedOrderActivity"
             android:exported="false" />
@@ -67,7 +68,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.add_review.AddReviewActivity"
-            android:exported="false" />
+            android:exported="false">
+
+        </activity>
         <activity
             android:name=".admin.voucher.detail_product.VoucherDetailProductActivity"
             android:exported="false" />

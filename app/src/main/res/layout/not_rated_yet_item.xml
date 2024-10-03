@@ -58,4 +58,24 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C6C6"
+        android:layout_marginTop="10dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Đánh giá"
+        app:backgroundTint="#FA4B3E"
+        app:cornerRadius="4dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="#FFFFFF"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        />
 </LinearLayout>

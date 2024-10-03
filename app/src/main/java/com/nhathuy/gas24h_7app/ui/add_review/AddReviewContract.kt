@@ -1,36 +1,30 @@
-
 package com.nhathuy.gas24h_7app.ui.add_review
 
 import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.Review
 
 interface AddReviewContract {
-    interface View{
+    interface View {
         fun showLoading()
         fun hideLoading()
-        fun showMessage(message:String)
-        fun showInformationProduct(product:Product)
-        fun updateImageCount(count:Int,max:Int)
-        fun updateVideoCount(count: Int, max: Int)
-        fun onImageAdded(uri: Uri)
-        fun onVideoAdded(uri: Uri)
-        fun addImageToAdapter(imageUrl: String)
-        fun removeImageFromAdapter(position: Int)
-        fun enableImageAddButton(enable:Boolean)
-        fun enableCoverImageAddButton(enable: Boolean)
-        fun clearInputField()
-        fun clearImages()
-        fun clearVideo()
+        fun showMessage(message: String)
+        fun updateProductList(products: List<Product>)
+        fun updateReviewUI(position: Int, review: Review)
+        fun updateImageAddButton(position: Int, enabled: Boolean)
+        fun updateVideoAddButton(position: Int, enabled: Boolean)
         fun navigateBack()
     }
-    interface Presenter{
-        fun attachView(view:View)
+
+    interface Presenter {
+        fun attachView(view: View)
         fun detachView()
-        fun loadOrder(orderId:String)
-        fun onImageAdded(uri: Uri)
-        fun onImageRemoved(position:Int)
-        fun onVideoAdded(uri: Uri)
-        fun onVideoRemoved()
-        fun submitReview(rating:Float, comment:String)
+        fun loadOrder(orderId: String)
+        fun onImageAdded(position: Int, uri: Uri)
+        fun onImageRemoved(position: Int, imagePosition: Int)
+        fun onVideoAdded(position: Int, uri: Uri)
+        fun onVideoRemoved(position: Int)
+        fun updateReview(position: Int, rating: Float, comment: String)
+        fun submitReviews()
     }
 }

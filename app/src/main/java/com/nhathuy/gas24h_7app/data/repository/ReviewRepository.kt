@@ -13,10 +13,10 @@ import javax.inject.Inject
 class ReviewRepository @Inject constructor(private val db:FirebaseFirestore,
                                            private val storage: FirebaseStorage
 ){
-    suspend fun createReview(review: Review, imageUris:List<Uri>, videoUri:Uri?): Result<Unit>{
-        return try {
-            val imageUrls = uploadImages(imageUris)
-            val videoUrl = videoUri?.let { uploadVideo(it) }
+    suspend fun createReview(review: Review): Result<Unit> = withContext(Dispatchers.IO){
+        try {
+            val imageUrls = uploadImages(review.images.map { Uri.parse(it) })
+            val videoUrl = review.video.takeIf { it.isNotEmpty() }?.let { uploadVideo(Uri.parse(it)) }
 
             val updatedReview = review.copy(
                 images = imageUrls,

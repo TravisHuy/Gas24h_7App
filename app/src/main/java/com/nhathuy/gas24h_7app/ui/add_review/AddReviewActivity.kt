@@ -10,12 +10,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.adapter.AddReviewItemAdapter
 import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.ReviewStatus
 import com.nhathuy.gas24h_7app.databinding.ActivityAddReviewBinding
 import com.nhathuy.gas24h_7app.util.Constants
@@ -23,91 +26,89 @@ import javax.inject.Inject
 
 class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
     private lateinit var binding: ActivityAddReviewBinding
-    private var orderId: String? = null
-    private lateinit var adapter: ProductImageAdapter
+    private lateinit var adapter: AddReviewItemAdapter
 
     @Inject
     lateinit var presenter: AddReviewPresenter
 
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let { presenter.onImageAdded(it) }
+            uri?.let {
+                currentImagePosition?.let { position ->
+                    presenter.onImageAdded(
+                        position,
+                        uri
+                    )
+                }
+            }
         }
 
     private val videoPickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let { presenter.onVideoAdded(it) }
+            uri?.let {
+                currentVideoPosition?.let { position ->
+                    presenter.onVideoAdded(
+                        position,
+                        uri
+                    )
+                }
+            }
         }
-
+    private var currentImagePosition: Int? = null
+    private var currentVideoPosition: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        orderId = intent.getStringExtra("ORDER_ID")
-
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
 
-        setupListeners()
-        setupRecyclerView()
-        setupRatingBar()
-        updateImageCount(0, Constants.MAX_IMAGE_COUNT)
-
-        orderId?.let {
+        intent.getStringExtra("ORDER_ID")?.let {
             presenter.loadOrder(it)
         } ?: run {
             showMessage("Order ID not found")
             finish()
         }
-    }
 
-    private fun setupRatingBar() {
-        binding.ratingStart.rating = 5f
-        updateReviewStatus(5f)
+        setupListeners()
+        setupRecyclerView()
+
     }
 
     private fun setupRecyclerView() {
-        adapter = ProductImageAdapter(mutableListOf()) { position ->
-            presenter.onImageRemoved(position)
-        }
-        binding.productImagesRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.productImagesRecyclerView.adapter = adapter
+        adapter = AddReviewItemAdapter(
+            onReviewChanged = { position, rating, comment ->
+                presenter.updateReview(position, rating, comment)
+            },
+            onAddImage = { position ->
+                currentImagePosition = position
+                imagePickerLauncher.launch("image/*")
+            },
+            onRemoveImage = { position, imagePosition ->
+                presenter.onImageRemoved(position, imagePosition)
+            },
+            onAddVideo = { position ->
+                currentVideoPosition = position
+                videoPickerLauncher.launch("video/*")
+            },
+            onRemoveVideo = { position ->
+                presenter.onVideoRemoved(position)
+            }
+        )
+
+        binding.productsRecyclerView.adapter = adapter
+        binding.productsRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun setupListeners() {
         binding.btnSend.setOnClickListener {
-            val rating = binding.ratingStart.rating
-            val comment = binding.edComment.text.toString()
-            presenter.submitReview(rating, comment)
+            presenter.submitReviews()
         }
-        binding.addProductImage.setOnClickListener {
-            imagePickerLauncher.launch("image/*")
-        }
-
-        binding.addProductReviewVideo.setOnClickListener {
-            videoPickerLauncher.launch("video/*")
-        }
-        binding.deleteReviewVideo.setOnClickListener {
-            presenter.onVideoRemoved()
-        }
-
         binding.backButton.setOnClickListener {
             finish()
         }
-        binding.ratingStart.setOnRatingBarChangeListener { _, rating, fromUser ->
-            if (fromUser) {
-                updateReviewStatus(rating)
-            }
-        }
     }
 
-    private fun updateReviewStatus(rating: Float) {
-        val reviewStatus = ReviewStatus.fromStars(rating.toInt())
-        binding.tvQuality.text = reviewStatus.displayName
-        binding.tvQuality.setTextColor(getColorForReviewStatus(reviewStatus))
-    }
 
     private fun getColorForReviewStatus(status: ReviewStatus): Int {
         return when (status) {
@@ -129,33 +130,22 @@ class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showInformationProduct(product: Product) {
-        with(binding) {
-            tvProductName.text = product.name
-            Glide.with(this@AddReviewActivity)
-                .load(product.coverImageUrl)
-                .into(productImage)
-        }
+    override fun updateProductList(products: List<Product>) {
+        adapter.setProducts(products)
     }
 
-    override fun updateImageCount(count: Int, max: Int) {
-        binding.addProductTvCount.text = "Thêm hình\nảnh($count/$max)"
+    override fun updateReviewUI(position: Int, review: Review) {
+        adapter.updateReview(position,review)
     }
 
-    override fun updateVideoCount(count: Int, max: Int) {
-        if (count > 0) {
-            binding.cardViewCoverImage.visibility = View.VISIBLE
-            binding.addProductReviewVideo.isEnabled = false
-        } else {
-            binding.cardViewCoverImage.visibility = View.GONE
-            binding.addProductReviewVideo.isEnabled = true
-        }
+    override fun updateImageAddButton(position: Int, enabled: Boolean) {
+        adapter.updateImageAddButton(position, enabled)
     }
 
-    override fun onImageAdded(uri: Uri) {
-        adapter.addImage(uri)
-        updateImageCount(adapter.itemCount, Constants.MAX_IMAGE_COUNT)
+    override fun updateVideoAddButton(position: Int, enabled: Boolean) {
+        adapter.updateVideoAddButton(position, enabled)
     }
+
 
     private fun createVideoThumbnail(videoUri: Uri): Bitmap? {
         val retriever = MediaMetadataRetriever()
@@ -170,63 +160,6 @@ class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
         }
     }
 
-    override fun onVideoAdded(uri: Uri) {
-        val thumbnail = createVideoThumbnail(uri)
-        if (thumbnail != null) {
-            binding.productReviewVideo.visibility = View.GONE
-            binding.videoThumbnail.apply {
-                visibility = View.VISIBLE
-                setImageBitmap(thumbnail)
-            }
-        } else {
-            binding.productReviewVideo.apply {
-                visibility = View.VISIBLE
-                setVideoURI(uri)
-            }
-        }
-        updateVideoCount(1, 1)
-    }
-
-    override fun addImageToAdapter(imageUrl: String) {
-        adapter.addImage(Uri.parse(imageUrl))
-    }
-
-    override fun removeImageFromAdapter(position: Int) {
-        adapter.removeImage(position)
-    }
-
-    override fun enableImageAddButton(enable: Boolean) {
-        binding.addProductImage.isEnabled = enable
-        binding.addProductImage.alpha = if (enable) 1.0f else 0.5f
-    }
-
-    override fun enableCoverImageAddButton(enable: Boolean) {
-        binding.addProductReviewVideo.isEnabled = enable
-        binding.addProductReviewVideo.alpha = if (enable) 1.0f else 0.5f
-    }
-
-    override fun clearInputField() {
-        binding.edComment.text.clear()
-        binding.ratingStart.rating = 0f
-    }
-
-    override fun clearImages() {
-        adapter.clearImages()
-        updateImageCount(0, 3)
-    }
-
-    override fun clearVideo() {
-        binding.productReviewVideo.apply {
-            stopPlayback()
-            setVideoURI(null)
-            visibility = View.GONE
-        }
-        binding.videoThumbnail.apply {
-            setImageBitmap(null)
-            visibility = View.GONE
-        }
-        updateVideoCount(0, 1)
-    }
 
     override fun navigateBack() {
         setResult(Activity.RESULT_OK)
