@@ -27,11 +27,6 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
     private var view:AddReviewContract.View? = null
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
-
-    private var orderId: String? = null
-    private val reviews = mutableListOf<Review>()
-    private val products = mutableListOf<Product>()
-
     override fun attachView(view: AddReviewContract.View) {
         this.view = view
     }
@@ -41,105 +36,56 @@ class AddReviewPresenter @Inject constructor(private val reviewRepository: Revie
         job.cancel()
     }
 
-    //load information order
-    override fun loadOrder(orderId: String) {
-        this.orderId= orderId
+    override fun loadProductsFromOrder(orderId: String) {
         coroutineScope.launch {
             try {
-                val order = orderRepository.getOrderId(orderId).getOrNull()
-                val productIds = order!!.items.map { it.productId }
-                products.clear()
-                reviews.clear()
-                productIds.forEach {
-                        productId ->
-                    val product = productRepository.getProductById(productId).getOrNull()
-                    products.add(product!!)
-                    reviews.add(createInitialReview(product.id))
-                }
-                view?.updateProductList(products)
-                reviews.forEachIndexed { index, _ ->
-                    view?.updateImageAddButton(index,true)
-                    view?.updateVideoAddButton(index, true)
-                }
+                view?.showLoading()
+                val order = orderRepository.getOrderId(orderId).getOrThrow()
+                val productIds = order.items.map { it.productId }
+                val products = productRepository.getProductByIds(productIds).getOrThrow()
+                view?.showProducts(products)
             }
             catch (e:Exception){
-                view?.showMessage("Failed to load order: ${e.message}")
-            }
-        }
-    }
-
-    private fun createInitialReview(productId: String): Review {
-        return Review(
-            id = UUID.randomUUID().toString(),
-            productId = productId,
-            userId = userRepository.getCurrentUserId()?:"",
-            rating = 0f,
-            comment = "",
-            date = Date(),
-            images = emptyList(),
-            video = "",
-            reviewStatus = ReviewStatus.FIVE_STARS
-        )
-    }
-
-    override fun onImageAdded(position:Int,uri: Uri) {
-        if(reviews[position].images.size<Constants.MAX_IMAGES){
-            val updateImages = reviews[position].images.toMutableList().apply { add(uri.toString()) }
-            reviews[position] =reviews[position].copy(images = updateImages)
-
-            view?.updateReviewUI(position, reviews[position])
-            view?.updateImageAddButton(position,updateImages.size<Constants.MAX_IMAGES)
-        }
-        else{
-            view?.showMessage("Maximum number of images reached for this product")
-        }
-    }
-
-    override fun onImageRemoved(position: Int,imagePosition:Int) {
-        val updatedImages = reviews[position].images.toMutableList().apply { removeAt(imagePosition) }
-        reviews[position] = reviews[position].copy(images = updatedImages)
-        view?.updateReviewUI(position, reviews[position])
-        view?.updateImageAddButton(position, true)
-    }
-
-    override fun onVideoAdded(position: Int,uri: Uri) {
-        reviews[position] = reviews[position].copy(video = uri.toString())
-        view?.updateReviewUI(position, reviews[position])
-        view?.updateVideoAddButton(position, false)
-    }
-
-    override fun onVideoRemoved(position: Int) {
-        reviews[position] = reviews[position].copy(video = "")
-        view?.updateReviewUI(position, reviews[position])
-        view?.updateVideoAddButton(position, true)
-    }
-    override fun updateReview(position: Int, rating: Float, comment: String) {
-        reviews[position] = reviews[position].copy(
-            rating = rating,
-            comment = comment,
-            reviewStatus = ReviewStatus.fromStars(rating.toInt())
-        )
-        view?.updateReviewUI(position, reviews[position])
-    }
-    override fun submitReviews() {
-        view?.showLoading()
-        coroutineScope.launch {
-            try {
-                reviews.forEach {
-                        review ->
-                    reviewRepository.createReview(review).getOrThrow()
-                }
-                orderRepository.updateOrderStatus(orderId!!,OrderStatus.RATED)
-                view?.showMessage("Reviews submitted successfully")
-                view?.navigateBack()
-            }
-            catch (e:Exception){
-                view?.showMessage("Failed to submit review: ${e.message}")
+                view?.showMessage("Failed to load product: ${e.message}")
             }
             finally {
                 view?.hideLoading()
             }
         }
+    }
+
+    override fun submitReviews(reviews: List<Review>) {
+        coroutineScope.launch {
+            try {
+                view?.showLoading()
+                reviews.forEach { review ->
+                    reviewRepository.createReview(review).getOrThrow()
+                }
+                view?.onReviewSubmitted()
+            }
+            catch (e:Exception){
+                view?.showMessage("Failed to submit reviews: ${e.message}")
+            }
+            finally {
+                view?.hideLoading()
+            }
+        }
+    }
+
+    override fun handleImageAdded(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun handleVideoAdded(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun handleRatingChanged(position: Int, rating: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun validateReviews(reviews: List<Review>) {
+        TODO("Not yet implemented")
     }
 
 

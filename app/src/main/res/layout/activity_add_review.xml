@@ -76,7 +76,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productsRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    />
 
                 <Button
                     android:id="@+id/cancelButton"
