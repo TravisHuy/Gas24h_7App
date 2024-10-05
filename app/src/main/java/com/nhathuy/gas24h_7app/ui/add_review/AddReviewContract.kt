@@ -9,23 +9,19 @@ interface AddReviewContract {
         fun showLoading()
         fun hideLoading()
         fun showMessage(message: String)
-        fun showProducts(products: List<Product>)
-        fun onReviewSubmitted()
-        fun updateImageCount(position: Int, count: Int)
-        fun updateVideoState(position: Int, hasVideo: Boolean)
-        fun updateRatingDisplay(position: Int, rating: Float)
-        fun enableSubmitButton(enable: Boolean)
+        fun updateAdapter(reviews: List<Review>, products: Map<String, Product>)
         fun navigateBack()
     }
 
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
-        fun loadProductsFromOrder(orderId: String)
-        fun submitReviews(reviews:List<Review>)
-        fun handleImageAdded(position: Int)
-        fun handleVideoAdded(position: Int)
-        fun handleRatingChanged(position: Int, rating: Float)
-        fun validateReviews(reviews: List<Review>)
+        fun loadOrder(orderId: String)
+        fun onImageAdded(reviewIndex: Int, uri: Uri)
+        fun onImageRemoved(reviewIndex: Int, position: Int)
+        fun onVideoAdded(reviewIndex: Int, uri: Uri)
+        fun onVideoRemoved(reviewIndex: Int)
+        fun submitReviews()
+        fun updateReview(reviewIndex: Int, rating: Float, comment: String)
     }
 }

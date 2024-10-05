@@ -97,7 +97,7 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
 
     suspend fun getProductByIds(productIds: List<String>): Result<List<Product>> = withContext(Dispatchers.IO) {
         try {
-            val querySnapshot = db.collection("products").whereIn("productId",productIds)
+            val querySnapshot = db.collection("products").whereIn("id",productIds)
                 .get().await()
             val products = querySnapshot.documents.mapNotNull {
                 it.toObject(Product::class.java)
