@@ -10,8 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.Review
+import com.nhathuy.gas24h_7app.data.model.ReviewStatus
 import com.nhathuy.gas24h_7app.databinding.AddReviewItemBinding
 import com.nhathuy.gas24h_7app.util.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AddReviewItemAdapter(
     private var reviews: List<Review>,
@@ -24,6 +30,9 @@ class AddReviewItemAdapter(
 ) : RecyclerView.Adapter<AddReviewItemAdapter.AddReviewHolder>() {
 
     var currentFocusedPosition: Int? = null
+    private val pendingUpdates = mutableSetOf<Int>()
+    private val updateJobs = mutableMapOf<Int, Job>()
+    private val adapterScope = CoroutineScope(Dispatchers.Main)
 
     inner class AddReviewHolder(val binding: AddReviewItemBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -43,6 +52,7 @@ class AddReviewItemAdapter(
                     .into(productImage)
             }
             ratingStart.rating = review.rating
+            tvQuality.text = ReviewStatus.fromStars(review.rating.toInt()).displayName
             edComment.setText(review.comment)
 
             addProductImage.setOnClickListener {
@@ -56,11 +66,11 @@ class AddReviewItemAdapter(
             }
 
             ratingStart.setOnRatingBarChangeListener { _, rating, _ ->
-                onReviewUpdated(position, rating, edComment.text.toString())
+                updateReviewWithDebounce(position, rating, edComment.text.toString())
             }
 
             edComment.addTextChangedListener {
-                onReviewUpdated(position, ratingStart.rating, it.toString())
+                updateReviewWithDebounce(position, ratingStart.rating, it.toString())
             }
 
             val imageAdapter = AddReviewImageAdapter(
@@ -75,8 +85,12 @@ class AddReviewItemAdapter(
             if (review.video.isNotEmpty()) {
                 cardViewCoverImage.visibility = android.view.View.VISIBLE
                 Glide.with(productReviewVideo.context)
-                    .load(review.video)
+                    .load(Uri.parse(review.video))
                     .into(videoThumbnail)
+                deleteReviewVideo.setOnClickListener {
+                    onVideoRemoved(position)
+                    cardViewCoverImage.visibility = android.view.View.GONE
+                }
             } else {
                 cardViewCoverImage.visibility = android.view.View.GONE
             }
@@ -86,15 +100,54 @@ class AddReviewItemAdapter(
     override fun getItemCount() = reviews.size
 
     fun updateData(newReviews: List<Review>, newProducts: Map<String, Product>) {
-        val diffCallback = ReviewDiffCallback(reviews, newReviews)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-
         reviews = newReviews
         products = newProducts
-
-        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
+    fun updateImages(position: Int, images: List<String>) {
+        if (position in reviews.indices) {
+            reviews = reviews.toMutableList().apply {
+                this[position] = this[position].copy(images = images)
+            }
+            notifyItemChanged(position)
+        }
+    }
+
+    fun updateVideo(position: Int, video: String) {
+        if (position in reviews.indices) {
+            reviews = reviews.toMutableList().apply {
+                this[position] = this[position].copy(video = video)
+            }
+            notifyItemChanged(position)
+        }
+    }
+
+    fun updateRating(position: Int, rating: Float) {
+        if (position in reviews.indices) {
+            reviews = reviews.toMutableList().apply {
+                this[position] = this[position].copy(rating = rating)
+            }
+            notifyItemChanged(position)
+        }
+    }
+
+    private fun updateReviewWithDebounce(position: Int, rating: Float, comment: String) {
+        updateJobs[position]?.cancel()
+        updateJobs[position] = adapterScope.launch {
+            delay(300) // Debounce for 300ms
+            onReviewUpdated(position, rating, comment)
+            notifyItemChanged(position)
+        }
+    }
+
+    fun notifyItemChangedSafely(position: Int) {
+        adapterScope.launch {
+            if (position in reviews.indices) {
+                notifyItemChanged(position)
+            }
+        }
+    }
     private class ReviewDiffCallback(
         private val oldList: List<Review>,
         private val newList: List<Review>
@@ -109,5 +162,17 @@ class AddReviewItemAdapter(
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
+    }
+    fun notifyPendingUpdates() {
+        pendingUpdates.forEach { position ->
+            if (position in reviews.indices) {
+                notifyItemChanged(position)
+            }
+        }
+        pendingUpdates.clear()
+    }
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        updateJobs.values.forEach { it.cancel() }
     }
 }

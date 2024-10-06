@@ -94,30 +94,40 @@ class AddReviewPresenter @Inject constructor(
 
     override fun onImageAdded(reviewIndex: Int, uri: Uri) {
         if (reviews[reviewIndex].images.size < Constants.MAX_IMAGES) {
-            reviews[reviewIndex] = reviews[reviewIndex].copy(
-                images = reviews[reviewIndex].images + uri.toString()
-            )
-            view?.updateAdapter(reviews, products)
+            val updatedImages = reviews[reviewIndex].images + uri.toString()
+            reviews[reviewIndex] = reviews[reviewIndex].copy(images = updatedImages)
+            view?.updateImages(reviewIndex, updatedImages)
         } else {
             view?.showMessage("Maximum number of images reached")
         }
     }
 
     override fun onImageRemoved(reviewIndex: Int, position: Int) {
-        reviews[reviewIndex] = reviews[reviewIndex].copy(
-            images = reviews[reviewIndex].images.filterIndexed { index, _ -> index != position }
-        )
-        view?.updateAdapter(reviews, products)
+        val updatedImages = reviews[reviewIndex].images.filterIndexed { index, _ -> index != position }
+        reviews[reviewIndex] = reviews[reviewIndex].copy(images = updatedImages)
+        view?.updateImages(reviewIndex, updatedImages)
     }
 
     override fun onVideoAdded(reviewIndex: Int, uri: Uri) {
         reviews[reviewIndex] = reviews[reviewIndex].copy(video = uri.toString())
-        view?.updateAdapter(reviews, products)
+        view?.updateVideo(reviewIndex, uri.toString())
     }
 
     override fun onVideoRemoved(reviewIndex: Int) {
         reviews[reviewIndex] = reviews[reviewIndex].copy(video = "")
-        view?.updateAdapter(reviews, products)
+        view?.updateVideo(reviewIndex, "")
+    }
+
+    override fun onRatingChanged(reviewIndex: Int, rating: Float) {
+        reviews[reviewIndex] = reviews[reviewIndex].copy(
+            rating = rating,
+            reviewStatus = ReviewStatus.fromStars(rating.toInt())
+        )
+        view?.updateRating(reviewIndex, rating)
+    }
+
+    override fun onCommentChanged(reviewIndex: Int, comment: String) {
+        reviews[reviewIndex] = reviews[reviewIndex].copy(comment = comment)
     }
 
     override fun submitReviews() {
@@ -144,6 +154,6 @@ class AddReviewPresenter @Inject constructor(
             comment = comment,
             reviewStatus = ReviewStatus.fromStars(rating.toInt())
         )
-        view?.updateAdapter(reviews, products)
+        view?.notifyItemChanged(reviewIndex)
     }
 }

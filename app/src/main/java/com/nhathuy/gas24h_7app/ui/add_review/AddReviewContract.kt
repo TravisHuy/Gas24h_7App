@@ -10,6 +10,10 @@ interface AddReviewContract {
         fun hideLoading()
         fun showMessage(message: String)
         fun updateAdapter(reviews: List<Review>, products: Map<String, Product>)
+        fun updateImages(position: Int, images: List<String>)
+        fun updateVideo(position: Int, video: String)
+        fun updateRating(position: Int, rating: Float)
+        fun notifyItemChanged(position:Int)
         fun navigateBack()
     }
 
@@ -21,6 +25,8 @@ interface AddReviewContract {
         fun onImageRemoved(reviewIndex: Int, position: Int)
         fun onVideoAdded(reviewIndex: Int, uri: Uri)
         fun onVideoRemoved(reviewIndex: Int)
+        fun onRatingChanged(reviewIndex: Int, rating: Float)
+        fun onCommentChanged(reviewIndex: Int, comment: String)
         fun submitReviews()
         fun updateReview(reviewIndex: Int, rating: Float, comment: String)
     }

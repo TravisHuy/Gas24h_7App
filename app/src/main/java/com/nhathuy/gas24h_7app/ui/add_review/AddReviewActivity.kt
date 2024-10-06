@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.adapter.AddReviewItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -74,6 +75,15 @@ class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
         )
         binding.productsRecyclerView.adapter = adapter
         binding.productsRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        binding.productsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    adapter.notifyPendingUpdates()
+                }
+            }
+        })
     }
 
     private fun setupListeners() {
@@ -115,6 +125,22 @@ class AddReviewActivity : AppCompatActivity(), AddReviewContract.View {
         lifecycleScope.launch {
             adapter.updateData(reviews, products)
         }
+    }
+
+    override fun updateImages(position: Int, images: List<String>) {
+        adapter.updateImages(position, images)
+    }
+
+    override fun updateVideo(position: Int, video: String) {
+        adapter.updateVideo(position, video)
+    }
+
+    override fun updateRating(position: Int, rating: Float) {
+        adapter.updateRating(position, rating)
+    }
+
+    override fun notifyItemChanged(position: Int) {
+        adapter.notifyItemChangedSafely(position)
     }
 
     override fun navigateBack() {
