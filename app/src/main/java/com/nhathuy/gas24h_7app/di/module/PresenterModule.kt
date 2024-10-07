@@ -30,6 +30,8 @@ import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
 import com.nhathuy.gas24h_7app.fragment.profile.ProfilePresenter
 import com.nhathuy.gas24h_7app.ui.add_review.AddReviewContract
 import com.nhathuy.gas24h_7app.ui.add_review.AddReviewPresenter
+import com.nhathuy.gas24h_7app.ui.add_review_test.AddReviewTestContract
+import com.nhathuy.gas24h_7app.ui.add_review_test.AddReviewTestPresenter
 import com.nhathuy.gas24h_7app.ui.all_review.AllReviewPresenter
 import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherContract
 import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherPresenter
@@ -183,6 +185,11 @@ class PresenterModule {
         return AddReviewPresenter(reviewRepository,userRepository, productRepository, orderRepository)
     }
 
+    @Provides
+    @Singleton
+    fun provideAddReviewTestPresenter(reviewRepository: ReviewRepository,userRepository: UserRepository,productRepository: ProductRepository,orderRepository: OrderRepository): AddReviewTestContract.Presenter{
+        return AddReviewTestPresenter(reviewRepository,userRepository, productRepository, orderRepository)
+    }
     @Provides
     @Singleton
     fun provideAllReviewPresenter(userRepository: UserRepository,reviewRepository: ReviewRepository, cartRepository: CartRepository):AllReviewPresenter{

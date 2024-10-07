@@ -29,7 +29,21 @@ class ReviewRepository @Inject constructor(private val db:FirebaseFirestore,
             Result.failure(e)
         }
     }
-
+    suspend fun createReviewTest(review: Review, imageUris:List<Uri>, videoUri:Uri?): Result<Unit>{
+        return try {
+            val imageUrls = uploadImages(imageUris)
+            val videoUrl = videoUri?.let { uploadVideo(it) }
+            val updatedReview = review.copy(
+                images = imageUrls,
+                video = videoUrl ?: ""
+            )
+            db.collection("reviews").document(updatedReview.id).set(updatedReview.toMap()).await()
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
     private suspend fun uploadVideo(uri: Uri):String {
         return uploadMedia(uri,"videos_review/${UUID.randomUUID()}")
     }
