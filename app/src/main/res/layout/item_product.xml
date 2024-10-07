@@ -60,6 +60,7 @@
                 android:padding="2dp"
                 >
                 <RatingBar
+                    android:id="@+id/rating_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:numStars="1"
@@ -67,6 +68,7 @@
                     style="?android:attr/ratingBarStyleSmall"
                     android:progressTint="#FFA500"/>
                 <TextView
+                    android:id="@+id/tv_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4.8"
@@ -99,7 +101,7 @@
                     android:visibility="gone"
                     />
                 <TextView
-                    android:id="@+id/productSold"
+                    android:id="@+id/tv_productSold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

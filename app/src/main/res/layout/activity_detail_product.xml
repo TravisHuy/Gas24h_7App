@@ -122,6 +122,7 @@
                 android:visibility="visible"
                 />
             <TextView
+                android:id="@+id/tv_sold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Đã bán 8,2k"
@@ -160,6 +161,7 @@
         <include
             android:id="@+id/layout_review_product"
             layout="@layout/review_product"
+            android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/view1"
             />
         <View

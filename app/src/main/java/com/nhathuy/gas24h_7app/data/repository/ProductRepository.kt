@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -103,6 +105,32 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
                 it.toObject(Product::class.java)
             }
             Result.success(products)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    // getProductSoldCount
+    suspend fun getProductSoldCount(productId:String) : Result<Int> = withContext(Dispatchers.IO){
+        val listOrderStatus = mutableListOf(OrderStatus.DELIVERED.name,OrderStatus.RATED.name)
+        try {
+            val querySnapshot = db.collection("orders").whereIn("status",listOrderStatus)
+                .get().await()
+
+            var soldCount = 0
+
+            for(document  in querySnapshot.documents){
+                val order = document.toObject(Order::class.java)
+                order?.items?.find {
+                    it.productId == productId
+                }?.let {
+                    item ->
+                    soldCount +=item.quantity
+                }
+            }
+
+            Result.success(soldCount)
         }
         catch (e:Exception){
             Result.failure(e)

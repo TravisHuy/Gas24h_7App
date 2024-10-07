@@ -112,6 +112,20 @@ class DetailProductPresenter @Inject constructor(private val productRepository: 
         }
     }
 
+    override fun loadProductSoldCount(productId: String) {
+        coroutineScope.launch {
+            val result = productRepository.getProductSoldCount(productId)
+            result.fold(
+                onSuccess = {
+                   count -> view?.showProductSoldCount(count)
+                },
+                onFailure = {
+                        e->view?.showError(e.message?:"Failed to load product sold count")
+                }
+            )
+        }
+    }
+
     override fun onDecreaseQuantity(currentQuantity: Int,stockCount: Int) {
         if (currentQuantity > 1) {
             val newQuantity = currentQuantity - 1

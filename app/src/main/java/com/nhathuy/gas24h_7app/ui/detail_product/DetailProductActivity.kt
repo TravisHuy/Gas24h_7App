@@ -38,6 +38,7 @@ import com.nhathuy.gas24h_7app.data.model.Review
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailProductBinding
+import com.nhathuy.gas24h_7app.databinding.ReviewProductBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
 import com.nhathuy.gas24h_7app.ui.all_review.AllReviewActivity
@@ -50,6 +51,7 @@ import javax.inject.Inject
 class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
 
     private lateinit var binding: ActivityDetailProductBinding
+    private lateinit var reviewBinding: ReviewProductBinding
     private var isDescriptionExpanded = false
 
     private lateinit var currentProduct: Product
@@ -69,6 +71,8 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         binding = ActivityDetailProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        reviewBinding = ReviewProductBinding.bind(binding.layoutReviewProduct.root)
+
         // Inject dependencies and attach the presenter to the view
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
@@ -82,6 +86,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         presenter.loadSuggestProducts(productId!!)
         presenter.loadCartItemCount()
         presenter.loadReviews(productId!!)
+        presenter.loadProductSoldCount(productId!!)
 
         //set up UI components
         setupDescriptionToggle()
@@ -347,15 +352,26 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
 
     override fun showReviews(reviews: List<Review>, users: Map<String, User>) {
         val layoutReviewProduct = binding.layoutReviewProduct
-        adapter.updateData(reviews,users)
 
-        val averageRating = reviews.map { it.rating }.average().toFloat()
-        layoutReviewProduct.ratingProductStar.rating = averageRating
-        layoutReviewProduct.tvNumberStars.text = String.format("%.1f/5", averageRating)
-        layoutReviewProduct.countReview.text = "(${reviews.size} đánh giá)"
+        if(reviews.isEmpty()){
+            reviewBinding.root.visibility =View.GONE
+        }
+        else{
+            reviewBinding.root.visibility =View.VISIBLE
+            adapter.updateData(reviews,users)
+
+            val averageRating = reviews.map { it.rating }.average().toFloat()
+            layoutReviewProduct.ratingProductStar.rating = averageRating
+            layoutReviewProduct.tvNumberStars.text = String.format("%.1f/5", averageRating)
+            layoutReviewProduct.countReview.text = "(${reviews.size} đánh giá)"
 
 
-        layoutReviewProduct.tvAllCountReview.text = "Xem Tất Cả (${reviews.size}) >"
+            layoutReviewProduct.tvAllCountReview.text = "Xem Tất Cả (${reviews.size}) >"
+        }
+    }
+
+    override fun showProductSoldCount(count: Int) {
+        binding.tvSold.text=getString(R.string.sold_count_format,count)
     }
 
     override fun updateQuantity(quantity: Int) {
