@@ -21,6 +21,7 @@ import com.nhathuy.gas24h_7app.data.model.CartItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityCartBinding
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order.OrderActivity
 import com.nhathuy.gas24h_7app.util.Constants.CHOOSE_VOUCHER_REQUEST_CODE
 import com.nhathuy.gas24h_7app.util.Constants.SELECTED_VOUCHER_KEY
@@ -40,10 +41,6 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         binding= ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
         (application as Gas24h_7Application).getGasComponent().inject(this)
         cartItemAdapter = CartItemAdapter(
             onQuantityChanged = { productId, newQuantity ->
@@ -59,6 +56,11 @@ class CartActivity : AppCompatActivity(),CartContract.View {
             onItemChecked = {
                 productId,isChecked ->
                 presenter.updateItemSelection(productId,isChecked)
+            },
+            onItemDelete = {
+                    productId ->
+                presenter.removeProductInCart(productId)
+                cartItemAdapter.removeItem(productId)
             }
         )
         binding.recyclerViewCart.apply {
@@ -70,6 +72,12 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         }
         binding.btnBuy.setOnClickListener {
             presenter.onBtnClicked()
+        }
+        binding.backButton.setOnClickListener {
+            onBackPressed()
+        }
+        binding.btnHome.setOnClickListener {
+            navigateHome()
         }
         setupVoucherSection()
         presenter.attachView(this)
@@ -149,6 +157,10 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         binding.chooseVoucherText.visibility = if (voucherDiscount != null) View.GONE else View.VISIBLE
     }
 
+    override fun navigateHome() {
+        startActivity(Intent(this,MainActivity::class.java))
+    }
+
     @SuppressLint("MissingInflatedId")
     private fun showMaxPurchaseLimitDialog(maxCount: Int) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.error_limit_stock_count_cart, null)
@@ -168,8 +180,21 @@ class CartActivity : AppCompatActivity(),CartContract.View {
         dialog.show()
     }
 
+
     override fun showCartItems(cartItems: List<CartItem>, products: Map<String, Product>) {
-        cartItemAdapter.updateData(cartItems, products)
+        if(cartItems.isEmpty()){
+            binding.constraintLayoutShowCart.visibility=View.GONE
+            binding.linearCart.visibility=View.GONE
+            binding.linearLayoutNotItemCart.visibility= View.VISIBLE
+
+        }
+        else{
+            binding.constraintLayoutShowCart.visibility=View.VISIBLE
+            binding.linearCart.visibility=View.VISIBLE
+            binding.linearLayoutNotItemCart.visibility= View.GONE
+            cartItemAdapter.updateData(cartItems, products)
+        }
+
     }
 
     override fun showError(message: String) {

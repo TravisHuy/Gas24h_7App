@@ -97,4 +97,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 
+    //SwipeRevealLayout
+    implementation("com.github.chthai64:SwipeRevealLayout:1.4.0")
 }

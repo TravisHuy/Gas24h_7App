@@ -18,6 +18,7 @@ interface CartContract {
         fun showCartSize(size:Int)
         fun navigateToCheckout(selectedItems: List<CartItem>, totalAmount: Double)
         fun updateVoucherInfo(price:String?)
+        fun navigateHome()
     }
     interface Presenter{
         fun attachView(view: CartContract.View)
@@ -34,6 +35,7 @@ interface CartContract {
         fun applyVoucher(voucherId: String)
         fun getCurrentVoucherId(): String?
         fun removeVoucher()
+        fun removeProductInCart(productId: String)
         fun getAppliledVoucherDiscount(): Double
         fun getAppliledVoucherDiscountType(): DiscountType?
 

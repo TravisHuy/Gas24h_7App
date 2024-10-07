@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.chauthai.swipereveallayout.SwipeRevealLayout
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.CartItem
@@ -26,13 +29,18 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
                       private val onQuantityChanged: (String,Int) -> Unit,
                       private val onQuantityExceeded: (String, Int) -> Unit,
                       private val onManualQuantityExceeded: (String,Int) -> Unit,
-                      private val onItemChecked:(String,Boolean) -> Unit
+                      private val onItemChecked:(String,Boolean) -> Unit,
+                      private val onItemDelete: (String) -> Unit
+
 ):RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     @Inject
     lateinit var db:FirebaseFirestore
-
-    inner class CartItemViewHolder(val binding:CartItemProductBinding):RecyclerView.ViewHolder(binding.root)
+    private val viewBinderHelper = ViewBinderHelper()
+    inner class CartItemViewHolder(val binding:CartItemProductBinding):RecyclerView.ViewHolder(binding.root){
+        val swipeLayout : SwipeRevealLayout = binding.swipeLayout
+        val deleteBtn : TextView = binding.deleteButton
+    }
 
 
     override fun onCreateViewHolder(
@@ -46,6 +54,15 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
     override fun onBindViewHolder(holder: CartItemAdapter.CartItemViewHolder, position: Int) {
         val cartItem = cartItems[position]
         val product= products[cartItem.productId]
+
+
+        viewBinderHelper.bind(holder.swipeLayout,cartItem.productId)
+
+        holder.deleteBtn.setOnClickListener {
+            onItemDelete(cartItem.productId)
+            holder.swipeLayout.close(true)
+        }
+        holder.swipeLayout.close(false)
 
         holder.binding.apply {
             CoroutineScope(Dispatchers.Main).launch {
@@ -125,5 +142,12 @@ class CartItemAdapter(private var cartItems:MutableList<CartItem> = mutableListO
     fun updateSelectedItems(selectedItemIds: Set<String>){
         this.selectedItemIds=selectedItemIds
         notifyDataSetChanged()
+    }
+    fun removeItem(productId:String){
+        val position = cartItems.indexOfFirst { it.productId == productId }
+        if(position != -1){
+            cartItems.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 }

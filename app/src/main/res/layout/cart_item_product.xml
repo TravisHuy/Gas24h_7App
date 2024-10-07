@@ -1,139 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="140dp"
+<com.chauthai.swipereveallayout.SwipeRevealLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginTop="10dp"
-    android:elevation="4dp"
-    app:cardCornerRadius="10dp">
+    android:id="@+id/swipeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:mode="same_level"
+    app:dragEdge="right">
 
+    <!-- Delete button layout -->
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/deleteButton"
+            android:layout_width="90dp"
+            android:layout_height="match_parent"
+            android:background="#FF4444"
+            android:gravity="center"
+            android:text="Xóa"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <!-- Main content layout -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_gravity="start|center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_view_cart"
-            android:layout_width="100dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:elevation="4dp"
-            app:cardCornerRadius="5dp"
-            app:layout_constraintStart_toEndOf="@+id/checkBox"
-            app:layout_constraintTop_toTopOf="@+id/checkBox">
-
-            <ImageView
-                android:id="@+id/cart_item_product_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/test_image"
-                />
-        </androidx.cardview.widget.CardView>
+        android:layout_height="140dp"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="4dp"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/card_view_cart"
-            app:layout_constraintTop_toTopOf="@+id/card_view_cart">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/cart_item_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gian nan đi tìm lăng mộ Hoàng đế Quang Trung"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_marginStart="10dp"
-                />
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="start|center" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_view_cart"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:elevation="4dp"
+                app:cardCornerRadius="5dp">
+
+                <ImageView
+                    android:id="@+id/cart_item_product_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/test_image"
+                    />
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="60dp"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/cart_price_reduce"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="đ90.000"
-                        android:textSize="16sp"
-                        android:textColor="@color/red"
-                        android:visibility="visible"
-                        />
+                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp">
 
-                    <TextView
-                        android:id="@+id/cart_price_original"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="đ90.000"
-                        android:textSize="10sp"
-                        android:layout_marginStart="5dp"
-                        android:alpha="0.7"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:visibility="visible"
-                        />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/cart_item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[XÃ KHO] Giấy In Nhiệt Decal A6..."
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textSize="14sp" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="20dp"
-                    android:background="@drawable/background_count"
-                    android:layout_weight="1"
-                    android:layout_gravity="end"
-                    >
-                    <ImageView
-                        android:id="@+id/decrease_btn"
-                        android:layout_width="32dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="50dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_dash"
+                        android:layout_weight="1"
                         android:layout_gravity="center"
-                        />
-                    <EditText
-                        android:id="@+id/quantity_product_cart"
-                        android:layout_width="32dp"
-                        android:layout_height="25dp"
-                        android:text="1"
-                        android:inputType="number"
-                        android:textSize="12sp"
-                        android:textColor="@color/red"
-                        android:textAlignment="center"
-                        android:background="@drawable/edit_input_count__product"
-                        />
-                    <ImageView
-                        android:id="@+id/increase_btn"
-                        android:layout_width="32dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/cart_price_reduce"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₫26.000"
+                            android:textSize="16sp"
+                            android:textColor="#EE4D2D" />
+
+                        <TextView
+                            android:id="@+id/cart_price_original"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₫42.000"
+                            android:textSize="12sp"
+                            android:layout_marginStart="5dp"
+                            android:textColor="#808080" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_plus"
-                        android:layout_gravity="center"
-                        />
+                        android:orientation="horizontal"
+                        android:background="@drawable/background_count"
+                        android:layout_gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/decrease_btn"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_dash"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/quantity_product_cart"
+                            android:layout_width="40dp"
+                            android:layout_height="28dp"
+                            android:text="1"
+                            android:inputType="number"
+                            android:textSize="14sp"
+                            android:textColor="#EE4D2D"
+                            android:textAlignment="center"
+                            android:background="@null" />
+
+                        <ImageView
+                            android:id="@+id/increase_btn"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_plus"
+                            android:padding="4dp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

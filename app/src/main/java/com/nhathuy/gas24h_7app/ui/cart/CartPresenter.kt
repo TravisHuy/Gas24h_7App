@@ -58,17 +58,16 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
                         productResult.fold(
                             onSuccess = { loadedProducts ->
                                 products= loadedProducts
-                                view?.showCartItems(cart.items,products)
-                                view?.showCartSize(cartItems.size)
                                 calculateTotalPrice()
                             },
                             onFailure = {
                                     e ->
                                 Log.e("CartPresenter", "Error loading products", e)
-                                view?.showError("Failed to load product details: ${e.message}")
-
+//                                view?.showError("Failed to load product details: ${e.message}")
                             }
                         )
+                        view?.showCartItems(cart.items,products)
+                        view?.showCartSize(cartItems.size)
                     },
                     onFailure = {e ->
                         Log.d("CartPresenter", "Cart is empty or null",e)
@@ -79,6 +78,7 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
             catch (e:Exception){
                 Log.e("CartPresenter", "Error loading cart items", e)
                 view?.showError("Failed to load cart items: ${e.message}")
+
             }
         }
     }
@@ -212,6 +212,25 @@ class CartPresenter @Inject constructor(private val cartRepository: CartReposito
         currentVoucherId = null
         calculateTotalPrice()
         view?.updateVoucherInfo(null)
+    }
+
+    override fun removeProductInCart(productId: String) {
+        coroutineScope.launch {
+            val result = cartRepository.removeCartItem(userRepository.getCurrentUserId()!!, productId)
+            result.fold(
+                onSuccess = {
+                    // Cập nhật trực tiếp danh sách cartItems
+                    cartItems = cartItems.filter { it.productId != productId }
+                    // Cập nhật UI
+                    view?.showCartItems(cartItems, products)
+                    view?.showCartSize(cartItems.size)
+                    calculateTotalPrice()
+                },
+                onFailure = { e ->
+                    view?.showError("Can't delete product in cart: ${e.message}")
+                }
+            )
+        }
     }
 
     override fun getAppliledVoucherDiscount(): Double {

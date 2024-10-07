@@ -72,7 +72,6 @@
                 android:id="@+id/productsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/add_review_item"
                 android:nestedScrollingEnabled="false" />
 
             <Button
