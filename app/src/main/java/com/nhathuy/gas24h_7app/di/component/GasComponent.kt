@@ -1,7 +1,7 @@
 package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
-import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
+import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity

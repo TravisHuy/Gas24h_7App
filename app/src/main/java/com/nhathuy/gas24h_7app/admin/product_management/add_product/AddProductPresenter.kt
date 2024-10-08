@@ -1,4 +1,4 @@
-package com.nhathuy.gas24h_7app.admin.add_product
+package com.nhathuy.gas24h_7app.admin.product_management.add_product
 
 import android.content.Context
 import android.net.Uri
@@ -25,7 +25,7 @@ import kotlin.coroutines.CoroutineContext
 class AddProductPresenter @Inject constructor(private val context:Context,
                           private val db:FirebaseFirestore,
                           private val storage: FirebaseStorage
-):AddProductContract.Presenter,CoroutineScope {
+): AddProductContract.Presenter,CoroutineScope {
 
     private var view: AddProductContract.View? = null
     private val imageUris = mutableListOf<Uri>()

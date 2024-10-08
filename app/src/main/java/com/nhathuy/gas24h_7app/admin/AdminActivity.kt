@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.nhathuy.gas24h_7app.R
-import com.nhathuy.gas24h_7app.admin.add_product.AddProductActivity
+import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.databinding.ActivityAdminBinding
 
 class AdminActivity : AppCompatActivity() {
@@ -18,7 +18,7 @@ class AdminActivity : AppCompatActivity() {
 
 
         binding.addProduct.setOnClickListener {
-            startActivity(Intent(this,AddProductActivity::class.java))
+            startActivity(Intent(this, AddProductActivity::class.java))
             finish()
         }
     }

@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.nhathuy.gas24h_7app.admin.add_product.AddProductContract
-import com.nhathuy.gas24h_7app.admin.add_product.AddProductPresenter
+import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductContract
+import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationContract
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationPresenter
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingContract

@@ -1,4 +1,4 @@
-package com.nhathuy.gas24h_7app.admin.add_product
+package com.nhathuy.gas24h_7app.admin.product_management.add_product
 
 import android.app.Activity
 import android.app.Dialog
@@ -29,7 +29,7 @@ import com.nhathuy.gas24h_7app.util.Constants.PICK_COVER_IMAGE_REQUEST
 import com.nhathuy.gas24h_7app.util.Constants.PICK_IMAGE_REQUEST
 import javax.inject.Inject
 
-class AddProductActivity : AppCompatActivity() ,AddProductContract.View {
+class AddProductActivity : AppCompatActivity() , AddProductContract.View {
 
     private lateinit var binding: ActivityAddProductBinding
     private lateinit var adapter: ProductImageAdapter

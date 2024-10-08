@@ -37,6 +37,8 @@
     <string name="previous">Previous</string>
     <string name="purchase_count_format">Đã mua %d lần</string>
     <string name="sold_count_format">Đã bán %d</string>
+    <string name="inventory_count">Kho %d</string>
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

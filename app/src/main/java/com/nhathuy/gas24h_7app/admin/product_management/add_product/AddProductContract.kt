@@ -1,4 +1,4 @@
-package com.nhathuy.gas24h_7app.admin.add_product
+package com.nhathuy.gas24h_7app.admin.product_management.add_product
 
 import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
@@ -38,7 +38,7 @@ interface AddProductContract {
         fun clearCoverImage()
     }
     interface Presenter{
-        fun attachView(view: AddProductContract.View)
+        fun attachView(view: View)
         fun detachView()
         fun addProduct()
         fun onImageAdded(uri:Uri)
