@@ -10,21 +10,156 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:padding="5dp"
         android:fontFamily="@font/kalam_bold"
         android:text="Tất cả sản phẩm"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <EditText
+        android:id="@+id/search_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:padding="5dp"
+        android:hint="Tìm kiếm sản phẩm với tên, phân loại"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="3dp"
+        android:fontFamily="@font/raleway"
+        android:drawableTint="@color/dark_text_secondary"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:background="@drawable/background_count"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintBottom_toTopOf="@id/linear_layout"
+        />
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:background="#EFF1F3"
+        app:layout_constraintTop_toBottomOf="@+id/search_product"
+        >
+        <TextView
+            android:id="@+id/column_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sắp xếp theo: "
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giá"
+                android:textStyle="bold"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:id="@+id/high_price"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_up_fill"/>
+                <ImageView
+                    android:id="@+id/low_price"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_down_fill"/>
+            </LinearLayout>
+        </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kho hàng"
+                android:textStyle="bold"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:id="@+id/high_inventory"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_up_fill"/>
+                <ImageView
+                    android:id="@+id/low_inventory"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_down_fill"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bán chạy"
+                android:textStyle="bold"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:id="@+id/high_best_selling"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_up_fill"/>
+                <ImageView
+                    android:id="@+id/low_best_selling"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_caret_down_fill"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/all_product_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

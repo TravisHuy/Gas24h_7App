@@ -10,12 +10,14 @@ import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmat
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationPresenter
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingContract
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingPresenter
+import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
+import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
@@ -200,5 +202,11 @@ class PresenterModule {
     @Singleton
     fun provideReviewOfMePresenter(userRepository: UserRepository,reviewRepository: ReviewRepository, productRepository: ProductRepository, orderRepository: OrderRepository):ReviewOfMePresenter{
         return ReviewOfMePresenter(userRepository, reviewRepository, productRepository, orderRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAllProductPresenter(productRepository: ProductRepository,categoryRepository: CategoryRepository):AllProductPresenter{
+        return AllProductPresenter(productRepository,categoryRepository)
     }
 }

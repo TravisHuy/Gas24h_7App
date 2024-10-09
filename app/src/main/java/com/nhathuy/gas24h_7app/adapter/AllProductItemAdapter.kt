@@ -10,7 +10,7 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ItemAllProductBinding
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
-class AllProductItemAdapter(private val products:List<Product>) :RecyclerView.Adapter<AllProductItemAdapter.AllProductViewHolder>(){
+class AllProductItemAdapter(private var products:List<Product> = emptyList()) :RecyclerView.Adapter<AllProductItemAdapter.AllProductViewHolder>(){
 
     inner class AllProductViewHolder(val binding : ItemAllProductBinding):RecyclerView.ViewHolder(binding.root)
 
@@ -54,4 +54,10 @@ class AllProductItemAdapter(private val products:List<Product>) :RecyclerView.Ad
     }
 
     override fun getItemCount(): Int  = products.size
+
+
+    fun updateData(newProducts:List<Product>){
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }
