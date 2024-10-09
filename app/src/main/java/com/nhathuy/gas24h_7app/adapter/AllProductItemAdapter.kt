@@ -10,7 +10,10 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ItemAllProductBinding
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
-class AllProductItemAdapter(private var products:List<Product> = emptyList()) :RecyclerView.Adapter<AllProductItemAdapter.AllProductViewHolder>(){
+class AllProductItemAdapter(private var products:List<Product> = emptyList(),
+                            private val onEditClick: (Product) -> Unit,
+                            private val onRemoveClick: (Product) -> Unit
+) :RecyclerView.Adapter<AllProductItemAdapter.AllProductViewHolder>(){
 
     inner class AllProductViewHolder(val binding : ItemAllProductBinding):RecyclerView.ViewHolder(binding.root)
 
@@ -49,6 +52,8 @@ class AllProductItemAdapter(private var products:List<Product> = emptyList()) :R
 
                 productSold.text  = holder.binding.root.context.getString(R.string.inventory_count,it.stockCount)
 
+                btnEdit.setOnClickListener { onEditClick(product) }
+                btnRemove.setOnClickListener { onRemoveClick(product) }
             }
         }
     }

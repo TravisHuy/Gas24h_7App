@@ -121,4 +121,42 @@ class AllProductPresenter @Inject constructor(private val productRepository: Pro
             }
         }
     }
+
+    override fun onEditProductClicked(product: Product) {
+        view?.showEditProduct(product)
+    }
+
+    override fun onRemoveProductClicked(product: Product) {
+        view?.showRemoveProductDialog(product)
+    }
+
+    override fun editProduct(product: Product) {
+        coroutineScope.launch {
+            view?.showLoading()
+            try {
+                productRepository.updateProduct(product)
+                loadProducts() // Reload the product list
+                view?.showMessage("Product updated successfully")
+            } catch (e: Exception) {
+                view?.showMessage("Failed to update product: ${e.message}")
+            } finally {
+                view?.hideLoading()
+            }
+        }
+    }
+
+    override fun removeProduct(productId: String) {
+        coroutineScope.launch {
+            view?.showLoading()
+            try {
+                productRepository.removeProduct(productId)
+                loadProducts() // Reload the product list
+                view?.showMessage("Product updated successfully")
+            } catch (e: Exception) {
+                view?.showMessage("Failed to update product: ${e.message}")
+            } finally {
+                view?.hideLoading()
+            }
+        }
+    }
 }

@@ -81,6 +81,10 @@
                     android:layout_weight="1"
                     android:src="@drawable/ic_edit"
                     />
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="24dp"
+                    android:background="#818080"/>
                 <ImageView
                     android:id="@+id/btn_remove"
                     android:layout_width="24dp"

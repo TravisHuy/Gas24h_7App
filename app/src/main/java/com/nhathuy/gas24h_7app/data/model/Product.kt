@@ -1,5 +1,10 @@
 package com.nhathuy.gas24h_7app.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+
+@Parcelize
 data class Product (
     val id: String,
     var categoryId:String,
@@ -12,7 +17,7 @@ data class Product (
     var detailImageUrls:List<String>,
     var reviewCount: Int = 0,
     var averageRating: Float =0.0f
-){
+): Parcelable{
     constructor():this("","","","",0.0,0,0.0,"", emptyList(),0,0.0f)
     fun toMap():Map<String,Any>{
         return hashMapOf("id" to id,

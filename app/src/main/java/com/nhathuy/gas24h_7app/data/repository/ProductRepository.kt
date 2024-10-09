@@ -136,4 +136,22 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
             Result.failure(e)
         }
     }
+    suspend fun removeProduct(productId:String) :Result<Unit> = withContext(Dispatchers.IO){
+        try {
+            db.collection("products").document(productId).delete().await()
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
+    suspend fun updateProduct(product:Product) :Result<Unit> = withContext(Dispatchers.IO){
+        try {
+            db.collection("products").document(product.id).set(product).await()
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
 }

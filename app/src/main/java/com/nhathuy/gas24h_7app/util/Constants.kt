@@ -14,4 +14,5 @@ object Constants {
     const val PICK_COVER_IMAGE_REQUEST = 2
     const val MAX_IMAGES = 3
     const val MAX_VIDEOS = 1
+    const val EDIT_PRODUCT_REQUEST = 1
 }
