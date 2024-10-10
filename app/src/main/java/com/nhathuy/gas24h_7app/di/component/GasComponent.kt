@@ -5,6 +5,7 @@ import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductAc
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
+import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
@@ -75,4 +76,5 @@ interface GasComponent {
     fun inject(allReviewActivity: AllReviewActivity)
     fun inject(reviewOfMeActivity: ReviewOfMeActivity)
     fun inject(allProductActivity: AllProductActivity)
+    fun inject(editProductActivity: EditProductActivity)
 }

@@ -135,8 +135,13 @@ class AllProductPresenter @Inject constructor(private val productRepository: Pro
             view?.showLoading()
             try {
                 productRepository.updateProduct(product)
-                loadProducts() // Reload the product list
-                view?.showMessage("Product updated successfully")
+                val index = currentProducts.indexOfFirst { it.id == product.id }
+                if (index != -1) {
+                    currentProducts = currentProducts.toMutableList().apply {
+                        this[index] = product
+                    }
+                    view?.showProducts(currentProducts)
+                }
             } catch (e: Exception) {
                 view?.showMessage("Failed to update product: ${e.message}")
             } finally {

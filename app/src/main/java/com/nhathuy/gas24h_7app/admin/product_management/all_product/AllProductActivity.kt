@@ -130,7 +130,7 @@ class AllProductActivity : AppCompatActivity(), AllProductContract.View {
 
     override fun showEditProduct(product: Product) {
         val intent = Intent(this, EditProductActivity::class.java)
-        intent.putExtra("product", product)
+        intent.putExtra("PRODUCT_ID", product.id)
         startActivityForResult(intent, Constants.EDIT_PRODUCT_REQUEST)
     }
 

@@ -11,6 +11,7 @@ import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmat
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingContract
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductPresenter
+import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
@@ -88,7 +89,11 @@ class PresenterModule {
     fun provideAddProductPresenter(context: Context, db: FirebaseFirestore, storage: FirebaseStorage): AddProductContract.Presenter{
         return AddProductPresenter(context,db,storage)
     }
-
+    @Provides
+    @Singleton
+    fun provideEditProductPresenter(context: Context, db: FirebaseFirestore, storage: FirebaseStorage,productRepository: ProductRepository): EditProductPresenter{
+        return EditProductPresenter(context,db,storage,productRepository)
+    }
     @Provides
     @Singleton
     fun provideProductListCategoryPresenter(db: FirebaseFirestore): ProductListCategoryContract.Presenter{
