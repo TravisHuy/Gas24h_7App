@@ -7,11 +7,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
+import com.nhathuy.gas24h_7app.adapter.ProductImageEditAdapter
+import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityEditProductBinding
 import com.nhathuy.gas24h_7app.util.Constants.MAX_IMAGE_COUNT
@@ -22,11 +26,13 @@ import javax.inject.Inject
 class EditProductActivity : AppCompatActivity(), EditProductContract.View {
 
     private lateinit var binding: ActivityEditProductBinding
-    private lateinit var adapter: ProductImageAdapter
+    private lateinit var adapter: ProductImageEditAdapter
     private lateinit var categoryAdapter: ArrayAdapter<String>
 
     @Inject
     lateinit var presenter: EditProductPresenter
+    private var imageCount = 0
+    private var selectedCategoryPosition: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +56,17 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
     }
 
     private fun setupRecyclerView() {
-        adapter = ProductImageAdapter(mutableListOf()) { position ->
-            presenter.onImageRemoved(position)
-        }
+        adapter = ProductImageEditAdapter(
+            mutableListOf(),
+            onDeleteClick = { position ->
+                presenter.onImageRemoved(position)
+            },
+            onImageCountChanged = { count ->
+                imageCount = count
+                updateImageCount(count, MAX_IMAGE_COUNT)
+                enableImageAddButton(count < MAX_IMAGE_COUNT)
+            }
+        )
         binding.productImagesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.productImagesRecyclerView.adapter = adapter
     }
@@ -65,7 +79,7 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
             presenter.updateProduct()
         }
         binding.categoryAutoComplete.setOnItemClickListener { _, _, position, _ ->
-            presenter.getSelectedCategoryId(position)
+            presenter.updateSelectedCategoryPosition(position)
         }
         binding.editProductCoverImage.setOnClickListener {
             openCoverImagePicker()
@@ -81,16 +95,16 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
     }
 
     private fun openImagePicker() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
     private fun openCoverImagePicker() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
         startActivityForResult(Intent.createChooser(intent, "Select Cover Picture"), PICK_COVER_IMAGE_REQUEST)
     }
 
@@ -98,12 +112,8 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             when(requestCode) {
-                PICK_IMAGE_REQUEST -> {
-                    presenter.onImageAdded(data.data!!)
-                }
-                PICK_COVER_IMAGE_REQUEST -> {
-                    presenter.onCoverImageAdded(data.data!!)
-                }
+                PICK_IMAGE_REQUEST -> presenter.onImageAdded(data.data!!)
+                PICK_COVER_IMAGE_REQUEST -> presenter.onCoverImageAdded(data.data!!)
             }
         }
     }
@@ -143,8 +153,15 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
         binding.tvEditProductCoverImage.text = "Add Cover\nImage ($count/$max)"
     }
 
+    override fun updateSelectedCategoryPosition(position: Int) {
+        selectedCategoryPosition = position
+        binding.categoryAutoComplete.setSelection(position)
+    }
+
     override fun addImageToAdapter(imageUrl: String) {
-        adapter.addImage(Uri.parse(imageUrl))
+        if (imageCount < MAX_IMAGE_COUNT) {
+            adapter.addImage(Uri.parse(imageUrl))
+        }
     }
 
     override fun removeImageFromAdapter(position: Int) {
@@ -175,6 +192,8 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
 
     override fun setProductCategory(category: String) {
         binding.categoryAutoComplete.setText(category, false)
+        // Tìm vị trí của category trong adapter
+        selectedCategoryPosition = categoryAdapter.getPosition(category)
     }
 
     override fun setProductDescription(description: String) {
@@ -186,7 +205,7 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
     }
 
     override fun getProductName(): String = binding.edEditProductName.text.toString()
-    override fun getSelectedCategoryPosition(): Int = binding.categoryAutoComplete.listSelection
+    override fun getSelectedCategoryPosition(): Int = selectedCategoryPosition
     override fun getProductDescription(): String = binding.edEditProductDescription.text.toString()
     override fun getProductPrice(): String = binding.edEditProductPrice.text.toString()
     override fun getProductStockCount(): String = binding.edEditProductStockCount.text.toString()
@@ -245,6 +264,25 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
         updateCoverImage(product.coverImageUrl)
         product.detailImageUrls.forEach { addImageToAdapter(it) }
         updateImageCount(product.detailImageUrls.size, MAX_IMAGE_COUNT)
+        updateCoverImage(product.coverImageUrl)
+        updateCoverImageCount(if (product.coverImageUrl.isNotEmpty()) 1 else 0, 1)
+        enableCoverImageAddButton(product.coverImageUrl.isEmpty())
     }
 
+    override fun navigateAllProduct() {
+        startActivity(Intent(this,AllProductActivity::class.java))
+    }
+
+    override fun navigateBack() {
+       MaterialAlertDialogBuilder(this)
+            .setTitle("Hủy sửa sản phẩm")
+            .setMessage("Bạn có chắc chắn muốn hủy sửa sản phẩm không?")
+            .setPositiveButton("Có") { _, _ -> finish() }
+            .setNegativeButton("Không", null)
+            .show()
+    }
+
+    override fun onBackPressed() {
+        navigateBack()
+    }
 }

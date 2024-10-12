@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.admin.product_management.edit_product
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -31,10 +32,15 @@ class EditProductPresenter @Inject constructor(
     private val job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
+    private var imageCount = 0
+    private var selectedCategoryPosition: Int = -1
+    private var selectedCategoryId: String = ""
+
     private lateinit var currentProduct: Product
     private val imageUris = mutableListOf<Uri>()
     private var coverImageUri: Uri? = null
     private var categories: List<ProductCategory> = listOf()
+
 
     override fun attachView(view: EditProductContract.View) {
         this.view = view
@@ -55,10 +61,9 @@ class EditProductPresenter @Inject constructor(
                     currentProduct = result.getOrThrow()
                     withContext(Dispatchers.Main) {
                         view?.populateProductData(currentProduct)
-                        val category = categoryRepository.getCategoryById(currentProduct.categoryId)
-                        category?.let {
-                            view?.setProductCategory(it.categoryName)
-                        }
+                        loadProductCategory(currentProduct.categoryId)
+                        view?.updateCoverImageCount(if (currentProduct.coverImageUrl.isNotEmpty()) 1 else 0, 1)
+                        view?.enableCoverImageAddButton(currentProduct.coverImageUrl.isEmpty())
                     }
                 } else {
                     view?.showError("Failed to load product: ${result.exceptionOrNull()?.message}")
@@ -70,7 +75,24 @@ class EditProductPresenter @Inject constructor(
             }
         }
     }
-
+    private suspend fun loadProductCategory(categoryId: String) {
+        try {
+            val category = categoryRepository.getCategoryById(categoryId).getOrThrow()
+            val categoryIndex = categories.indexOfFirst { it.id == categoryId }
+            if (categoryIndex != -1) {
+                selectedCategoryPosition = categoryIndex
+                selectedCategoryId = categoryId
+                withContext(Dispatchers.Main) {
+                    view?.setProductCategory(category.categoryName)
+                    view?.updateSelectedCategoryPosition(selectedCategoryPosition)
+                }
+            } else {
+                view?.showError("Category not found in the list")
+            }
+        } catch (e: Exception) {
+            view?.showError("Error loading category: ${e.message}")
+        }
+    }
     override fun updateProduct() {
         coroutineScope.launch {
             view?.showLoading()
@@ -84,7 +106,7 @@ class EditProductPresenter @Inject constructor(
 
                 val updatedProduct = currentProduct.copy(
                     name = view?.getProductName() ?: "",
-                    categoryId = getSelectedCategoryId(view?.getSelectedCategoryPosition() ?: -1),
+                    categoryId = selectedCategoryId,
                     description = view?.getProductDescription() ?: "",
                     price = view?.getProductPrice()?.toDoubleOrNull() ?: 0.0,
                     stockCount = view?.getProductStockCount()?.toIntOrNull() ?: 0,
@@ -95,6 +117,7 @@ class EditProductPresenter @Inject constructor(
 
                 productRepository.updateProduct(updatedProduct).onSuccess {
                     view?.showSuccess("Product updated successfully")
+                    view?.navigateAllProduct()
                 }.onFailure {
                     view?.showError("Failed to update product: ${it.message}")
                 }
@@ -106,10 +129,21 @@ class EditProductPresenter @Inject constructor(
         }
     }
 
+    override fun updateSelectedCategoryPosition(position: Int) {
+        selectedCategoryPosition = position
+        selectedCategoryId = if (position in categories.indices) {
+            categories[position].id
+        } else {
+            ""
+        }
+        Log.d("EditProductPresenter", "Updated category position: $position, id: $selectedCategoryId")
+    }
+
     override fun onImageAdded(uri: Uri) {
         if (imageUris.size < MAX_IMAGE_COUNT) {
             imageUris.add(uri)
             view?.addImageToAdapter(uri.toString())
+            imageCount++
             view?.updateImageCount(imageUris.size, MAX_IMAGE_COUNT)
             view?.enableImageAddButton(imageUris.size < MAX_IMAGE_COUNT)
         } else {
@@ -121,6 +155,7 @@ class EditProductPresenter @Inject constructor(
         if (position in imageUris.indices) {
             imageUris.removeAt(position)
             view?.removeImageFromAdapter(position)
+            imageCount--
             view?.updateImageCount(imageUris.size, MAX_IMAGE_COUNT)
             view?.enableImageAddButton(true)
         }
@@ -157,12 +192,14 @@ class EditProductPresenter @Inject constructor(
     override fun loadCategories() {
         coroutineScope.launch {
             try {
-                val result = db.collection("categories").get().await()
-                categories = result.mapNotNull { document ->
-                    document.toObject(ProductCategory::class.java)
-                }
-                withContext(Dispatchers.Main) {
-                    view?.updateCategoryList(categories.map { it.categoryName })
+                val result = categoryRepository.getCategories()
+                if (result.isSuccess) {
+                    categories = result.getOrDefault(emptyList())
+                    withContext(Dispatchers.Main) {
+                        view?.updateCategoryList(categories.map { it.categoryName })
+                    }
+                } else {
+                    view?.showError("Failed to load categories: ${result.exceptionOrNull()?.message}")
                 }
             } catch (e: Exception) {
                 view?.showError("Failed to load categories: ${e.message}")
@@ -182,7 +219,7 @@ class EditProductPresenter @Inject constructor(
         var isValid = true
 
         val name = view?.getProductName()?.trim() ?: ""
-        val categoryId = getSelectedCategoryId(view?.getSelectedCategoryPosition() ?: -1)
+        val categoryId = selectedCategoryId
         val description = view?.getProductDescription()?.trim() ?: ""
         val priceString = view?.getProductPrice()?.trim() ?: ""
         val offerPercentageString = view?.getProductOfferPercentage()?.trim() ?: ""

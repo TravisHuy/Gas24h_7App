@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.admin.product_management.edit_product
 
 import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.model.ProductCategory
 
 interface EditProductContract {
     interface View {
@@ -12,6 +13,7 @@ interface EditProductContract {
         fun updateImageCount(count: Int, max: Int)
         fun updateCoverImage(imageUrl: String)
         fun updateCoverImageCount(count: Int, max: Int)
+        fun updateSelectedCategoryPosition(position: Int)
         fun addImageToAdapter(imageUrl: String)
         fun removeImageFromAdapter(position: Int)
         fun enableImageAddButton(enable: Boolean)
@@ -39,6 +41,8 @@ interface EditProductContract {
         fun clearImages()
         fun clearCoverImage()
         fun populateProductData(product: Product)
+        fun navigateAllProduct()
+        fun navigateBack()
     }
 
     interface Presenter {
@@ -46,6 +50,7 @@ interface EditProductContract {
         fun detachView()
         fun loadProduct(productId: String)
         fun updateProduct()
+        fun updateSelectedCategoryPosition(position: Int)
         fun onImageAdded(uri: Uri)
         fun onImageRemoved(position: Int)
         fun onCoverImageAdded(uri: Uri)

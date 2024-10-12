@@ -91,8 +91,8 @@ class PresenterModule {
     }
     @Provides
     @Singleton
-    fun provideEditProductPresenter(context: Context, db: FirebaseFirestore, storage: FirebaseStorage,productRepository: ProductRepository): EditProductPresenter{
-        return EditProductPresenter(context,db,storage,productRepository)
+    fun provideEditProductPresenter(context: Context, db: FirebaseFirestore, storage: FirebaseStorage,productRepository: ProductRepository,categoryRepository: CategoryRepository): EditProductPresenter{
+        return EditProductPresenter(context,db,storage,productRepository,categoryRepository)
     }
     @Provides
     @Singleton

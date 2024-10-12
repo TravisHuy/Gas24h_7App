@@ -10,15 +10,14 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor(private val db:FirebaseFirestore){
 
-    suspend fun getCategories() : Result<List<ProductCategory>>{
-        return try{
+    suspend fun getCategories(): Result<List<ProductCategory>> = withContext(Dispatchers.IO) {
+        try {
             val snapshot = db.collection("categories").get().await()
             val categories = snapshot.documents.mapNotNull { document ->
-                document.data?.let { ProductCategory.fromMap(it) }
-            }.sorted()
+                document.toObject(ProductCategory::class.java)
+            }.sortedBy { it.categoryName }
             Result.success(categories)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
