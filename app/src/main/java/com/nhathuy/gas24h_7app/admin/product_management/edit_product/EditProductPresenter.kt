@@ -192,17 +192,20 @@ class EditProductPresenter @Inject constructor(
     override fun loadCategories() {
         coroutineScope.launch {
             try {
-                val result = categoryRepository.getCategories()
-                if (result.isSuccess) {
-                    categories = result.getOrDefault(emptyList())
-                    withContext(Dispatchers.Main) {
-                        view?.updateCategoryList(categories.map { it.categoryName })
-                    }
-                } else {
-                    view?.showError("Failed to load categories: ${result.exceptionOrNull()?.message}")
+                val result = db.collection("categories").get().await()
+                categories = result.mapNotNull { document ->
+                    document.toObject(ProductCategory::class.java)
+                }
+                withContext(Dispatchers.Main) {
+                    view?.updateCategoryList(categories.map {
+                        it.categoryName
+                    })
                 }
             } catch (e: Exception) {
-                view?.showError("Failed to load categories: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    view?.showError("Failed to load categories: ${e.message}")
+                    Log.d("AddProductPresenter","Failed to load categories: ${e.message}")
+                }
             }
         }
     }

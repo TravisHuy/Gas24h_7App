@@ -55,22 +55,22 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilProvince"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/tilProvince"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:hintEnabled="false"
+        >
+        <AutoCompleteTextView
+            android:id="@+id/provinceAutoComplete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:hintEnabled="false"
-            >
-            <AutoCompleteTextView
-                android:id="@+id/provinceAutoComplete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:fontFamily="@font/nunito_sans_light"
-                android:hint="Tỉnh, thành phố..."
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="none"
+            android:fontFamily="@font/nunito_sans_light"
+            android:hint="Tỉnh, thành phố..."
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDistrict"

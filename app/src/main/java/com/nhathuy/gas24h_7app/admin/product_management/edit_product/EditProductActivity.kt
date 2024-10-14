@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
+import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
 import com.nhathuy.gas24h_7app.adapter.ProductImageEditAdapter
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
@@ -45,7 +47,7 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
         setupRecyclerView()
         setupListeners()
         setupCategoryAdapter()
-
+        setDropdownHeight(binding.categoryAutoComplete,4)
         val productId = intent.getStringExtra("PRODUCT_ID") ?: ""
         if (productId.isNotEmpty()) {
             presenter.loadProduct(productId)
@@ -93,7 +95,12 @@ class EditProductActivity : AppCompatActivity(), EditProductContract.View {
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
         binding.categoryAutoComplete.setAdapter(categoryAdapter)
     }
-
+    private fun setDropdownHeight(categoryAutoComplete: AutoCompleteTextView, maxItems: Int) {
+        categoryAutoComplete.post {
+            val itemHeight=resources.getDimensionPixelSize(R.dimen.max_dropdown_height)
+            categoryAutoComplete.dropDownHeight=itemHeight*maxItems
+        }
+    }
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "image/*"

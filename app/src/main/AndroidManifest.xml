@@ -26,17 +26,23 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
-            android:name=".admin.product_management.edit_product.EditProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".admin.product_management.all_product.AllProductActivity"
-            android:exported="true">
+            android:name=".ui.google_map.GoogleMapActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.shipping_address.ShippingAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.product_management.edit_product.EditProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.product_management.all_product.AllProductActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.add_review_test.AddReviewTestActivity"
             android:exported="false" />
@@ -111,7 +117,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

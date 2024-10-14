@@ -49,7 +49,7 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.0")
-    implementation("com.google.android.material:material:1.6.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
@@ -100,4 +100,8 @@ dependencies {
 
     //SwipeRevealLayout
     implementation("com.github.chthai64:SwipeRevealLayout:1.4.0")
+
+
+    //google map
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
 }
