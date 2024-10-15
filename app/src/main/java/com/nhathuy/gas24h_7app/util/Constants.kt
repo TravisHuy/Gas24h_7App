@@ -8,6 +8,7 @@ object Constants {
     const val PHONE_HOTLINE="0349929163"
     const val CHOOSE_VOUCHER_REQUEST_CODE=1001
     const val REVIEW_REQUEST_CODE = 1001
+    const val GOOGLE_MAP_REQUEST_CODE = 1001
     const val SELECTED_VOUCHER_KEY = "selected_voucher"
     const val MAX_IMAGE_COUNT = 3
     const val PICK_IMAGE_REQUEST = 1

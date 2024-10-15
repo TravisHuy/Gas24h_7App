@@ -20,6 +20,7 @@ import com.nhathuy.gas24h_7app.fragment.sales_policy.SalesPolicyFragment
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentActivity
+import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressActivity
 import com.nhathuy.gas24h_7app.util.Constants
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 import javax.inject.Inject
@@ -74,7 +75,9 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
         binding.linearTermsOfUse.setOnClickListener {
             navigateSalesPolicy()
         }
-
+        binding.linearLayoutAddress.setOnClickListener {
+            navigateShippingAddress()
+        }
     }
 
     private fun setupOrderSuccess() {
@@ -154,6 +157,11 @@ class OrderActivity : AppCompatActivity(),OrderContract.View{
 
     override fun navigateSalesPolicy() {
         navigateToSalesPolicyFragment()
+    }
+
+    override fun navigateShippingAddress() {
+        startActivity(Intent(this, ShippingAddressActivity::class.java))
+        finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

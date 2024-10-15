@@ -39,7 +39,7 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
     private var wards: MutableMap<String, List<Ward>> = mutableMapOf()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private var isUsingCurrentLocation = false
     override fun attachView(view: RegisterContract.View) {
         this.view=view
         fusedLocationClient=LocationServices.getFusedLocationProviderClient(context)
@@ -56,6 +56,13 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
         coroutineScope.launch {
             view?.showLoading()
             try {
+                if(!isUsingCurrentLocation){
+                    user.houseNumber = user.address
+                    user.address = "${user.houseNumber}, ${user.ward}, ${user.district},${user.province}"
+                }
+                else{
+                    user.houseNumber = ""
+                }
                 val result= userRepository.registerUser(user)
                 withContext(Dispatchers.Main){
                     if(result.isSuccess){
@@ -98,7 +105,7 @@ class RegisterPresenter @Inject constructor(private val locationApiService: Loca
                 isValid=false
             }
             user.address.isBlank() -> {
-                view?.showAddressError("Please enter your address")
+                view?.showAddressError("Vui lòng nhập số nhà, tên đường hoặc sử dụng vị trí hiện tại")
                 isValid=false
             }
         }

@@ -65,7 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Liên hệ" />
+            android:text="Liên hệ"
+            android:textSize="16sp"
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFullName"
@@ -114,7 +116,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Địa chỉ" />
+            android:text="Địa chỉ"
+            android:textSize="16sp"
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilProvince"
@@ -226,7 +230,7 @@
             android:fontFamily="@font/mulish_light"
             android:text="857 Đ. Trường Chinh, Tây Thạnh, Tân Phú, Hồ Chí Minh 100000, Vietnam"
             android:textSize="18sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

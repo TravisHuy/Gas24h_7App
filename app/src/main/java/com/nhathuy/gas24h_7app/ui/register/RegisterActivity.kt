@@ -159,6 +159,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
                 province = getSelectedProvince(),
                 district = getSelectedDistrict(),
                 ward= getSelectedWard(),
+                houseNumber = "",
                 address = getAddress(),
                 referralCode = getReferralCode())
             if (presenter.validateUserInput(user)) {
@@ -237,6 +238,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     override fun getSelectedProvince(): String = binding.provinceAutoComplete.text.toString()
     override fun getSelectedDistrict(): String = binding.districtAutoComplete.text.toString()
     override fun getSelectedWard(): String = binding.wardAutoComplete.text.toString()
+
     override fun setAddress(address: String) {
         binding.edRegAddress.setText(address)
     }

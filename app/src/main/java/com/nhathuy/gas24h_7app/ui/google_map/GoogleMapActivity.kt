@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.databinding.ActivityGoogleMapBinding
+import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressActivity
 import java.io.IOException
 import java.util.Locale
 
@@ -75,9 +76,9 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnSave.setOnClickListener {
             currentAddress?.let {
                 address ->
-                val intent  = Intent()
+                val intent  = Intent(this,ShippingAddressActivity::class.java)
                 intent.putExtra("address",address)
-                setResult(RESULT_OK,intent)
+                startActivity(intent)
                 finish()
             }?: run {
                 Toast.makeText(this, "Please choose an address before saving", Toast.LENGTH_SHORT).show()

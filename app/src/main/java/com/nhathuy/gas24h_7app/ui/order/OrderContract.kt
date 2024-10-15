@@ -16,6 +16,7 @@ interface OrderContract {
         fun showRemainingVoucherUsages(remainingUsages:Int)
         fun navigatePendingPayment()
         fun navigateSalesPolicy()
+        fun navigateShippingAddress()
     }
     interface Presenter{
         fun attachView(view: OrderContract.View)

@@ -59,6 +59,7 @@ import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMePresenter
+import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressPresenter
 import com.nhathuy.gas24h_7app.ui.verify.VerificationContract
 import com.nhathuy.gas24h_7app.ui.verify.VerificationPresenter
 import dagger.Module
@@ -213,5 +214,11 @@ class PresenterModule {
     @Singleton
     fun provideAllProductPresenter(productRepository: ProductRepository,categoryRepository: CategoryRepository):AllProductPresenter{
         return AllProductPresenter(productRepository,categoryRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideShippingAddressPresenter(userRepository: UserRepository,locationApiService: LocationApiService):ShippingAddressPresenter{
+        return ShippingAddressPresenter(userRepository,locationApiService)
     }
 }

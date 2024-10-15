@@ -121,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_sans_light"
-                android:hint="Vui lòng nhập địa chỉ" />
+                android:hint="Vui lòng nhập tên đường,tòa nhà,số nhà" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView

@@ -9,11 +9,12 @@ data class User(
     var province:String = "",
     var district:String ="",
     var ward:String ="",
+    var houseNumber:String ="",
     var address: String = "",
     var referralCode:String ="",
     var imageUser: String = "",
 ){
-    constructor():this("","","","","","","","","")
+    constructor():this("","","","","","","","","","")
 
     fun toMap():Map<String,Any>{
          return hashMapOf(
@@ -23,6 +24,7 @@ data class User(
              "province" to province,
              "district" to district,
              "ward" to ward,
+             "houseNumber" to houseNumber,
              "address" to address,
              "referralCode" to referralCode,
              "imageUser" to imageUser,
