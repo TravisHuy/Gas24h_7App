@@ -35,6 +35,10 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
         presenter.attachView(this)
 
         val address = intent.getStringExtra("address")
+        if(address !=null){
+            presenter.parseAndSetAddress(address)
+            binding.addressTextView.text
+        }
 
         if(address!=null){
             binding.addressTextView.text = address
@@ -94,6 +98,18 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
             val selectedDistrict = binding.districtAutoComplete.text.toString()
             presenter.onDistrictSelected(selectedDistrict)
         }
+        binding.btnConfirm.setOnClickListener {
+            val user = User(
+                fullName = getUserFullName(),
+                phoneNumber = getUserPhone(),
+                province = getProvince(),
+                district = getDistrict(),
+                ward = getWard(),
+                houseNumber = getHouseName(),
+                address = "${getHouseName()} ,${getWard()},${getDistrict()},${getProvince()}"
+            )
+            presenter.onSubmitAddress(user)
+        }
     }
 
     private fun clearDistrictAndWard() {
@@ -119,6 +135,7 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
         binding.provinceAutoComplete.setText(user.province)
         binding.districtAutoComplete.setText(user.district)
         binding.wardAutoComplete.setText(user.ward)
+        binding.edShippingAddressHouseNumber.setText(user.houseNumber)
     }
 
     override fun setProvinces(provinces: List<String>) {
@@ -140,8 +157,47 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
         wardAdapter.notifyDataSetChanged()
     }
 
+    override fun setAddressFields(
+        province: String,
+        district: String,
+        ward: String,
+        houseNumber: String
+    ) {
+        binding.provinceAutoComplete.setText(province)
+        binding.districtAutoComplete.setText(district)
+        binding.wardAutoComplete.setText(ward)
+        binding.edShippingAddressHouseNumber.setText(houseNumber)
+    }
+
+    override fun getUserFullName(): String = binding.edRegFullName.text.toString()
+
+    override fun getUserPhone(): String  = binding.edShippingAddressPhone.text.toString()
+
+    override fun getProvince(): String = binding.provinceAutoComplete.text.toString()
+
+    override fun getDistrict(): String = binding.districtAutoComplete.text.toString()
+
+    override fun getWard(): String = binding.wardAutoComplete.text.toString()
+
+    override fun getHouseName(): String = binding.edShippingAddressHouseNumber.text.toString()
+
+    override fun onAddressSubmitted() {
+        Toast.makeText(this, "Địa chỉ đã được cập nhật", Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
     override fun navigateGoogleMap() {
-        startActivity(Intent(this,GoogleMapActivity::class.java))
+        val intent = Intent(this, GoogleMapActivity::class.java)
+        startActivityForResult(intent, GOOGLE_MAP_REQUEST_CODE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GOOGLE_MAP_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val address = data?.getStringExtra("address")
+            if (address != null) {
+                presenter.parseAndSetAddress(address)
+            }
+        }
     }
 
 }

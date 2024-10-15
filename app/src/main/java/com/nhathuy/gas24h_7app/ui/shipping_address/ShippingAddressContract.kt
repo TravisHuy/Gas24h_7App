@@ -9,6 +9,14 @@ interface ShippingAddressContract {
         fun setProvinces(provinces: List<String>)
         fun setDistricts(districts: List<String>)
         fun setWards(wards: List<String>)
+        fun setAddressFields(province:String,district:String,ward:String,houseNumber:String)
+        fun getUserFullName():String
+        fun getUserPhone():String
+        fun getProvince():String
+        fun getDistrict():String
+        fun getWard():String
+        fun getHouseName():String
+        fun onAddressSubmitted()
         fun navigateGoogleMap()
     }
 
@@ -19,5 +27,7 @@ interface ShippingAddressContract {
         fun loadProvinces()
         fun onProvinceSelected(provinceName: String)
         fun onDistrictSelected(districtName: String)
+        fun parseAndSetAddress(address:String)
+        fun onSubmitAddress(user:User)
     }
 }

@@ -183,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_sans_light"
-                android:hint="Tên đường số nhà" />
+                android:hint="Tên đường, tòa nhà, số nhà" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

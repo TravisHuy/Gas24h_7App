@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.google_map
 
+import android.app.Activity
 import android.content.Intent
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
@@ -76,9 +77,9 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnSave.setOnClickListener {
             currentAddress?.let {
                 address ->
-                val intent  = Intent(this,ShippingAddressActivity::class.java)
-                intent.putExtra("address",address)
-                startActivity(intent)
+                val intent = Intent()
+                intent.putExtra("address", address)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             }?: run {
                 Toast.makeText(this, "Please choose an address before saving", Toast.LENGTH_SHORT).show()
