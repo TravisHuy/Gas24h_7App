@@ -37,6 +37,9 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupSearchView()
         setupSaveButton()
+
+        //get the current address from the intent
+        currentAddress = intent.getStringExtra("currentAddress")
     }
     private fun setupSearchView() {
         binding.searchView.setupWithSearchBar(binding.searchBar)
@@ -89,8 +92,15 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val defaultLatLng = LatLng(10.8231, 106.6297)
-        updateMap(defaultLatLng, "Hồ Chí Minh")
+
+        //dùng ví trí hiện tại để hiển thị trên bản đồ
+        currentAddress?.let {
+            address ->
+            searchAddress(address)
+        } ?: run {
+            val defaultLatLng = LatLng(10.8231, 106.6297)
+            updateMap(defaultLatLng, "Hồ Chí Minh")
+        }
 
         // Thiết lập listener cho sự kiện click trên bản đồ
         mMap.setOnMapClickListener { latLng ->

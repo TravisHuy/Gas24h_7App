@@ -6,9 +6,9 @@ interface ShippingAddressContract {
     interface View {
         fun showMessage(message:String)
         fun showInformationUser(user:User)
-        fun setProvinces(provinces: List<String>)
-        fun setDistricts(districts: List<String>)
-        fun setWards(wards: List<String>)
+//        fun setProvinces(provinces: List<String>)
+//        fun setDistricts(districts: List<String>)
+//        fun setWards(wards: List<String>)
         fun setAddressFields(province:String,district:String,ward:String,houseNumber:String)
         fun getUserFullName():String
         fun getUserPhone():String
@@ -24,10 +24,11 @@ interface ShippingAddressContract {
         fun attachView(view: View)
         fun detachView()
         fun loadUsers()
-        fun loadProvinces()
-        fun onProvinceSelected(provinceName: String)
-        fun onDistrictSelected(districtName: String)
+//        fun loadProvinces()
+//        fun onProvinceSelected(provinceName: String)
+//        fun onDistrictSelected(districtName: String)
         fun parseAndSetAddress(address:String)
+        fun getCurrentAddress():String?
         fun onSubmitAddress(user:User)
     }
 }

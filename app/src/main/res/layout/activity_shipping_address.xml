@@ -122,14 +122,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilProvince"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             app:hintEnabled="false">
 
-            <AutoCompleteTextView
-                android:id="@+id/provinceAutoComplete"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_province"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_sans_light"
@@ -139,14 +138,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDistrict"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             app:hintEnabled="false">
 
-            <AutoCompleteTextView
-                android:id="@+id/districtAutoComplete"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_sans_light"
@@ -156,14 +154,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilWard"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             app:hintEnabled="false">
 
-            <AutoCompleteTextView
-                android:id="@+id/wardAutoComplete"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_ward"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_sans_light"

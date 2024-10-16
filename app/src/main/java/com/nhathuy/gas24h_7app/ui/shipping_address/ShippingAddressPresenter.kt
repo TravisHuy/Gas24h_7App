@@ -25,6 +25,8 @@ class ShippingAddressPresenter @Inject constructor(private val userRepository: U
 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+
+    private var currentAddress:String? = null
     override fun attachView(view: ShippingAddressContract.View) {
         this.view = view
     }
@@ -41,6 +43,7 @@ class ShippingAddressPresenter @Inject constructor(private val userRepository: U
                 result.fold(
                     onSuccess = { user ->
                         view?.showInformationUser(user)
+                        currentAddress = user.address
                     },
                     onFailure = {e ->
                         view?.showMessage("Failed load user ${e.message}")
@@ -53,57 +56,57 @@ class ShippingAddressPresenter @Inject constructor(private val userRepository: U
         }
     }
 
-    override fun loadProvinces() {
-        coroutineScope.launch {
-            try {
-                val response  = withContext(Dispatchers.IO){
-                    locationApiService.getProvides()
-                }
-                provinces  = response.data.toMutableList()
-                view?.setProvinces(provinces.map { it.full_name })
-            }
-            catch (e:Exception){
-                view?.showMessage("Error fetching provinces: ${e.message}")
-            }
-        }
-    }
-
-    override fun onProvinceSelected(provinceName: String) {
-        val province = provinces.find { it.full_name == provinceName }?: return
-
-        coroutineScope.launch {
-            try {
-                val response  = withContext(Dispatchers.IO){
-                    locationApiService.getDistricts(province.id)
-                }
-                districts[province.id] = response.data
-                view?.setDistricts(response.data.map { it.full_name })
-            }
-            catch (e:Exception){
-
-            }
-        }
-    }
-
-    override fun onDistrictSelected(districtName: String) {
-        val selectedProvince = provinces.find { province ->
-            districts[province.id]?.any { it.full_name == districtName } == true
-        } ?: return
-
-        val district = districts[selectedProvince.id]?.find { it.full_name == districtName } ?: return
-
-        coroutineScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    locationApiService.getWards(district.id)
-                }
-                wards[district.id] = response.data
-                view?.setWards(response.data.map { it.full_name })
-            } catch (e: Exception) {
-                view?.showMessage("Error fetching districts: ${e.message}")
-            }
-        }
-    }
+//    override fun loadProvinces() {
+//        coroutineScope.launch {
+//            try {
+//                val response  = withContext(Dispatchers.IO){
+//                    locationApiService.getProvides()
+//                }
+//                provinces  = response.data.toMutableList()
+//                view?.setProvinces(provinces.map { it.full_name })
+//            }
+//            catch (e:Exception){
+//                view?.showMessage("Error fetching provinces: ${e.message}")
+//            }
+//        }
+//    }
+//
+//    override fun onProvinceSelected(provinceName: String) {
+//        val province = provinces.find { it.full_name == provinceName }?: return
+//
+//        coroutineScope.launch {
+//            try {
+//                val response  = withContext(Dispatchers.IO){
+//                    locationApiService.getDistricts(province.id)
+//                }
+//                districts[province.id] = response.data
+//                view?.setDistricts(response.data.map { it.full_name })
+//            }
+//            catch (e:Exception){
+//
+//            }
+//        }
+//    }
+//
+//    override fun onDistrictSelected(districtName: String) {
+//        val selectedProvince = provinces.find { province ->
+//            districts[province.id]?.any { it.full_name == districtName } == true
+//        } ?: return
+//
+//        val district = districts[selectedProvince.id]?.find { it.full_name == districtName } ?: return
+//
+//        coroutineScope.launch {
+//            try {
+//                val response = withContext(Dispatchers.IO) {
+//                    locationApiService.getWards(district.id)
+//                }
+//                wards[district.id] = response.data
+//                view?.setWards(response.data.map { it.full_name })
+//            } catch (e: Exception) {
+//                view?.showMessage("Error fetching districts: ${e.message}")
+//            }
+//        }
+//    }
 
     override fun parseAndSetAddress(address: String) {
         val addressParts = address.split(", ")
@@ -134,14 +137,18 @@ class ShippingAddressPresenter @Inject constructor(private val userRepository: U
         }
         view?.setAddressFields(province, district, ward, houseNumber)
 
-        // Load districts and wards based on the parsed address
-        if (province.isNotEmpty()) {
-            onProvinceSelected(province)
-        }
-        if (district.isNotEmpty()) {
-            onDistrictSelected(district)
-        }
+//        // Load districts and wards based on the parsed address
+//        if (province.isNotEmpty()) {
+//            onProvinceSelected(province)
+//        }
+//        if (district.isNotEmpty()) {
+//            onDistrictSelected(district)
+//        }
 
+    }
+
+    override fun getCurrentAddress(): String? {
+        return currentAddress
     }
 
     override fun onSubmitAddress(user: User) {
@@ -153,7 +160,7 @@ class ShippingAddressPresenter @Inject constructor(private val userRepository: U
                         view?.onAddressSubmitted()
                     },
                     onFailure = {
-                        e ->
+                            e ->
                         view?.showMessage("Cập nhật địa chỉ thất bại: ${e.message}")
                     }
                 )

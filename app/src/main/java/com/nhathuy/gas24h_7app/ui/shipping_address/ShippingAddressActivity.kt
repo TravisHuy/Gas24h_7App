@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -48,55 +49,29 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
             binding.addressTextView.visibility = View.GONE
         }
 
-        setupListener()
-        setupUI()
+        setupListeners()
         presenter.loadUsers()
-        presenter.loadProvinces()
     }
-    private fun setupListener() {
+    private fun setupListeners() {
+//        binding.provinceAutoComplete.setOnItemClickListener { _, _, position, _ ->
+//            val selectedProvince = provinceAdapter.getItem(position)
+//            presenter.onProvinceSelected(selectedProvince  ?: "")
+//        }
+//
+//        // District selection
+//        binding.districtAutoComplete.setOnItemClickListener { _, _, position, _ ->
+//            val selectedDistrict = districtAdapter.getItem(position)
+//            Log.d("ShippingAddress", "Selected district: $selectedDistrict")
+//            presenter.onDistrictSelected(selectedDistrict ?: "")
+//        }
+//
+//        // Ward selection
+//        binding.wardAutoComplete.setOnItemClickListener { _, _, position, _ ->
+//            val selectedWard = wardAdapter.getItem(position)
+//            Log.d("ShippingAddress", "Selected ward: $selectedWard")
+//        }
         binding.linearChoosePlace.setOnClickListener {
             navigateGoogleMap()
-        }
-    }
-    private fun setupUI() {
-        setDropdownHeight(binding.wardAutoComplete, 4)
-        setDropdownHeight(binding.provinceAutoComplete, 5)
-        setDropdownHeight(binding.districtAutoComplete, 5)
-
-        setupAdapters()
-        setupListeners()
-//        setupTextWatchers()
-    }
-    private fun setDropdownHeight(wardAutoComplete: AutoCompleteTextView, maxItems: Int) {
-        wardAutoComplete.post {
-            val itemHeight = resources.getDimensionPixelSize(R.dimen.max_dropdown_height) // Approximate item height
-            wardAutoComplete.dropDownHeight = itemHeight * maxItems
-        }
-    }
-
-    private fun setupAdapters() {
-        // Initialize adapters
-        provinceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
-        districtAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
-        wardAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
-
-        // Set adapters to AutoCompleteTextViews
-        binding.provinceAutoComplete.setAdapter(provinceAdapter)
-        binding.districtAutoComplete.setAdapter(districtAdapter)
-        binding.wardAutoComplete.setAdapter(wardAdapter)
-    }
-
-    private fun setupListeners() {
-        binding.provinceAutoComplete.setOnItemClickListener { _, _, position, _ ->
-            clearDistrictAndWard()
-            val selectedProvince = binding.provinceAutoComplete.text.toString()
-            presenter.onProvinceSelected(selectedProvince)
-        }
-
-        binding.districtAutoComplete.setOnItemClickListener { _, _, position, _ ->
-            clearWard()
-            val selectedDistrict = binding.districtAutoComplete.text.toString()
-            presenter.onDistrictSelected(selectedDistrict)
         }
         binding.btnConfirm.setOnClickListener {
             val user = User(
@@ -112,19 +87,19 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
         }
     }
 
-    private fun clearDistrictAndWard() {
-        binding.districtAutoComplete.setText("", false)
-        binding.wardAutoComplete.setText("", false)
-        districtAdapter.clear()
-        wardAdapter.clear()
-        districtAdapter.notifyDataSetChanged()
-        wardAdapter.notifyDataSetChanged()
-    }
-    private fun clearWard() {
-        binding.wardAutoComplete.setText("",false)
-        wardAdapter.clear()
-        wardAdapter.notifyDataSetChanged()
-    }
+//    private fun clearDistrictAndWard() {
+//        binding.districtAutoComplete.setText("", false)
+//        binding.wardAutoComplete.setText("", false)
+//        districtAdapter.clear()
+//        wardAdapter.clear()
+//        districtAdapter.notifyDataSetChanged()
+//        wardAdapter.notifyDataSetChanged()
+//    }
+//    private fun clearWard() {
+//        binding.wardAutoComplete.setText("",false)
+//        wardAdapter.clear()
+//        wardAdapter.notifyDataSetChanged()
+//    }
     override fun showMessage(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
@@ -132,30 +107,36 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
     override fun showInformationUser(user: User) {
         binding.edRegFullName.setText(user.fullName)
         binding.edShippingAddressPhone.setText(user.phoneNumber)
-        binding.provinceAutoComplete.setText(user.province)
-        binding.districtAutoComplete.setText(user.district)
-        binding.wardAutoComplete.setText(user.ward)
+        binding.edProvince.setText(user.province)
+        binding.edDistrict.setText(user.district)
+        binding.edWard.setText(user.ward)
         binding.edShippingAddressHouseNumber.setText(user.houseNumber)
     }
 
-    override fun setProvinces(provinces: List<String>) {
-        provinceAdapter.clear()
-        provinceAdapter.addAll(provinces)
-        provinceAdapter.notifyDataSetChanged()
-    }
-
-    override fun setDistricts(districts: List<String>) {
-        clearWard()
-        districtAdapter.clear()
-        districtAdapter.addAll(districts)
-        districtAdapter.notifyDataSetChanged()
-    }
-
-    override fun setWards(wards: List<String>) {
-        wardAdapter.clear()
-        wardAdapter.addAll(wards)
-        wardAdapter.notifyDataSetChanged()
-    }
+//    override fun setProvinces(provinces: List<String>) {
+//        Log.d("ShippingAddress", "Setting provinces: ${provinces.size}")
+//        provinceAdapter.clear()
+//        provinceAdapter.addAll(provinces)
+//        provinceAdapter.notifyDataSetChanged()
+//        binding.provinceAutoComplete.setAdapter(provinceAdapter)
+//    }
+//
+//    override fun setDistricts(districts: List<String>) {
+//        Log.d("ShippingAddress", "Setting districts: ${districts.size}")
+//        clearWard()
+//        districtAdapter.clear()
+//        districtAdapter.addAll(districts)
+//        districtAdapter.notifyDataSetChanged()
+//        binding.districtAutoComplete.setAdapter(districtAdapter)
+//    }
+//
+//    override fun setWards(wards: List<String>) {
+//        Log.d("ShippingAddress", "Setting wards: ${wards.size}")
+//        wardAdapter.clear()
+//        wardAdapter.addAll(wards)
+//        wardAdapter.notifyDataSetChanged()
+//        binding.wardAutoComplete.setAdapter(wardAdapter)
+//    }
 
     override fun setAddressFields(
         province: String,
@@ -163,9 +144,9 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
         ward: String,
         houseNumber: String
     ) {
-        binding.provinceAutoComplete.setText(province)
-        binding.districtAutoComplete.setText(district)
-        binding.wardAutoComplete.setText(ward)
+        binding.edProvince.setText(province)
+        binding.edDistrict.setText(district)
+        binding.edWard.setText(ward)
         binding.edShippingAddressHouseNumber.setText(houseNumber)
     }
 
@@ -173,11 +154,11 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
 
     override fun getUserPhone(): String  = binding.edShippingAddressPhone.text.toString()
 
-    override fun getProvince(): String = binding.provinceAutoComplete.text.toString()
+    override fun getProvince(): String = binding.edProvince.text.toString()
 
-    override fun getDistrict(): String = binding.districtAutoComplete.text.toString()
+    override fun getDistrict(): String = binding.edDistrict.text.toString()
 
-    override fun getWard(): String = binding.wardAutoComplete.text.toString()
+    override fun getWard(): String = binding.edWard.text.toString()
 
     override fun getHouseName(): String = binding.edShippingAddressHouseNumber.text.toString()
 
@@ -188,6 +169,7 @@ class ShippingAddressActivity : AppCompatActivity(), ShippingAddressContract.Vie
 
     override fun navigateGoogleMap() {
         val intent = Intent(this, GoogleMapActivity::class.java)
+        intent.putExtra("currentAddress",presenter.getCurrentAddress())
         startActivityForResult(intent, GOOGLE_MAP_REQUEST_CODE)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
