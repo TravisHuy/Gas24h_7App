@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -53,6 +54,27 @@ class ProductAdapter(private var products: List<Product>,private  val listener: 
             else{
                 tvProductPrice.text = NumberFormatUtils.formatPrice(originalPrice)
                 tvProductOfferPercentage.visibility=View.GONE
+            }
+            if(product.averageRating > 0f){
+                tvRating.text= String.format("%.1f", product.averageRating)
+                linearRating.visibility=View.VISIBLE
+            }
+            else{
+                linearRating.visibility=View.GONE
+                //linearproduct margintop 10dp if rating =0f
+                val layoutParams = linearProduct.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.topMargin = holder.itemView.context.resources.getDimensionPixelSize(R.dimen.top)
+                linearProduct.layoutParams = layoutParams
+            }
+            if(product.soldCount > 0){
+                tvProductSold.visibility=View.VISIBLE
+                tvProductSold.text = holder.itemView.context.getString(
+                    R.string.sold_count_format,
+                    product.soldCount
+                )
+            }
+            else{
+                tvProductSold.visibility=View.GONE
             }
         }
     }

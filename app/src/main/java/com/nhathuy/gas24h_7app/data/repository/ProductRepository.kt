@@ -154,4 +154,29 @@ class ProductRepository @Inject constructor(private val db:FirebaseFirestore) {
             Result.failure(e)
         }
     }
+    //update product review
+    suspend fun updateProductReviewWithTransaction(productId: String,newRating:Float) : Result<Unit> = withContext(Dispatchers.IO){
+        try {
+            db.runTransaction {
+                transition ->
+                val document = transition.get(db.collection("products").document(productId))
+                val product = document.toObject(Product::class.java)
+                if(product!=null){
+                    val updateReviewCount = product.reviewCount+1
+                    val updateAverageRating = ((product.averageRating*product.reviewCount)+newRating)/updateReviewCount
+
+                    //update product
+                    product.reviewCount = updateReviewCount
+                    product.averageRating = updateAverageRating
+
+                    //update transaction
+                    transition.set(db.collection("products").document(product.id),product)
+                }
+            }.await()
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
 }

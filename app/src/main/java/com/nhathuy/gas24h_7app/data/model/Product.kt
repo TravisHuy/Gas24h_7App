@@ -15,10 +15,11 @@ data class Product (
     var offerPercentage :Double,
     var coverImageUrl:String,
     var detailImageUrls:List<String>,
-    var reviewCount: Int = 0,
-    var averageRating: Float =0.0f
+    var reviewCount: Int =0,
+    var averageRating: Float=0.0f,
+    var soldCount : Int =0
 ): Parcelable{
-    constructor():this("","","","",0.0,0,0.0,"", emptyList(),0,0.0f)
+    constructor():this("","","","",0.0,0,0.0,"", emptyList(),0,0.0f,0)
     fun toMap():Map<String,Any>{
         return hashMapOf("id" to id,
                         "name" to name,
@@ -30,7 +31,8 @@ data class Product (
                         "coverImageUrl" to coverImageUrl,
                         "detailImageUrls" to detailImageUrls,
                         "reviews" to reviewCount,
-                        "averageRating" to averageRating)
+                        "averageRating" to averageRating,
+                        "soldCount" to soldCount)
     }
     fun getDiscountedPrice(): Double{
         return price* (1-offerPercentage/100)

@@ -52,12 +52,14 @@
                 android:text="Tai nghe HQAi H1TWS Tai nghe Bluetooth inPods Tai nghe không"
                 android:textColor="@color/black" />
             <LinearLayout
+                android:id="@+id/linear_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="#F6EED7"
                 android:layout_marginTop="10dp"
                 android:padding="2dp"
+                android:visibility="gone"
                 >
                 <RatingBar
                     android:id="@+id/rating_bar"
@@ -76,6 +78,7 @@
                     />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/linear_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -104,6 +107,7 @@
                     android:id="@+id/tv_productSold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:text="Đã bán 6.1k"
                     android:textAlignment="textEnd"

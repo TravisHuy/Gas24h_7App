@@ -142,6 +142,7 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
                 result.fold(
                     onSuccess = {
                         orderRepository.updateOrderStatus(orderId_current!!, OrderStatus.RATED)
+                        productRepository.updateProductReviewWithTransaction(productId!!,rating)
                         view?.showMessage("Review submitted successfully")
                         view?.clearInputField()
                         view?.clearImages()
