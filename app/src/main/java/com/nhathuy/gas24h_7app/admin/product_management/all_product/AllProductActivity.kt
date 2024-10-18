@@ -18,6 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.AllProductItemAdapter
+import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductActivity
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityAllProductBinding
@@ -73,6 +74,9 @@ class AllProductActivity : AppCompatActivity(), AllProductContract.View {
         }
         binding.lowBestSelling.setOnClickListener {
             presenter.sortProductsBySelling(false)
+        }
+        binding.floatAddProduct.setOnClickListener{
+            navigateAddProduct()
         }
     }
 
@@ -152,5 +156,10 @@ class AllProductActivity : AppCompatActivity(), AllProductContract.View {
             .setNegativeButton("No", null)
             .show()
 
+    }
+
+    override fun navigateAddProduct() {
+        startActivity(Intent(this,AddProductActivity::class.java))
+        finish()
     }
 }

@@ -251,8 +251,8 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         cartBadge = BadgeDrawable.create(this)
         cartBadge.isVisible = false
         cartBadge.backgroundColor = ContextCompat.getColor(this, R.color.badge_background_color)
-        cartBadge.horizontalOffset = dpToPx(10)
-        cartBadge.verticalOffset = dpToPx(2)
+        cartBadge.horizontalOffset = dpToPx(15)
+        cartBadge.verticalOffset = dpToPx(10)
         val cartIcon = binding.detailCartItem
         BadgeUtils.attachBadgeDrawable(cartBadge, cartIcon, binding.detailCartItemContainer)
     }
@@ -301,6 +301,21 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
 
         priceText.text = NumberFormatUtils.formatPrice(price)
         stockText.text = product.stockCount.toString()
+
+        // Set initial quantity to 1
+        quantityEdit.setText("1")
+
+        // Disable editing initially
+        quantityEdit.isFocusable = false
+        quantityEdit.isClickable = false
+
+        // Enable editing when clicked
+        quantityEdit.setOnClickListener {
+            quantityEdit.isFocusableInTouchMode = true
+            quantityEdit.isFocusable = true
+            quantityEdit.isClickable = true
+            quantityEdit.requestFocus()
+        }
 
         Glide.with(this)
             .load(product.coverImageUrl)

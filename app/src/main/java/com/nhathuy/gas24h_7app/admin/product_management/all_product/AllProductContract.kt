@@ -10,6 +10,7 @@ interface AllProductContract {
         fun showProducts(products:List<Product>)
         fun showEditProduct(product: Product)
         fun showRemoveProductDialog(product: Product)
+        fun navigateAddProduct()
     }
     interface Presenter{
         fun attachView(view:View)

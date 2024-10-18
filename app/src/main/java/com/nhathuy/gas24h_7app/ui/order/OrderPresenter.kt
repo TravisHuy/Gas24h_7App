@@ -174,7 +174,7 @@ class OrderPresenter @Inject constructor(
                 totalAmount = totalAmount,
                 discountAmount = totalAmount - calculateDiscountedAmount(),
                 appliedVoucherId = currentVoucherId,
-                status = OrderStatus.PENDING,
+                status = OrderStatus.PROCESSING,
                 createdAt = Date(),
                 updatedAt = Date(),
                 shippingAddress = currentUser?.address ?: "",

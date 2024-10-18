@@ -58,13 +58,15 @@ class ProductAdapter(private var products: List<Product>,private  val listener: 
             if(product.averageRating > 0f){
                 tvRating.text= String.format("%.1f", product.averageRating)
                 linearRating.visibility=View.VISIBLE
+                linearNull.visibility=View.GONE
             }
             else{
                 linearRating.visibility=View.GONE
                 //linearproduct margintop 10dp if rating =0f
-                val layoutParams = linearProduct.layoutParams as ViewGroup.MarginLayoutParams
-                layoutParams.topMargin = holder.itemView.context.resources.getDimensionPixelSize(R.dimen.top)
-                linearProduct.layoutParams = layoutParams
+//                val layoutParams = linearProduct.layoutParams as ViewGroup.MarginLayoutParams
+//                layoutParams.topMargin = holder.itemView.context.resources.getDimensionPixelSize(R.dimen.top)
+//                linearProduct.layoutParams = layoutParams
+                linearNull.visibility=View.VISIBLE
             }
             if(product.soldCount > 0){
                 tvProductSold.visibility=View.VISIBLE
