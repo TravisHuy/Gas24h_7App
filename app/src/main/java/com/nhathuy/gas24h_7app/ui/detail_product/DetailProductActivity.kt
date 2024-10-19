@@ -93,6 +93,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
         setupBottomNavigation()
         setupCartBadge()
         setupCart()
+        setupBuyNow()
         backHome()
         setupHotline()
         setupRecReview()
@@ -112,7 +113,12 @@ class DetailProductActivity : AppCompatActivity(), DetailProductContract.View {
             navigateCart()
         }
     }
-
+    //set up buy now
+    private fun setupBuyNow() {
+        binding.btnDetailBuy.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
+    }
     //toggle product description visibility
     private fun setupDescriptionToggle() {
         binding.layoutDescriptionProduct.seeMoreLayout.setOnClickListener {

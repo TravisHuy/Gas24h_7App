@@ -9,6 +9,7 @@ import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
+import com.nhathuy.gas24h_7app.data.repository.SearchRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.data.repository.impl.UserRepositoryImpl
@@ -61,5 +62,11 @@ class RepositoryModule {
     @Singleton
     fun provideReviewRepository(db:FirebaseFirestore,storage:FirebaseStorage): ReviewRepository {
         return ReviewRepository(db, storage)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchRepository(db:FirebaseFirestore): SearchRepository {
+        return SearchRepository(db)
     }
 }

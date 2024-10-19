@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_nav_home_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_nav_home_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_video"
@@ -187,5 +190,10 @@
         android:name="com.nhathuy.gas24h_7app.ui.main.MainActivity"
         android:label="app_bar_main"
         tools:layout="@layout/app_bar_main" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.nhathuy.gas24h_7app.fragment.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 
 </navigation>

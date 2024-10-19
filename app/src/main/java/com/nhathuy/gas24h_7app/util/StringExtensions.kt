@@ -9,3 +9,7 @@ fun String.normalizeVietnamese() :String{
         .replace('đ', 'd')
         .replace('Đ', 'd')
 }
+
+fun splitQueryIntoKeyWords(query:String):List<String>{
+    return query.trim().lowercase().split("\\s+".toRegex())
+}
