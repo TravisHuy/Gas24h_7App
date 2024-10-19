@@ -13,6 +13,7 @@ import com.nhathuy.gas24h_7app.data.repository.SearchRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.data.repository.impl.UserRepositoryImpl
+import com.nhathuy.gas24h_7app.viewmodel.SearchViewModel
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -68,5 +69,10 @@ class RepositoryModule {
     @Singleton
     fun provideSearchRepository(db:FirebaseFirestore): SearchRepository {
         return SearchRepository(db)
+    }
+    @Provides
+    @Singleton
+    fun provideSearchViewModel(searchRepository: SearchRepository): SearchViewModel {
+        return SearchViewModel(searchRepository)
     }
 }

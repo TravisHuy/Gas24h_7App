@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.fragment.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -20,6 +22,7 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.FragmentHomeBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
+import com.nhathuy.gas24h_7app.ui.search.SearchActivity
 import com.nhathuy.gas24h_7app.viewmodel.HomeSharedViewModel
 import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
 import javax.inject.Inject
@@ -57,10 +60,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
         presenter.attachView(this)
         setupObserves()
         setSlideImage()
-
+        setupSearchView()
         homeSharedViewModel.refreshData()
 
     }
+
 
     private fun setupObserves() {
         homeSharedViewModel.categories.observe(viewLifecycleOwner) { categories ->
@@ -100,6 +104,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
 
         if (categories.isNotEmpty()) {
             homeSharedViewModel.fetchProductForCategory(categories[0].id)
+        }
+    }
+    private fun setupSearchView() {
+        binding.layoutSearchView.setOnClickListener {
+            navigateToSearchFragment()
         }
     }
 
@@ -147,6 +156,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
     override fun showCategories(categories: List<ProductCategory>) {
 //        setCategoriesFragment(categories)
         setupTabLayout(categories)
+    }
+
+    override fun navigateToSearchFragment() {
+//        findNavController().navigate(R.id.action_nav_home_to_searchFragment)
+        startActivity(Intent(requireContext(),SearchActivity::class.java))
     }
 
 //    private fun setCategoriesFragment(categories: List<ProductCategory>) {

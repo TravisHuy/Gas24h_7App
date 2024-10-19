@@ -19,9 +19,4 @@ abstract class ViewModelModule {
     @ViewModelKey(HomeSharedViewModel::class)
     abstract fun bindHomeSharedViewModel(viewModel: HomeSharedViewModel):ViewModel
 
-    @Provides
-    @Singleton
-    fun provideSearchViewModel(searchRepository: SearchRepository): SearchViewModel {
-        return SearchViewModel(searchRepository)
-    }
 }

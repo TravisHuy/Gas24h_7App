@@ -8,8 +8,8 @@ interface HomeFragmentContract {
         fun hideLoading()
         fun showError(message:String)
         fun showBanners(banners:List<String>)
-
         fun showCategories(categories:List<ProductCategory>)
+        fun navigateToSearchFragment()
     }
     interface Presenter{
         fun attachView(view:View)
