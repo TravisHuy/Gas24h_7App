@@ -6,22 +6,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.SearchRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(private val searchRepository: SearchRepository):ViewModel(){
 
-    private val _searchResults = MutableLiveData<List<Product>>()
-    val searchResult : LiveData<List<Product>> = _searchResults
+    private val _searchResults = MutableStateFlow<List<Product>>(emptyList())
+    val searchResult: StateFlow<List<Product>> = _searchResults.asStateFlow()
 
-    private val _recentSearches = MutableLiveData<List<Product>>()
-    val recentSearches : LiveData<List<Product>> = _recentSearches
+    private val _recentSearches = MutableStateFlow<List<Product>>(emptyList())
+    val recentSearches: StateFlow<List<Product>> = _recentSearches.asStateFlow()
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _error = MutableLiveData<String>()
-    val error : LiveData<String> = _error
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
 
     fun searchProducts(query:String){
         viewModelScope.launch {

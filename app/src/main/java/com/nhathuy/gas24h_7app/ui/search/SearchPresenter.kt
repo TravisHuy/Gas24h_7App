@@ -4,6 +4,7 @@ import com.nhathuy.gas24h_7app.viewmodel.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchPresenter @Inject constructor(private val searchViewModel: SearchViewModel):SearchContract.Presenter{
@@ -14,11 +15,47 @@ class SearchPresenter @Inject constructor(private val searchViewModel: SearchVie
 
     override fun attachView(view: SearchContract.View) {
         this.view=view
+        observeViewModel()
     }
+
 
     override fun detachView() {
         view = null
         job.cancel()
     }
 
+    override fun searchProducts(query: String) {
+        view?.showLoading()
+        searchViewModel.searchProducts(query)
+    }
+//    override fun getRecentSearches() {
+//        searchViewModel.getRecentSearches()
+//    }
+    private fun observeViewModel() {
+        coroutineScope.launch {
+            searchViewModel.searchResult.collect{
+                products->
+                view?.hideLoading()
+                view?.showSearchResults(products)
+            }
+        }
+
+//        coroutineScope.launch {
+//            searchViewModel.recentSearches.collect { searches ->
+//                view?.showRecentSearches(searches)
+//            }
+//        }
+
+        coroutineScope.launch {
+            searchViewModel.isLoading.collect { isLoading ->
+                if (isLoading) view?.showLoading() else view?.hideLoading()
+            }
+        }
+
+        coroutineScope.launch {
+            searchViewModel.error.collect { error ->
+                error?.let { view?.showMessage(it) }
+            }
+        }
+    }
 }
