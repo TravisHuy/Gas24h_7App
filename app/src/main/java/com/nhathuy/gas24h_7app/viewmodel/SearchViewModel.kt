@@ -26,14 +26,21 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private var originalResults = listOf<Product>()
+    private var currentSearchQuery = ""
+    private var currentRating: Float? = null
+
     fun searchProducts(query:String){
         viewModelScope.launch {
             _isLoading.value=true
             val result = searchRepository.searchProducts(query)
             result.fold(
                 onSuccess ={products ->
-                    _searchResults.value = products
-                    saveRecentSearch(query)
+                    originalResults = products.filter {
+                        it.name.contains(query, ignoreCase = true) ||
+                                it.description.contains(query, ignoreCase = true)
+                    }
+                    applyCurrentFilters()
                 },
                 onFailure = {
 
@@ -62,4 +69,52 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
         }
     }
 
+    fun sortByBestSeller() {
+        _searchResults.value = _searchResults.value.sortedByDescending { it.soldCount }
+    }
+
+    fun sortByHighPrice() {
+        _searchResults.value = _searchResults.value.sortedByDescending { it.getDiscountedPrice() }
+    }
+
+    fun sortByLowPrice() {
+        _searchResults.value = _searchResults.value.sortedBy { it.getDiscountedPrice() }
+    }
+
+    fun sortByRelevance() {
+        applyCurrentFilters()
+    }
+
+    fun filterByRating(rating: Float) {
+        currentRating = rating
+        applyCurrentFilters()
+    }
+
+    private fun applyCurrentFilters() {
+        var filteredResults = originalResults
+
+        // Apply rating filter if exists
+        currentRating?.let { rating ->
+            filteredResults = filteredResults.filter {
+                when (rating) {
+                    5f -> it.averageRating >= 4.5f
+                    4f -> it.averageRating >= 3.5f && it.averageRating < 4.5f
+                    3f -> it.averageRating >= 2.5f && it.averageRating < 3.5f
+                    2f -> it.averageRating >= 1.5f && it.averageRating < 2.5f
+                    else -> it.averageRating < 1.5f
+                }
+            }
+        }
+
+        _searchResults.value = filteredResults
+    }
+
+    fun clearSearch() {
+        viewModelScope.launch {
+            _searchResults.emit(emptyList())
+            // Reset any other relevant state
+            _isLoading.emit(false)
+            _error.emit(null)
+        }
+    }
 }

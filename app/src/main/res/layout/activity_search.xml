@@ -74,19 +74,6 @@
                 android:layout_marginStart="10dp"
                 android:text="Bán chạy" />
 
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Giá"
-                app:chipIcon="@drawable/ic_up"
-                app:chipIconTint="@color/black"
-                app:closeIcon="@drawable/ic_down"
-                app:closeIconTint="@color/black"
-                app:closeIconVisible="true" />
-
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipReview"
                 android:layout_width="wrap_content"
@@ -97,6 +84,41 @@
                 app:closeIcon="@drawable/ic_down"
                 app:closeIconTint="@color/black"
                 app:closeIconVisible="true" />
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:padding="6dp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/background_linear_price"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Giá"
+                    android:textStyle="bold"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <ImageView
+                        android:id="@+id/high_price"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/ic_caret_up_fill"/>
+                    <ImageView
+                        android:id="@+id/low_price"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/ic_caret_down_fill"/>
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </HorizontalScrollView>
 

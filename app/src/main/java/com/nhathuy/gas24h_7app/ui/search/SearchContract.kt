@@ -9,11 +9,20 @@ interface SearchContract {
         fun showMessage(message:String)
         fun showSearchResults(products:List<Product>)
 //        fun showRecentSearches(searches: List<Product>)
+        fun showDialogStar()
+        fun clearSearchResults()
+        fun navigateHome()
     }
     interface Presenter{
         fun attachView(view:View)
         fun detachView()
         fun searchProducts(query:String)
 //        fun getRecentSearches()
+        fun sortByBestSeller()
+        fun sortByHighPrice()
+        fun sortByLowPrice()
+        fun sortByRelevance()
+        fun filterByRating(rating: Float)
+        fun clearSearch()
     }
 }

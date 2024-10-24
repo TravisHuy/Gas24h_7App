@@ -28,7 +28,33 @@ class SearchPresenter @Inject constructor(private val searchViewModel: SearchVie
         view?.showLoading()
         searchViewModel.searchProducts(query)
     }
-//    override fun getRecentSearches() {
+
+    override fun sortByBestSeller() {
+        searchViewModel.sortByBestSeller()
+    }
+
+    override fun sortByHighPrice() {
+        searchViewModel.sortByHighPrice()
+    }
+
+    override fun sortByLowPrice() {
+        searchViewModel.sortByLowPrice()
+    }
+
+    override fun sortByRelevance() {
+        searchViewModel.sortByRelevance()
+    }
+
+    override fun filterByRating(rating: Float) {
+        searchViewModel.filterByRating(rating)
+    }
+
+    override fun clearSearch() {
+        searchViewModel.clearSearch()
+        view?.clearSearchResults()
+    }
+
+    //    override fun getRecentSearches() {
 //        searchViewModel.getRecentSearches()
 //    }
     private fun observeViewModel() {
