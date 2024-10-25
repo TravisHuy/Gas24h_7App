@@ -23,6 +23,7 @@ interface SearchContract {
         fun sortByLowPrice()
         fun sortByRelevance()
         fun filterByRating(rating: Float)
+        fun resetStarFilter()
         fun clearSearch()
     }
 }

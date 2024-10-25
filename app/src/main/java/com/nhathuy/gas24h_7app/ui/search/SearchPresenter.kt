@@ -49,6 +49,10 @@ class SearchPresenter @Inject constructor(private val searchViewModel: SearchVie
         searchViewModel.filterByRating(rating)
     }
 
+    override fun resetStarFilter() {
+        searchViewModel.resetRatingFilter()
+    }
+
     override fun clearSearch() {
         searchViewModel.clearSearch()
         view?.clearSearchResults()

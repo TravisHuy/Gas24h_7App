@@ -90,6 +90,12 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
         applyCurrentFilters()
     }
 
+    fun resetRatingFilter() {
+        currentRating = null
+        applyCurrentFilters()
+    }
+
+
     private fun applyCurrentFilters() {
         var filteredResults = originalResults
 
@@ -112,7 +118,8 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
     fun clearSearch() {
         viewModelScope.launch {
             _searchResults.emit(emptyList())
-            // Reset any other relevant state
+            currentRating = null
+            originalResults = emptyList()
             _isLoading.emit(false)
             _error.emit(null)
         }

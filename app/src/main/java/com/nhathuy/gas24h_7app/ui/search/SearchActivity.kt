@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.ui.search
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,6 +33,10 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
         presenter.attachView(this)
         setupViews()
         setupListeners()
+
+        binding.linearOption.visibility=View.GONE
+        binding.layoutNoResults.visibility = View.GONE
+        binding.searchSwipeRefreshLayout.visibility = View.VISIBLE
     }
     private fun setupViews() {
         adapter = ProductAdapter(emptyList(), object : ProductClickListener {
@@ -51,6 +56,7 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
                 query?.let {
                     presenter.searchProducts(it)
                     binding.chipRelevance.isChecked = true
+                    binding.linearOption.visibility=View.VISIBLE
                 }
                 return true
             }
@@ -58,6 +64,7 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
                     presenter.clearSearch()
+                    binding.linearOption.visibility=View.GONE
                 }
                 return true
             }
@@ -66,18 +73,22 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
             navigateHome()
         }
         binding.chipRelevance.setOnClickListener {
+            presenter.resetStarFilter()
             presenter.sortByRelevance()
             binding.chipRelevance.isChecked = true
         }
         binding.chipBestSeller.setOnClickListener {
+            presenter.resetStarFilter()
             presenter.sortByBestSeller()
             binding.chipRelevance.isChecked = false
         }
         binding.highPrice.setOnClickListener {
+            presenter.resetStarFilter()
             presenter.sortByHighPrice()
             binding.chipRelevance.isChecked = false
         }
         binding.lowPrice.setOnClickListener {
+            presenter.resetStarFilter()
             presenter.sortByLowPrice()
             binding.chipRelevance.isChecked = false
         }
@@ -92,6 +103,7 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
     }
     override fun showLoading() {
         binding.searchSwipeRefreshLayout.isRefreshing=true
+        binding.layoutNoResults.visibility = View.GONE
     }
 
     override fun hideLoading() {
@@ -103,7 +115,18 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
     }
 
     override fun showSearchResults(products: List<Product>) {
-        adapter.updateData(products)
+        if (products.isEmpty()) {
+            // Hiển thị layout không có kết quả
+            binding.searchSwipeRefreshLayout.visibility = View.GONE
+            binding.layoutNoResults.visibility = View.VISIBLE
+            binding.linearOption.visibility = View.GONE
+        } else {
+            // Hiển thị danh sách sản phẩm
+            binding.searchSwipeRefreshLayout.visibility = View.VISIBLE
+            binding.layoutNoResults.visibility = View.GONE
+            binding.linearOption.visibility = View.VISIBLE
+            adapter.updateData(products)
+        }
     }
 
     override fun showDialogStar() {
@@ -151,14 +174,17 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
     override fun clearSearchResults() {
         adapter.updateData(emptyList())
         binding.chipRelevance.isChecked = true
-        // Reset other filter chips if needed
         binding.chipBestSeller.isChecked = false
         binding.chipReview.isChecked = false
+        binding.linearOption.visibility = View.GONE
+        binding.layoutNoResults.visibility = View.GONE
+        binding.searchSwipeRefreshLayout.visibility = View.VISIBLE
+        binding.searchView.setQuery("", false)
+        presenter.resetStarFilter()
     }
 
     override fun navigateHome() {
-        startActivity(Intent(this,MainActivity::class.java))
-        finish()
+       onBackPressed()
     }
 
 //    override fun showRecentSearches(searches: List<Product>) {
