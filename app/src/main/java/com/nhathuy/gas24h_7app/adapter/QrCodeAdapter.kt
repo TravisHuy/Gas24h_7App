@@ -10,9 +10,20 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ItemAllProductQrScannerBinding
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
-class QrCodeAdapter(private var products: List<Product>) : RecyclerView.Adapter<QrCodeAdapter.QrCodeViewHolder>(){
+class QrCodeAdapter(private var products: List<Product> = emptyList(),
+                    private val onQrButtonClick: (Product) -> Unit)
+    : RecyclerView.Adapter<QrCodeAdapter.QrCodeViewHolder>(){
 
-    inner class QrCodeViewHolder(val binding:ItemAllProductQrScannerBinding):RecyclerView.ViewHolder(binding.root)
+    inner class QrCodeViewHolder(val binding:ItemAllProductQrScannerBinding):RecyclerView.ViewHolder(binding.root){
+        init {
+            binding.btnCreateQrScanner.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onQrButtonClick(products[position])
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -46,4 +57,8 @@ class QrCodeAdapter(private var products: List<Product>) : RecyclerView.Adapter<
     }
 
     override fun getItemCount(): Int = products.size
+    fun updateData(newProducts: List<Product>) {
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }
