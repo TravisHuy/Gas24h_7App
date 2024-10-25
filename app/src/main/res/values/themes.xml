@@ -29,13 +29,15 @@
         <item name="elevationOverlayColor">@color/md_theme_light_surfaceTint</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
 
-<!--        <item name="toolbarStyle">@style/AppTheme.Toolbar</item>-->
+        <!--        <item name="toolbarStyle">@style/AppTheme.Toolbar</item>-->
 
     </style>
+
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
+
     <style name="Theme.Gas24h_7App" parent="Base.Theme.Gas24h_7App" />
 
     <style name="tablayout_text" parent="TextAppearance.AppCompat">
@@ -45,11 +47,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-<!--    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">-->
-<!--        <item name="colorControlNormal">@android:color/white</item>-->
-<!--        <item name="android:textColorPrimary">@android:color/white</item>-->
-<!--    </style>-->
-
+    <!--    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">-->
+    <!--        <item name="colorControlNormal">@android:color/white</item>-->
+    <!--        <item name="android:textColorPrimary">@android:color/white</item>-->
+    <!--    </style>-->
 
 
 </resources>
