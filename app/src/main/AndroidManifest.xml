@@ -26,9 +26,11 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".admin.qrcode.all.AllQrCodeActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.qrcode.QrCodeActivity"
-            android:exported="true"
-             >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,9 +54,7 @@
             android:exported="false" />
         <activity
             android:name=".admin.product_management.all_product.AllProductActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".ui.add_review_test.AddReviewTestActivity"
             android:exported="false" />
