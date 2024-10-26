@@ -13,6 +13,7 @@ import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductPresenter
 import com.nhathuy.gas24h_7app.admin.qrcode.QrCodePresenter
+import com.nhathuy.gas24h_7app.admin.qrcode.all.AllQrCodePresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
@@ -226,5 +227,11 @@ class PresenterModule {
     @Singleton
     fun provideQrCodePresenter(productRepository: ProductRepository):QrCodePresenter{
         return QrCodePresenter(productRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAllQrCodePresenter(productRepository: ProductRepository,context: Context): AllQrCodePresenter {
+        return AllQrCodePresenter(productRepository,context)
     }
 }

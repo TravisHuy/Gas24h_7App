@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.admin.qrcode
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.QrCodeAdapter
+import com.nhathuy.gas24h_7app.admin.qrcode.all.AllQrCodeActivity
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ActivityQrCodeBinding
 import com.nhathuy.gas24h_7app.databinding.DialogQrCodeBinding
@@ -31,9 +33,9 @@ class QrCodeActivity : AppCompatActivity(), QrCodeContract.View {
         presenter.attachView(this)
         setupRecycler()
         setupSwipeRefresh()
+        setupListeners()
         presenter.loadProducts()
     }
-
     private fun setupRecycler() {
         binding.recyclerViewAllQr.layoutManager = GridLayoutManager(this, 2)
         adapter = QrCodeAdapter(onQrButtonClick = { product ->
@@ -45,6 +47,11 @@ class QrCodeActivity : AppCompatActivity(), QrCodeContract.View {
     private fun setupSwipeRefresh() {
         binding.swipeRefreshLayoutAllQr.setOnRefreshListener {
             presenter.loadProducts()
+        }
+    }
+    private fun setupListeners() {
+        binding.btnAllQr.setOnClickListener {
+            navigateAllQrCode()
         }
     }
 
@@ -81,5 +88,10 @@ class QrCodeActivity : AppCompatActivity(), QrCodeContract.View {
 
             show()
         }
+    }
+
+    override fun navigateAllQrCode() {
+        startActivity(Intent(this,AllQrCodeActivity::class.java))
+        finish()
     }
 }

@@ -11,6 +11,7 @@ interface QrCodeContract {
         fun showMessage(message:String)
         fun showProducts(products:List<Product>)
         fun showQrCodeDialog(bitmap: Bitmap, productName: String)
+        fun navigateAllQrCode()
     }
     interface Presenter{
         fun attachView(view: View)
