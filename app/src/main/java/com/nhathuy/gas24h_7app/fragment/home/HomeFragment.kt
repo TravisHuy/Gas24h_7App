@@ -22,6 +22,7 @@ import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.ProductCategory
 import com.nhathuy.gas24h_7app.databinding.FragmentHomeBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
+import com.nhathuy.gas24h_7app.ui.qrscanner.QrScannerActivity
 import com.nhathuy.gas24h_7app.ui.search.SearchActivity
 import com.nhathuy.gas24h_7app.viewmodel.HomeSharedViewModel
 import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
@@ -61,8 +62,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
         setupObserves()
         setSlideImage()
         setupSearchView()
+        setupQrScanner()
         homeSharedViewModel.refreshData()
+    }
 
+    private fun setupQrScanner() {
+        binding.iconQr.setOnClickListener {
+            navigateQrScanner()
+        }
     }
 
 
@@ -161,6 +168,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
     override fun navigateToSearchFragment() {
 //        findNavController().navigate(R.id.action_nav_home_to_searchFragment)
         startActivity(Intent(requireContext(),SearchActivity::class.java))
+    }
+
+    override fun navigateQrScanner() {
+        startActivity(Intent(requireContext(),QrScannerActivity::class.java))
     }
 
 //    private fun setCategoriesFragment(categories: List<ProductCategory>) {

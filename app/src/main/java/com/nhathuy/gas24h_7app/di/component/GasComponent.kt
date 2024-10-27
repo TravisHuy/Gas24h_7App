@@ -34,6 +34,7 @@ import com.nhathuy.gas24h_7app.ui.order.OrderActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
 import com.nhathuy.gas24h_7app.ui.pending_payment.PendingPaymentActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
+import com.nhathuy.gas24h_7app.ui.qrscanner.QrScannerActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMeActivity
 import com.nhathuy.gas24h_7app.ui.search.SearchActivity
@@ -85,4 +86,5 @@ interface GasComponent {
     fun inject(searchActivity: SearchActivity)
     fun inject(qrCodeActivity: QrCodeActivity)
     fun inject(allQrCodeActivity: AllQrCodeActivity)
+    fun inject(qrScannerActivity: QrScannerActivity)
 }

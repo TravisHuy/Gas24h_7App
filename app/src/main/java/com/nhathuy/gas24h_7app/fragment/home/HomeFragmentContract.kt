@@ -10,6 +10,7 @@ interface HomeFragmentContract {
         fun showBanners(banners:List<String>)
         fun showCategories(categories:List<ProductCategory>)
         fun navigateToSearchFragment()
+        fun navigateQrScanner()
     }
     interface Presenter{
         fun attachView(view:View)

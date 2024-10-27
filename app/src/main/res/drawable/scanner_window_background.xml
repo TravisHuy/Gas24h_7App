@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="2dp"
+                android:color="#FF5722" />
+        </shape>
+    </item>
+    <!-- Top-left corner -->
+    <item android:gravity="top|left">
+        <shape android:shape="rectangle">
+            <size
+                android:width="40dp"
+                android:height="3dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <item android:gravity="top|left">
+        <shape android:shape="rectangle">
+            <size
+                android:width="3dp"
+                android:height="40dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <!-- Top-right corner -->
+    <item android:gravity="top|right">
+        <shape android:shape="rectangle">
+            <size
+                android:width="40dp"
+                android:height="3dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <item android:gravity="top|right">
+        <shape android:shape="rectangle">
+            <size
+                android:width="3dp"
+                android:height="40dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <!-- Bottom-left corner -->
+    <item android:gravity="bottom|left">
+        <shape android:shape="rectangle">
+            <size
+                android:width="40dp"
+                android:height="3dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|left">
+        <shape android:shape="rectangle">
+            <size
+                android:width="3dp"
+                android:height="40dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <!-- Bottom-right corner -->
+    <item android:gravity="bottom|right">
+        <shape android:shape="rectangle">
+            <size
+                android:width="40dp"
+                android:height="3dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|right">
+        <shape android:shape="rectangle">
+            <size
+                android:width="3dp"
+                android:height="40dp" />
+            <solid android:color="#FF5722" />
+        </shape>
+    </item>
+</layer-list>

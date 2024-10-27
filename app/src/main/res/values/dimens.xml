@@ -3,4 +3,5 @@
     <dimen name="max_dropdown_height">64dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="top">40dp</dimen>
+    <dimen name="scanner_corner_radius">30dp</dimen>
 </resources>

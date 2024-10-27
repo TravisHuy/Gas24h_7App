@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.journeyapps.barcodescanner.BarcodeView
+        android:id="@+id/zxing_barcode_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:zxing_framing_rect_height="250dp"
+        app:zxing_framing_rect_width="250dp" />
+
+    <com.journeyapps.barcodescanner.ViewfinderView
+        android:id="@+id/zxing_viewfinder_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:zxing_possible_result_points="@color/zxing_custom_possible_result_points"
+        app:zxing_result_view="@color/zxing_custom_result_view"
+        app:zxing_viewfinder_laser="@color/zxing_custom_viewfinder_laser"
+        app:zxing_viewfinder_mask="@color/zxing_custom_viewfinder_mask" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/overlay_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99000000" />
+
+        <View
+            android:id="@+id/scanner_frame"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Corner decorations -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:background="#FF5722"
+            app:layout_constraintStart_toStartOf="@id/scanner_frame"
+            app:layout_constraintTop_toTopOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="40dp"
+            android:background="#FF5722"
+            app:layout_constraintStart_toStartOf="@id/scanner_frame"
+            app:layout_constraintTop_toTopOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:background="#FF5722"
+            app:layout_constraintEnd_toEndOf="@id/scanner_frame"
+            app:layout_constraintTop_toTopOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="40dp"
+            android:background="#FF5722"
+            app:layout_constraintEnd_toEndOf="@id/scanner_frame"
+            app:layout_constraintTop_toTopOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:background="#FF5722"
+            app:layout_constraintBottom_toBottomOf="@id/scanner_frame"
+            app:layout_constraintStart_toStartOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="40dp"
+            android:background="#FF5722"
+            app:layout_constraintBottom_toBottomOf="@id/scanner_frame"
+            app:layout_constraintStart_toStartOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:background="#FF5722"
+            app:layout_constraintBottom_toBottomOf="@id/scanner_frame"
+            app:layout_constraintEnd_toEndOf="@id/scanner_frame" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="40dp"
+            android:background="#FF5722"
+            app:layout_constraintBottom_toBottomOf="@id/scanner_frame"
+            app:layout_constraintEnd_toEndOf="@id/scanner_frame" />
+
+        <!-- Scanning line -->
+        <View
+            android:id="@+id/scanning_line"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="#FF5722"
+            app:layout_constraintEnd_toEndOf="@id/scanner_frame"
+            app:layout_constraintStart_toStartOf="@id/scanner_frame"
+            app:layout_constraintTop_toTopOf="@id/scanner_frame" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Quét mã QR của sản phẩm"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scanner_frame" />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>
