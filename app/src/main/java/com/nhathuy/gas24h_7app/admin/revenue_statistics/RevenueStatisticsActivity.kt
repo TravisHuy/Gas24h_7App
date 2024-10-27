@@ -1,12 +1,52 @@
 package com.nhathuy.gas24h_7app.admin.revenue_statistics
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.nhathuy.gas24h_7app.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.nhathuy.gas24h_7app.admin.revenue_statistics.ui.theme.Gas24h_7AppTheme
 
-class RevenueStatisticsActivity : AppCompatActivity() {
+class RevenueStatisticsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_revenue_statistics)
+        setContent {
+            Gas24h_7AppTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Greeting("Android")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+@Composable
+fun GreetingHoNhat(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Anh Huy Phu Yen $name!",
+        modifier = modifier
+    )
+}
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    Gas24h_7AppTheme {
+        GreetingHoNhat("Hồ Nhật Huy")
     }
 }

@@ -76,4 +76,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="title_activity_qr_code">QrCodeActivity</string>
+    <string name="title_activity_revenue_statistics">RevenueStatisticsActivity</string>
 </resources>
