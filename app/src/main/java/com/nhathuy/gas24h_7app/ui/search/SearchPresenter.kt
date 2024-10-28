@@ -55,7 +55,6 @@ class SearchPresenter @Inject constructor(private val searchViewModel: SearchVie
 
     override fun clearSearch() {
         searchViewModel.clearSearch()
-        view?.clearSearchResults()
     }
 
     //    override fun getRecentSearches() {

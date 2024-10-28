@@ -439,6 +439,19 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
             axisLineWidth = 1f
             axisLineColor = Color.GRAY
 
+
+            // Ensure X-axis starts from 0
+            axisMinimum = 0f
+            spaceMin = 0f
+
+            when (selectedPeriod) {
+                "Daily" -> axisMaximum = 23f
+                "Weekly" -> axisMaximum = 6f
+                "Yearly" -> axisMaximum = 11f
+                else -> axisMaximum = 30f
+            }
+
+
             // Định dạng nhãn trục X
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
@@ -500,6 +513,14 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
             axisLineWidth = 1f
             axisLineColor = Color.GRAY
             setDrawZeroLine(true)
+
+            // Đảm bảo trục Y luôn bắt đầu từ 0
+            axisMinimum = 0f
+            spaceBottom = 0f // Không có khoảng trống ở dưới
+
+            // Tắt tính năng tự động scale để giữ giá trị tối thiểu là 0
+            setStartAtZero(true)
+
             // Định dạng giá trị trục Y
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
@@ -560,8 +581,9 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
             }
             "Monthly" -> {
                 periods.mapIndexed { index, period ->
+                    // Đảm bảo index bắt đầu từ 0
                     Entry(index.toFloat(), period.revenue.toFloat())
-                }
+                }.sortedBy { it.x }  // Sắp xếp theo trục X
             }
             "Yearly" -> {
                 (0..11).map { month ->
@@ -641,6 +663,26 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
             }
             setVisibleXRangeMaximum(visibleXRange)
 
+            //Đảm bảo biểu đồ bắt đầu từ 0,0
+            moveViewToX(0f)
+
+            // Thiết lập minimum scale
+            setScaleMinima(1f, 1f)
+
+            // Đảm bảo giới hạn trục
+            axisLeft.axisMinimum = 0f
+            xAxis.axisMinimum = 0f
+
+//            // Đảm bảo giá trị tối thiểu của trục Y luôn là 0
+//            axisLeft.apply {
+//                axisMinimum = 0f
+//                resetAxisMinimum() // Reset any auto-scaling
+//
+//                // Thiết lập giá trị tối đa với padding 20%
+//                val maxRevenue = periods.maxOfOrNull { it.revenue.toFloat() } ?: 0f
+//                axisMaximum = maxRevenue * 1.2f
+//            }
+
             // Animation
             animateY(1000)
 
@@ -662,6 +704,10 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
         Gas24h_7AppTheme {
             RevenueStatisticsScreen()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
 

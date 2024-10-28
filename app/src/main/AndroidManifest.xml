@@ -34,14 +34,10 @@
         tools:targetApi="31">
         <activity
             android:name=".admin.revenue_statistics.RevenueStatisticsActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_revenue_statistics"
             android:theme="@style/Theme.Gas24h_7App" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.qrscanner.QrScannerActivity"
@@ -130,7 +126,13 @@
             android:exported="false" />
         <activity
             android:name=".admin.AdminActivity"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />
@@ -145,7 +147,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

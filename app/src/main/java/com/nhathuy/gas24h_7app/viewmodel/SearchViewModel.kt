@@ -117,11 +117,16 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
 
     fun clearSearch() {
         viewModelScope.launch {
-            _searchResults.emit(emptyList())
-            currentRating = null
-            originalResults = emptyList()
-            _isLoading.emit(false)
-            _error.emit(null)
+            try {
+                // Đặt lại tất cả các giá trị theo trình tự
+                currentRating = null
+                originalResults = emptyList()
+                _isLoading.value = false
+                _error.value = null
+                _searchResults.value = emptyList()
+            } catch (e: Exception) {
+                _error.value = "Error clearing search"
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
+import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
 import com.nhathuy.gas24h_7app.databinding.ActivityAdminBinding
@@ -32,21 +33,22 @@ class AdminActivity : AppCompatActivity() {
         //backhome
         binding.backHome.setOnClickListener {
             startActivity(Intent(this,MainActivity::class.java))
-            finish()
         }
         // transfer shipping
         binding.linearShipping.setOnClickListener {
             startActivity(Intent(this,ShippingActivity::class.java))
-            finish()
         }
         //all product
         binding.linearAllProduct.setOnClickListener {
             startActivity(Intent(this,AllProductActivity::class.java))
-            finish()
         }
         // add voucher
         binding.linearAddVoucher.setOnClickListener {
             showDialogAddVoucher()
+        }
+        //
+        binding.linearRevenueStatistics.setOnClickListener {
+            startActivity(Intent(this,RevenueStatisticsActivity::class.java))
         }
     }
 

@@ -33,10 +33,11 @@
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="15dp"
                 android:background="@drawable/search_box_background"
                 app:iconifiedByDefault="false"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnBack"
                 app:layout_constraintTop_toTopOf="parent"
                 app:queryHint="Tìm kiếm sản phẩm" />
@@ -91,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:padding="6dp"
+                android:padding="4dp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="center"
                 android:background="@drawable/background_linear_price"
@@ -109,13 +110,13 @@
                     >
                     <ImageView
                         android:id="@+id/high_price"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
                         android:src="@drawable/ic_caret_up_fill"/>
                     <ImageView
                         android:id="@+id/low_price"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
                         android:src="@drawable/ic_caret_down_fill"/>
                 </LinearLayout>
             </LinearLayout>

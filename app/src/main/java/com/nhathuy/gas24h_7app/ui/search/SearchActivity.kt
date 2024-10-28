@@ -187,7 +187,4 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
        onBackPressed()
     }
 
-//    override fun showRecentSearches(searches: List<Product>) {
-//        TODO("Not yet implemented")
-//    }
 }
