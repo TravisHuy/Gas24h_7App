@@ -14,6 +14,7 @@ import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductPr
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductPresenter
 import com.nhathuy.gas24h_7app.admin.qrcode.QrCodePresenter
 import com.nhathuy.gas24h_7app.admin.qrcode.all.AllQrCodePresenter
+import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllContract
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
@@ -24,6 +25,7 @@ import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
+import com.nhathuy.gas24h_7app.data.repository.RevenueStatisticsRepository
 import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
@@ -233,5 +235,10 @@ class PresenterModule {
     @Singleton
     fun provideAllQrCodePresenter(productRepository: ProductRepository,context: Context): AllQrCodePresenter {
         return AllQrCodePresenter(productRepository,context)
+    }
+    @Provides
+    @Singleton
+    fun provideRevenueStaticsPresenter(revenueStatisticsRepository: RevenueStatisticsRepository): RevenueStatisticsPresenter {
+        return RevenueStatisticsPresenter(revenueStatisticsRepository)
     }
 }

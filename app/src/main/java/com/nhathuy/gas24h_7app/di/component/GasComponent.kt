@@ -8,6 +8,7 @@ import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductAc
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductActivity
 import com.nhathuy.gas24h_7app.admin.qrcode.QrCodeActivity
 import com.nhathuy.gas24h_7app.admin.qrcode.all.AllQrCodeActivity
+import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
 import com.nhathuy.gas24h_7app.data.api.RetrofitClient
@@ -87,4 +88,5 @@ interface GasComponent {
     fun inject(qrCodeActivity: QrCodeActivity)
     fun inject(allQrCodeActivity: AllQrCodeActivity)
     fun inject(qrScannerActivity: QrScannerActivity)
+    fun inject(revenueStatisticsActivity: RevenueStatisticsActivity)
 }
