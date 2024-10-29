@@ -20,6 +20,7 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
+import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import javax.inject.Inject
 
 class PendingPaymentActivity : AppCompatActivity() , PendingPaymentContract.View{
@@ -75,12 +76,19 @@ class PendingPaymentActivity : AppCompatActivity() , PendingPaymentContract.View
         finish()
     }
 
+    override fun navigatePurchasedOrder() {
+        startActivity(Intent(this,PurchasedOrderActivity::class.java))
+    }
+
     private fun setupNavigateMain() {
        binding.btnBack.setOnClickListener {
            backHome()
        }
         binding.btnHome.setOnClickListener {
             backHome()
+        }
+        binding.btnPurchaseOrder.setOnClickListener {
+            navigatePurchasedOrder()
         }
     }
 

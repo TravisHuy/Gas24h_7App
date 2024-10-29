@@ -20,25 +20,45 @@ class OrderRepository @Inject constructor(
         return withContext(Dispatchers.IO){
             try {
                val orderId = db.runTransaction {
-                    transition->
+                    transaction->
                     val orderRef = db.collection("orders").document()
                     val newOrderId = orderRef.id
 
-                    order.items.forEach {
-                        item->
-                        val productRef = db.collection("products").document(item.productId)
-                        val productSnapshot = transition.get(productRef)
-                        val product = productSnapshot.toObject(Product::class.java) ?:throw Exception("Product not found :${item.productId}")
+                   val productRefs  = order.items.map { item ->
+                       db.collection("products").document(item.productId)
+                   }
+                   val productSnapshots = productRefs.map { ref ->
+                       transaction.get(ref)
+                   }
 
-                        if(product.stockCount<item.quantity){
-                            throw Exception("Insufficient stock for product ${product.name}")
-                        }
+                   val productUpdates = order.items.mapIndexed { index, item ->
+                       val snapshot = productSnapshots[index]
+                       val product = snapshot.toObject(Product::class.java) ?: throw  Exception("Product not found: ${item.productId}")
+                       if(product.soldCount<item.quantity){
+                           throw Exception("Insufficient stock product ${product.name}")
+                       }
 
-                        val newStockCount = product.stockCount  -item.quantity
-                        transition.update(productRef,"stockCount",newStockCount)
-                    }
+                       Pair(productRefs[index],product.stockCount - item.quantity)
+                   }
 
-                    transition.set(orderRef,order.copy(id = newOrderId).toMap())
+                   productUpdates.forEach { (ref,newCount) ->
+                       transaction.update(ref,"stockCount",newCount)
+                   }
+//                    order.items.forEach {
+//                        item->
+//                        val productRef = db.collection("products").document(item.productId)
+//                        val productSnapshot = transition.get(productRef)
+//                        val product = productSnapshot.toObject(Product::class.java) ?:throw Exception("Product not found :${item.productId}")
+//
+//                        if(product.stockCount<item.quantity){
+//                            throw Exception("Insufficient stock for product ${product.name}")
+//                        }
+//
+//                        val newStockCount = product.stockCount  -item.quantity
+//                        transition.update(productRef,"stockCount",newStockCount)
+//                    }
+
+                   transaction.set(orderRef,order.copy(id = newOrderId).toMap())
 
                     newOrderId
                 }.await()

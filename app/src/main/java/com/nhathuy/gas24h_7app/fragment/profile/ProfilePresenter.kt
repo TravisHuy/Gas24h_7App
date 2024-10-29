@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.fragment.profile
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -70,12 +71,14 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                     },
                     onFailure = {
                         view?.showUserInfo(false)
-                        view?.showError("Failed to load user profile")
+//                        view?.showError("Failed to load user profile")
+                        Log.d("ProfilePresenter","Failed to load user profile")
                     }
                 )
             }
             catch (e:Exception){
-                view?.showError("Failed to load user information ${e.message}")
+//                view?.showError("Failed to load user information ${e.message}")
+                Log.d("ProfilePresenter","Failed to load user information ${e.message}")
             }
         }
     }
@@ -104,11 +107,13 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                         view?.showOrders(orders, productMap)
                     },
                     onFailure = { e ->
-                        view?.showError("Failed to load order: ${e.message}")
+//                        view?.showError("Failed to load order: ${e.message}")
+                        Log.d("ProfilePresenter","Failed to load order: ${e.message}")
                     }
                 )
             } catch (e: Exception) {
-                view?.showError("Failed to load order: ${e.message}")
+//                view?.showError("Failed to load order: ${e.message}")
+                Log.d("ProfilePresenter","Failed to load order: ${e.message}")
             } finally {
             }
 
@@ -143,13 +148,12 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                 val userId = userRepository.getCurrentUserId()
 
                 if(userId!=null){
-                    val pendingCount = orderRepository.getOrderCountForUser(userId,OrderStatus.PENDING.name).getOrDefault(0)
                     val processingCount = orderRepository.getOrderCountForUser(userId,OrderStatus.PROCESSING.name).getOrDefault(0)
                     val shippedCount = orderRepository.getOrderCountForUser(userId, OrderStatus.SHIPPED.name).getOrDefault(0)
                     val deliveredCount = orderRepository.getOrderCountForUser(userId, OrderStatus.DELIVERED.name).getOrDefault(0)
+                    val cancelCount = orderRepository.getOrderCountForUser(userId,OrderStatus.CANCELLED.name).getOrDefault(0)
 
-
-                    view?.updateOrderCount( processingCount,pendingCount, shippedCount, deliveredCount)
+                    view?.updateOrderCount(processingCount, shippedCount, deliveredCount,cancelCount)
                 }
             }
             catch (e:Exception){

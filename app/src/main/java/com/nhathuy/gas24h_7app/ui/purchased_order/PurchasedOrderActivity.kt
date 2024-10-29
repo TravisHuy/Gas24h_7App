@@ -41,7 +41,6 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
 
 
     private val statusMap = mapOf(
-        "PENDING" to "Đặt hàng thành công",
         "PROCESSING" to "Đã tiếp nhận",
         "SHIPPED" to "Đang vận chuyển",
         "DELIVERED" to "Đã giao",
@@ -59,8 +58,19 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         setupTabLayout()
         setupBack()
         presenter.attachView(this)
-        presenter.loadOrders("PENDING")
+
+        val orderStatus = intent.getStringExtra("ORDER_STATUS") ?: OrderStatus.PROCESSING.name
+        presenter.loadOrders(orderStatus)
         presenter.loadSuggestProducts()
+
+        val tabIndex = when(orderStatus) {
+            OrderStatus.PROCESSING.name -> 0
+            OrderStatus.SHIPPED.name -> 1
+            OrderStatus.DELIVERED.name -> 2
+            OrderStatus.CANCELLED.name -> 3
+            else -> 0
+        }
+        binding.tabLayout.getTabAt(tabIndex)?.select()
     }
 
 

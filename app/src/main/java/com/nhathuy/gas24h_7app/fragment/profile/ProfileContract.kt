@@ -7,7 +7,7 @@ import com.nhathuy.gas24h_7app.data.model.User
 
 interface ProfileContract {
     interface View{
-        fun navigatePurchaseOrder()
+        fun navigatePurchaseOrder(status:String)
         fun showUpdateProfileImage(imageUrl:String)
         fun showError(message: String)
         fun showLoading(isLoading: Boolean)
@@ -16,7 +16,7 @@ interface ProfileContract {
         fun updateProfileImage(imageUrl: String)
         fun updateUserName(name:String)
         fun updateCartItemCount(count: Int)
-        fun updateOrderCount( processingCount: Int,pendingCount: Int, shippedCount: Int, deliveredCount: Int)
+        fun updateOrderCount(pendingCount: Int, shippedCount: Int, deliveredCount: Int, cancelCount: Int)
         fun showDialogLogout()
         fun showOrders(orders:List<Order>, products:Map<String, Product>)
         fun navigateBuyBack()

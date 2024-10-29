@@ -12,6 +12,7 @@ interface PendingPaymentContract {
         fun backHome()
         fun setupCartBadge()
         fun navigateCart()
+        fun navigatePurchasedOrder()
     }
     interface Presenter{
         fun attachView(view: View)

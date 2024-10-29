@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -189,53 +190,6 @@
             android:gravity="center"
             android:layout_margin="5dp"
             >
-
-            <LinearLayout
-                android:id="@+id/linear_waiting_confirm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-                <FrameLayout
-                    android:id="@+id/frame_waiting_confirm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    >
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="38dp"
-                        android:src="@drawable/ic_envelope"/>
-
-                    <TextView
-                        android:id="@+id/tv_waiting_confirm_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|top"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="-1dp"
-                        android:background="@drawable/cart_badge_background"
-                        android:gravity="center"
-                        android:minWidth="18dp"
-                        android:minHeight="18dp"
-                        android:paddingStart="4dp"
-                        android:paddingEnd="4dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="10sp"
-                        android:visibility="gone"
-                        tools:text="3"
-                        tools:visibility="visible" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Chờ xác nhận"
-                    android:gravity="center"/>
-            </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/linear_has_received"
                 android:layout_width="0dp"
@@ -373,6 +327,52 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Đánh giá"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_cancel_confirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/frame_cancel_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_cancel"/>
+
+                    <TextView
+                        android:id="@+id/tv_cancel_confirm_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="-1dp"
+                        android:background="@drawable/cart_badge_background"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Đơn Hủy"
                     android:gravity="center"/>
             </LinearLayout>
 

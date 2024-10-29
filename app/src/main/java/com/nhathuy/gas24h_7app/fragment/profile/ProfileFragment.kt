@@ -75,8 +75,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     }
 
     private fun setupListeners() {
-        binding.linearWaitingConfirm.setOnClickListener {
-            navigatePurchaseOrder()
+        binding.linearHasReceived.setOnClickListener {
+            navigatePurchaseOrder(OrderStatus.PROCESSING.name)
+        }
+
+        binding.linearWaitingDelivery.setOnClickListener {
+            navigatePurchaseOrder(OrderStatus.SHIPPED.name)
+        }
+
+        binding.linearReview.setOnClickListener {
+            navigatePurchaseOrder(OrderStatus.DELIVERED.name)
+        }
+
+        binding.linearCancelConfirm.setOnClickListener {
+            navigatePurchaseOrder(OrderStatus.CANCELLED.name)
         }
 
         binding.profileImage.setOnClickListener{
@@ -119,8 +131,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun navigatePurchaseOrder() {
-        startActivity(Intent(requireContext(),PurchasedOrderActivity::class.java))
+    override fun navigatePurchaseOrder(status:String) {
+        val intent = Intent(requireContext(),PurchasedOrderActivity::class.java)
+        intent.putExtra("ORDER_STATUS",status)
+        startActivity(intent)
     }
 
     override fun showUpdateProfileImage(imageUrl: String) {
@@ -178,14 +192,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
     }
 
     override fun updateOrderCount(
-        processingCount: Int,
-        pendingCount: Int,
-        shippedCount: Int,
-        deliveredCount: Int
+        processingCount: Int, shippedCount:Int, deliveredCount:Int,cancelCount:Int
     ) {
         // Update pending orders count
-        binding.tvWaitingConfirmCount.text = pendingCount.toString()
-        binding.tvWaitingConfirmCount.visibility = if (pendingCount > 0) View.VISIBLE else View.GONE
+        binding.tvCancelConfirmCount.text = cancelCount.toString()
+        binding.tvCancelConfirmCount.visibility = if (cancelCount > 0) View.VISIBLE else View.GONE
 
         // Update processing orders count
         binding.tvHasReceivedCount.text = processingCount.toString()

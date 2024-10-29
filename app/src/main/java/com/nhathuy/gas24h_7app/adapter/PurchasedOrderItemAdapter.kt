@@ -22,7 +22,7 @@ class PurchasedOrderItemAdapter(
 ) : RecyclerView.Adapter<PurchasedOrderItemAdapter.PurchaseOrderViewHolder>() {
 
 
-    private var currentStatus = "PENDING"
+    private var currentStatus = "PROCESSING"
 
     inner class PurchaseOrderViewHolder(val binding: PurchasedorderItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -90,7 +90,6 @@ class PurchasedOrderItemAdapter(
                     )
 
                 when (currentStatus) {
-                    "PENDING" -> btnStatus.text = "Đang xử lý"
                     "PROCESSING" -> {
                         btnStatus.text = "Đang chờ vận chuyển"
                         btnStatus.setBackgroundColor(holder.itemView.context.getColor(R.color.md_theme_light_primary))
