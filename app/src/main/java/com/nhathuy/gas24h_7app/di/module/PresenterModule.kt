@@ -31,6 +31,7 @@ import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
+import com.nhathuy.gas24h_7app.fragment.chat.ChatPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
@@ -240,5 +241,11 @@ class PresenterModule {
     @Singleton
     fun provideRevenueStaticsPresenter(revenueStatisticsRepository: RevenueStatisticsRepository): RevenueStatisticsPresenter {
         return RevenueStatisticsPresenter(revenueStatisticsRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatPresenter(orderRepository: OrderRepository,userRepository: UserRepository,productRepository: ProductRepository): ChatPresenter {
+        return ChatPresenter(orderRepository,userRepository, productRepository)
     }
 }

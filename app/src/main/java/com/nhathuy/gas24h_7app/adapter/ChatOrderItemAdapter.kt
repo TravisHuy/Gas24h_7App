@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderItem
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.ChatOrderItemBinding
 import com.nhathuy.gas24h_7app.util.NumberFormatUtils
 
-class ChatOrderItemAdapter(private val orders:List<Order> = emptyList(),
+class ChatOrderItemAdapter(private var orders:List<Order> = emptyList(),
                            private var products: Map<String, Product> = emptyMap(),
                            private var onItemClicked : (String) -> Unit
 ):RecyclerView.Adapter<ChatOrderItemAdapter.ChatOrderItemViewHolder>() {
@@ -43,13 +44,19 @@ class ChatOrderItemAdapter(private val orders:List<Order> = emptyList(),
             }
             orderItemsRec.adapter=orderItemsAdapter
 
-//            val totalOrderPrice = order.items.sumOf {
-//               it.price*it.quantity
-//            }
-//            totalTvPrice.text=NumberFormatUtils.formatPrice(totalOrderPrice)
-            totalTvPrice.text= NumberFormatUtils.formatPrice(order.totalAmount)
+            val totalOrderPrice = order.items.sumOf {
+               it.price*it.quantity
+            }
+            totalTvPrice.text=NumberFormatUtils.formatPrice(totalOrderPrice)
+//            totalChatPrice.text= NumberFormatUtils.formatPrice(order.totalAmount)
         }
     }
 
     override fun getItemCount(): Int  = orders.size
+
+    fun updateDate(newOrders: List<Order>, newProducts: Map<String, Product>){
+        orders = newOrders
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }

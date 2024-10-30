@@ -14,11 +14,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="5dp"
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mã đơn hàng:"
+                android:fontFamily="@font/kalam_bold"
+                android:textSize="16sp"
                 />
             <TextView
                 android:id="@+id/tv_order_id"
@@ -26,6 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="2000430423DGF"
+                android:fontFamily="@font/kalam_bold"
+                android:textSize="16sp"
                 android:layout_marginStart="10dp"
                 />
         </LinearLayout>

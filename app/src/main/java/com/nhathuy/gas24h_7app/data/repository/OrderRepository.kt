@@ -200,6 +200,8 @@ class OrderRepository @Inject constructor(
             }
         }
     }
+
+    //getallorder
     suspend fun getOrderAll(userId: String):Result<List<Order>> = withContext(Dispatchers.IO){
         try {
             val snapshot = db.collection("orders")

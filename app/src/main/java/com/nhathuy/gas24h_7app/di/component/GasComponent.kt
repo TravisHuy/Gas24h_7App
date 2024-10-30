@@ -18,6 +18,7 @@ import com.nhathuy.gas24h_7app.di.module.PresenterModule
 import com.nhathuy.gas24h_7app.di.module.RepositoryModule
 import com.nhathuy.gas24h_7app.di.module.ViewModelModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
+import com.nhathuy.gas24h_7app.fragment.chat.ChatFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.fragment.logout.LogoutFragment
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileFragment
@@ -89,4 +90,5 @@ interface GasComponent {
     fun inject(allQrCodeActivity: AllQrCodeActivity)
     fun inject(qrScannerActivity: QrScannerActivity)
     fun inject(revenueStatisticsActivity: RevenueStatisticsActivity)
+    fun inject(chatFragment: ChatFragment)
 }
