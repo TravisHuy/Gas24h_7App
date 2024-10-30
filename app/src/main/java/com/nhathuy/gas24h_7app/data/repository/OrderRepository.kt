@@ -89,11 +89,32 @@ class OrderRepository @Inject constructor(
 
     //lấy ra danh sách order đã đặt của người dùng
     suspend fun getOrdersForUser(userId: String, status: String): Result<List<Order>> {
+
         return withContext(Dispatchers.IO) {
             try {
                 val snapshot = db.collection("orders")
                     .whereEqualTo("userId", userId)
                     .whereEqualTo("status", status)
+                    .get().await()
+
+                val orders = snapshot.documents.mapNotNull {
+                    it.toObject(Order::class.java)
+                }
+
+                Result.success(orders)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getOrdersForUserBuyBack(userId: String): Result<List<Order>> {
+        val statusList = listOf(OrderStatus.DELIVERED.name,OrderStatus.RATED.name)
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = db.collection("orders")
+                    .whereEqualTo("userId", userId)
+                    .whereIn("status", statusList)
                     .get().await()
 
                 val orders = snapshot.documents.mapNotNull {
@@ -177,6 +198,22 @@ class OrderRepository @Inject constructor(
             } catch (e: Exception) {
                 Result.failure(e)
             }
+        }
+    }
+    suspend fun getOrderAll(userId: String):Result<List<Order>> = withContext(Dispatchers.IO){
+        try {
+            val snapshot = db.collection("orders")
+                .whereEqualTo("userId",userId)
+                .get()
+                .await()
+
+            val orders = snapshot.documents.mapNotNull {
+                it.toObject(Order::class.java)
+            }
+            Result.success(orders)
+        }
+        catch (e:Exception){
+            Result.failure(e)
         }
     }
 }

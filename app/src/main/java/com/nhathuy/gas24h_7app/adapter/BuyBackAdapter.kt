@@ -74,10 +74,9 @@ class BuyBackAdapter(private var orders:List<Order> = listOf(),
     }
 
     private fun calculatePurchaseCount(productId: String): Int {
-        return orders.count { order ->
-            order.items.any {
-                it.productId== productId
-            }
+        return orders.sumOf { order ->
+            order.items.filter { it.productId == productId }
+                .sumOf { it.quantity }
         }
     }
 

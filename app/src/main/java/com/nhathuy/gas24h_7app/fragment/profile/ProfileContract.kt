@@ -31,7 +31,7 @@ interface ProfileContract {
         fun updateProfileImage(imageUri: Uri)
 
         fun loadUserInfo()
-        fun loadOrders(status:String)
+        fun loadOrders()
         fun loadCartItemCount()
         fun loadOrderCount()
     }

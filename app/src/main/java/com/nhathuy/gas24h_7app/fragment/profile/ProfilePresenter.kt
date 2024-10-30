@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.fragment.profile
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
@@ -83,13 +84,13 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
         }
     }
 
-    override fun loadOrders(status: String) {
+    override fun loadOrders() {
         coroutineScope.launch {
 
             try {
                 val userId = userRepository.getCurrentUserId()
 
-                val result = orderRepository.getOrdersForUser(userId!!, status)
+                val result = orderRepository.getOrdersForUserBuyBack(userId!!)
                 result.fold(
                     onSuccess = { orders ->
                         val productIds =
@@ -104,7 +105,38 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
                             }
                         }
                         productJobs.forEach { it.await() }
-                        view?.showOrders(orders, productMap)
+
+                        // Gộp các đơn hàng theo productId
+                        val consolidatedOrders = orders.flatMap { order ->
+                            order.items.map { item ->
+                                item.productId to order
+                            }
+                        }.groupBy(
+                            { it.first }, // group by productId
+                            { it.second } // keep the full order
+                        ).map { (productId, ordersList) ->
+                            // Tạo đơn hàng mới với thông tin tổng hợp
+                            val firstOrder = ordersList.first()
+                            val totalQuantity = ordersList.sumOf { order ->
+                                order.items.filter { it.productId == productId }.sumOf { it.quantity }
+                            }
+
+                            Order(
+                                id = firstOrder.id,
+                                userId = firstOrder.userId,
+                                items = listOf(firstOrder.items.first { it.productId == productId }.copy(quantity = totalQuantity)),
+                                totalAmount = firstOrder.totalAmount,
+                                discountAmount = firstOrder.discountAmount,
+                                appliedVoucherId = firstOrder.appliedVoucherId,
+                                status = firstOrder.status,
+                                createdAt = firstOrder.createdAt,
+                                updatedAt = firstOrder.updatedAt,
+                                shippingAddress = firstOrder.shippingAddress,
+                                paymentMethod = firstOrder.paymentMethod
+                            )
+                        }
+
+                        view?.showOrders(consolidatedOrders, productMap)
                     },
                     onFailure = { e ->
 //                        view?.showError("Failed to load order: ${e.message}")

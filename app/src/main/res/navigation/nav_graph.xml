@@ -15,7 +15,7 @@
             app:destination="@id/productListCategoryFragment" />
         <action
             android:id="@+id/action_nav_home_to_nav_order"
-            app:destination="@id/nav_video" />
+            app:destination="@id/nav_chat" />
         <action
             android:id="@+id/action_nav_home_to_nav_notification"
             app:destination="@id/nav_notification" />
@@ -36,10 +36,10 @@
             app:destination="@id/searchFragment" />
     </fragment>
     <fragment
-        android:id="@+id/nav_video"
-        android:name="com.nhathuy.gas24h_7app.fragment.video.VideoFragment"
-        android:label="Video"
-        tools:layout="@layout/fragment_video" >
+        android:id="@+id/nav_chat"
+        android:name="com.nhathuy.gas24h_7app.fragment.chat.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" >
         <action
             android:id="@+id/action_nav_order_to_nav_home"
             app:destination="@id/nav_home" />

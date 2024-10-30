@@ -62,7 +62,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         setupListeners()
         setupRecyclerview()
 
-        presenter.loadOrders("DELIVERED")
+        presenter.loadOrders()
         presenter.loadCartItemCount()
         presenter.loadOrderCount()
         return binding.root

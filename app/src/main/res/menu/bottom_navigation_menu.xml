@@ -7,9 +7,9 @@
         android:icon="@drawable/ic_home"
         />
     <item
-        android:id="@+id/nav_video"
-        android:title="Video"
-        android:icon="@drawable/ic_travis_video"
+        android:id="@+id/nav_chat"
+        android:title="Chat"
+        android:icon="@drawable/ic_chat_dots"
         />
     <item
         android:id="@+id/nav_hotline"

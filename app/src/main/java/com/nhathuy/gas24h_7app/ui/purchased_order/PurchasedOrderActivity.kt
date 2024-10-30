@@ -83,6 +83,7 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         binding.progressBar.visibility=View.GONE
     }
 
+
     override fun showError(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }

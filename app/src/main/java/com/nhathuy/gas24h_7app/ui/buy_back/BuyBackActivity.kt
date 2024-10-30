@@ -35,7 +35,7 @@ class BuyBackActivity : AppCompatActivity(),BuyBackContract.View,BuyBackAdapter.
         (application as Gas24h_7Application).getGasComponent().inject(this)
 
         presenter.attachView(this)
-        presenter.loadOrders("DELIVERED")
+        presenter.loadOrders()
         presenter.loadCartItemCount()
         setupRecyclerView()
         setupListeners()

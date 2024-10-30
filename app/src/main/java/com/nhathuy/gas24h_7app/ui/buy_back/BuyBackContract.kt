@@ -17,7 +17,7 @@ interface BuyBackContract {
     interface Presenter{
         fun attachView(view:View)
         fun detachView()
-        fun loadOrders(status:String)
+        fun loadOrders()
         fun updateOrderStatus(orderId: String, newStatus: OrderStatus)
         fun loadCartItemCount()
     }
