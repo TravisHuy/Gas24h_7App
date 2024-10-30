@@ -13,8 +13,10 @@ data class User(
     var address: String = "",
     var referralCode:String ="",
     var imageUser: String = "",
+    var lastOnline: Long = System.currentTimeMillis(),
+    val fcmToken: String =""
 ){
-    constructor():this("","","","","","","","","","")
+    constructor():this("","","","","","","","","","",System.currentTimeMillis(),"")
 
     fun toMap():Map<String,Any>{
          return hashMapOf(
@@ -28,6 +30,8 @@ data class User(
              "address" to address,
              "referralCode" to referralCode,
              "imageUser" to imageUser,
+             "lastOnline" to lastOnline,
+             "fcmToken" to fcmToken
          )
      }
     companion object{

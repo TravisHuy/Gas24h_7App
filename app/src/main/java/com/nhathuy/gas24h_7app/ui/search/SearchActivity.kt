@@ -23,6 +23,7 @@ import javax.inject.Inject
 class SearchActivity : AppCompatActivity(),SearchContract.View {
     private lateinit var binding: ActivitySearchBinding
     private lateinit var adapter:ProductAdapter
+    private var queryText:String? = null
     @Inject
     lateinit var presenter: SearchPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +55,7 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
+                    queryText = it
                     presenter.searchProducts(it)
                     binding.chipRelevance.isChecked = true
                     binding.linearOption.visibility=View.VISIBLE
@@ -99,6 +101,9 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
         binding.searchView.setOnCloseListener {
             presenter.clearSearch()
             true
+        }
+        binding.searchSwipeRefreshLayout.setOnRefreshListener {
+            presenter.searchProducts(queryText!!)
         }
     }
     override fun showLoading() {
@@ -185,6 +190,7 @@ class SearchActivity : AppCompatActivity(),SearchContract.View {
 
     override fun navigateHome() {
        onBackPressed()
+        presenter.clearSearch()
     }
 
 }

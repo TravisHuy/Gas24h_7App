@@ -211,7 +211,7 @@ class OrderRepository @Inject constructor(
 
             val orders = snapshot.documents.mapNotNull {
                 it.toObject(Order::class.java)
-            }
+            }.sortedByDescending { it.createdAt }
             Result.success(orders)
         }
         catch (e:Exception){

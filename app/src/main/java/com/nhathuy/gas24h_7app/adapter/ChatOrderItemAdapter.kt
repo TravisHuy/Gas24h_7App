@@ -44,11 +44,21 @@ class ChatOrderItemAdapter(private var orders:List<Order> = emptyList(),
             }
             orderItemsRec.adapter=orderItemsAdapter
 
-            val totalOrderPrice = order.items.sumOf {
-               it.price*it.quantity
+            val totalOrderPrice = order.items.sumOf { orderItem ->
+                val product = products[orderItem.productId]
+                if(product!=null){
+                    if(product.offerPercentage>0.0){
+                        product.getDiscountedPrice()* orderItem.quantity
+                    }
+                    else{
+                        product.price*orderItem.quantity
+                    }
+                }
+                else{
+                    orderItem.price * orderItem.quantity
+                }
             }
-            totalTvPrice.text=NumberFormatUtils.formatPrice(totalOrderPrice)
-//            totalChatPrice.text= NumberFormatUtils.formatPrice(order.totalAmount)
+            totalChatPrice.text=NumberFormatUtils.formatPrice(totalOrderPrice)
         }
     }
 
