@@ -16,4 +16,13 @@ object Constants {
     const val MAX_IMAGES = 3
     const val MAX_VIDEOS = 1
     const val EDIT_PRODUCT_REQUEST = 1
+
+
+    const val VIEW_TYPE_SENT_TEXT = 0
+    const val VIEW_TYPE_RECEIVED_TEXT = 1
+    const val VIEW_TYPE_SENT_IMAGE = 2
+    const val VIEW_TYPE_RECEIVED_IMAGE = 3
+    const val VIEW_TYPE_SYSTEM = 4
+
+
 }

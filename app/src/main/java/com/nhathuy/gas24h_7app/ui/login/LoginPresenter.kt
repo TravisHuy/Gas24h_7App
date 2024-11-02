@@ -71,7 +71,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
 
                     override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                         view?.hideLoading()
-                        signWithPhoneCredential(phoneAuthCredential)
+                        view?.navigateVerification(verificationId, fullPhoneNumber)
                     }
 
                     override fun onVerificationFailed(e: FirebaseException) {
