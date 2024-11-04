@@ -37,13 +37,23 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun sendMessage(message: Message): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            db.collection(MESSAGES_COLLECTION).document(message.id).set(message.toMap()).await()
+            // Create batch write
+            val batch = db.batch()
 
-            // Then update the chat room's last message
-            updateLastMessage(message)
+            val messageRef = db.collection(MESSAGES_COLLECTION).document(message.id)
+            batch.set(messageRef, message.toMap())
 
-            // Increment unread count for receiver
-            incrementUnreadCount(message.chatRoomId, message.receiverId)
+            val roomRef = db.collection(CHAT_ROOMS_COLLECTION).document(message.chatRoomId)
+            batch.update(
+                roomRef,
+                mapOf(
+                    "lastMessage" to message.toMap(),
+                    "updatedAt" to FieldValue.serverTimestamp(),
+                    "unreadCount.${message.receiverId}" to FieldValue.increment(1)
+                )
+            )
+
+            batch.commit().await()
 
 
             Result.success(Unit)
@@ -90,75 +100,90 @@ class ChatRepositoryImpl @Inject constructor(
 
         }.flowOn(dispatcher)
 
-    override suspend fun createOrGetChatRoom(sellerId: String, buyerId: String): Result<ChatRoom> =
-        withContext(dispatcher) {
+    override suspend fun findExistingChatRoom(sellerId: String, buyerId: String): ChatRoom? {
+        return try {
+            val participants = listOf(sellerId, buyerId).sorted()
+
+            //check if chat room already exists
+            db.collection(CHAT_ROOMS_COLLECTION)
+                .whereEqualTo("participants ", participants)
+                .get()
+                .await()
+                .documents
+                .firstOrNull()
+                ?.toObject(ChatRoom::class.java)
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
+    override suspend fun getOrCreateChatRoom(sellerId: String, buyerId: String): Result<ChatRoom> = withContext(dispatcher){
             try {
-                val participants = listOf(sellerId, buyerId).sorted()
-
-                //check if chat room already exists
-                val existingRoom = db.collection(CHAT_ROOMS_COLLECTION)
-                    .whereEqualTo("participants ", participants)
-                    .get()
-                    .await()
-                    .documents
-                    .firstOrNull()
-                    ?.toObject(ChatRoom::class.java)
-
+                //first  try to find existing room
+                val existingRoom = findExistingChatRoom(sellerId, buyerId)
                 if (existingRoom != null) {
                     return@withContext Result.success(existingRoom)
                 }
 
+                val participants = listOf(sellerId, buyerId).sorted()
+
                 val newRoom = ChatRoom(
                     id = UUID.randomUUID().toString(),
-                    participants=participants,
+                    participants = participants,
                     unreadCount = mapOf(
                         sellerId to 0,
                         buyerId to 0
                     ),
                     createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
+                    updatedAt = System.currentTimeMillis(),
+                    metadata = mutableMapOf(
+                        "title" to "Admin Support",
+                        "type" to "support"
+                    )
                 )
 
-                db.collection(CHAT_ROOMS_COLLECTION).document(newRoom.id).set(newRoom.toMap()).await()
+                db.collection(CHAT_ROOMS_COLLECTION).document(newRoom.id).set(newRoom.toMap())
+                    .await()
 
                 Result.success(newRoom)
 
             } catch (e: Exception) {
                 Result.failure(e)
             }
-        }
+    }
 
     override suspend fun updateMessageStatus(
         messageId: String,
         status: MessageStatus
-    ): Result<Unit> = withContext(dispatcher){
+    ): Result<Unit> = withContext(dispatcher) {
         try {
-            db.collection(MESSAGES_COLLECTION).document(messageId).update("status",status.name).await()
+            db.collection(MESSAGES_COLLECTION).document(messageId).update("status", status.name)
+                .await()
             Result.success(Unit)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun getUnreadCount(chatRoomId: String, userId: String): Flow<Int> = callbackFlow{
-        val subscription = db.collection(CHAT_ROOMS_COLLECTION)
-            .document(chatRoomId)
-            .addSnapshotListener{
-                snapshot,error ->
-                if(error!=null){
-                    close(error)
-                    return@addSnapshotListener
+    override suspend fun getUnreadCount(chatRoomId: String, userId: String): Flow<Int> =
+        callbackFlow {
+            val subscription = db.collection(CHAT_ROOMS_COLLECTION)
+                .document(chatRoomId)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        close(error)
+                        return@addSnapshotListener
+                    }
+
+                    val unreadCount = snapshot?.get("unreadCount") as? Map<*, *>
+                    val count = (unreadCount?.get(userId) as? Number)?.toInt() ?: 0
+
+                    trySend(count)
                 }
 
-                val unreadCount = snapshot?.get("unreadCount") as? Map<*,*>
-                val count = (unreadCount?.get(userId) as? Number)?.toInt()?:0
-
-                trySend(count)
-            }
-
-        awaitClose{subscription.remove()}
-    }.flowOn(dispatcher)
+            awaitClose { subscription.remove() }
+        }.flowOn(dispatcher)
 
     override suspend fun uploadImage(uri: Uri): Result<String> = withContext(dispatcher) {
         try {
@@ -173,8 +198,7 @@ class ChatRepositoryImpl @Inject constructor(
 
             Result.success(downloadUrl.toString())
 
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
@@ -199,33 +223,38 @@ class ChatRepositoryImpl @Inject constructor(
         awaitClose { subscription.remove() }
     }.flowOn(dispatcher)
 
-    override suspend fun markMessageAsRead(chatRoomId: String, userId: String): Result<Unit> = withContext(dispatcher){
-        try {
-            // Reset unread count for the user
-            db.collection(CHAT_ROOMS_COLLECTION)
-                .document(chatRoomId)
-                .update(mapOf("unreadCount.$userId" to 0))
-                .await()
+    override suspend fun markMessageAsRead(chatRoomId: String, userId: String): Result<Unit> =
+        withContext(dispatcher) {
+            try {
+                // Reset unread count for the user
+                db.collection(CHAT_ROOMS_COLLECTION)
+                    .document(chatRoomId)
+                    .update(mapOf("unreadCount.$userId" to 0))
+                    .await()
 
-            // Update status of unread messages
-            val batch = db.batch()
-            val unreadMessages = db.collection(MESSAGES_COLLECTION)
-                .whereEqualTo("chatRoomId", chatRoomId)
-                .whereEqualTo("receiverId", userId)
-                .whereNotEqualTo("status", MessageStatus.READ.name)
-                .get()
-                .await()
+                // Update status of unread messages
+                val batch = db.batch()
+                val unreadMessages = db.collection(MESSAGES_COLLECTION)
+                    .whereEqualTo("chatRoomId", chatRoomId)
+                    .whereEqualTo("receiverId", userId)
+                    .whereNotEqualTo("status", MessageStatus.READ.name)
+                    .get()
+                    .await()
 
-            unreadMessages.documents.forEach { doc ->
-                batch.update(doc.reference, "status", MessageStatus.READ.name)
+                // Update status in batches of 500 (Firestore limit)
+                unreadMessages.documents.chunked(500).forEach { chunk ->
+                    val batchUpdate = db.batch()
+                    chunk.forEach { doc ->
+                        batchUpdate.update(doc.reference, "status", MessageStatus.READ.name)
+                    }
+                    batchUpdate.commit().await()
+                }
+
+                batch.commit().await()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-
-            batch.commit().await()
-            Result.success(Unit)
         }
-        catch (e:Exception){
-            Result.failure(e)
-        }
-    }
 
 }

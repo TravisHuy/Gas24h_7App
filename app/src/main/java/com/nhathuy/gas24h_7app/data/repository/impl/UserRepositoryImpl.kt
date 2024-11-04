@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
+import com.nhathuy.gas24h_7app.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -61,6 +62,27 @@ class UserRepositoryImpl @Inject constructor(
             db.collection("users").document(currentUser.uid).set(user).await()
             Result.success(Unit)
         } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUserAdminId(): Result<String> = withContext(Dispatchers.IO){
+        try {
+
+            val snapshot= db.collection("users")
+                .whereEqualTo("phoneNumber" ,Constants.ADMIN_PHONE_NUMBER)
+                .get()
+                .await()
+
+            val userAdminId = if(!snapshot.isEmpty){
+                snapshot.documents.first().id
+            }
+            else{
+                return@withContext Result.failure(Exception("No user found with this phone number"))
+            }
+            Result.success(userAdminId)
+        }
+        catch (e:Exception){
             Result.failure(e)
         }
     }

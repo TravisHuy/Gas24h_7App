@@ -1,7 +1,9 @@
 package com.nhathuy.gas24h_7app.fragment.chat
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.databinding.FragmentChatBinding
 import com.nhathuy.gas24h_7app.databinding.FragmentProfileBinding
+import com.nhathuy.gas24h_7app.ui.chat_message.ChatMessageActivity
 import javax.inject.Inject
 
 class ChatFragment : Fragment(),ChatContract.View {
@@ -44,6 +47,8 @@ class ChatFragment : Fragment(),ChatContract.View {
 
         presenter.loadOrders()
         setupListeners()
+
+        Log.d("ChatFragment",presenter.getCurrentUserId()!!)
         return binding.root
     }
 
@@ -56,9 +61,17 @@ class ChatFragment : Fragment(),ChatContract.View {
     private fun setupRecyclerview() {
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = ChatOrderItemAdapter(onItemClicked = {
-
+            orderId ->
+            navigateChatMessage(orderId)
         })
         binding.chatRecyclerView.adapter = adapter
+    }
+
+    private fun navigateChatMessage(orderId: String) {
+        val intent  = Intent(requireContext(),ChatMessageActivity::class.java)
+        intent.putExtra("EXTRA_ORDER_ID",orderId)
+        intent.putExtra("CURRENT_USER_ID",presenter.getCurrentUserId())
+        startActivity(intent)
     }
 
     override fun showLoading() {

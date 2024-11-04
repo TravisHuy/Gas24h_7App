@@ -7,7 +7,7 @@
     android:paddingVertical="4dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardImage"
+        android:id="@+id/cardImageReceived"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageMessage"
+            android:id="@+id/imageMessageReceived"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
@@ -24,13 +24,13 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textTime"
+        android:id="@+id/textTimeImageReceived"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="#808080"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/cardImage"
-        app:layout_constraintTop_toBottomOf="@id/cardImage" />
+        app:layout_constraintStart_toStartOf="@id/cardImageReceived"
+        app:layout_constraintTop_toBottomOf="@id/cardImageReceived" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

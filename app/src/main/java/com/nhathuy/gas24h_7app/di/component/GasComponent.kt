@@ -28,6 +28,7 @@ import com.nhathuy.gas24h_7app.ui.all_review.AllReviewActivity
 import com.nhathuy.gas24h_7app.ui.all_voucher.AllVoucherActivity
 import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackActivity
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
+import com.nhathuy.gas24h_7app.ui.chat_message.ChatMessageActivity
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
@@ -91,4 +92,5 @@ interface GasComponent {
     fun inject(qrScannerActivity: QrScannerActivity)
     fun inject(revenueStatisticsActivity: RevenueStatisticsActivity)
     fun inject(chatFragment: ChatFragment)
+    fun inject(chatMessageActivity: ChatMessageActivity)
 }

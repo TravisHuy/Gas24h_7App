@@ -108,6 +108,7 @@
         android:layout_margin="5dp"
         >
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/attachImageButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_add"
@@ -126,12 +127,24 @@
             app:endIconDrawable="@drawable/ic_emoji_smile"
             >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/voucher_maximum_with_person"
+                android:id="@+id/edit_input_chat_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="text"
                 android:hint="Nhập tin nhắn của bạn..."
                 />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sent"
+            app:tint="@color/red" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

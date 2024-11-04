@@ -7,7 +7,7 @@
     android:paddingVertical="4dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardImage"
+        android:id="@+id/cardImageSent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
@@ -20,13 +20,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageMessage"
+                android:id="@+id/imageMessageSent"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop" />
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progressBarSent"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -35,22 +35,22 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textTime"
+        android:id="@+id/textTimeImageSent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="#808080"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@id/cardImage"
-        app:layout_constraintTop_toBottomOf="@id/cardImage" />
+        app:layout_constraintEnd_toEndOf="@id/cardImageSent"
+        app:layout_constraintTop_toBottomOf="@id/cardImageSent" />
 
     <ImageView
-        android:id="@+id/imageStatus"
+        android:id="@+id/imageStatusSent"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/textTime"
-        app:layout_constraintStart_toEndOf="@id/textTime"
-        app:layout_constraintTop_toTopOf="@id/textTime" />
+        app:layout_constraintBottom_toBottomOf="@id/textTimeImageSent"
+        app:layout_constraintStart_toEndOf="@id/textTimeImageSent"
+        app:layout_constraintTop_toTopOf="@id/textTimeImageSent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

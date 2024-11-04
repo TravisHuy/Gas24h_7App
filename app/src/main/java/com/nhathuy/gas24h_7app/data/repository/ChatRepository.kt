@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface ChatRepository {
     suspend fun sendMessage(message:Message) : Result<Unit>
     suspend fun getMessages(chatRoomId:String) : Flow<List<Message>>
-    suspend fun createOrGetChatRoom(sellerId:String,buyerId:String):Result<ChatRoom>
+    suspend fun findExistingChatRoom(sellerId:String,buyerId:String):ChatRoom?
+    suspend fun getOrCreateChatRoom(sellerId:String,buyerId:String):Result<ChatRoom>
     suspend fun updateMessageStatus(messageId:String,status: MessageStatus):Result<Unit>
     suspend fun getUnreadCount(chatRoomId: String,userId:String):Flow<Int>
     suspend fun uploadImage(uri:Uri):Result<String>

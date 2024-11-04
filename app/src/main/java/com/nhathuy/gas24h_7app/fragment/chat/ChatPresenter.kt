@@ -65,4 +65,8 @@ class ChatPresenter @Inject constructor(private val orderRepository: OrderReposi
             }
         }
     }
+
+    override fun getCurrentUserId(): String? {
+        return userRepository.getCurrentUserId()
+    }
 }

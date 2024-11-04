@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
+import com.nhathuy.gas24h_7app.data.repository.ChatRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
@@ -13,11 +14,13 @@ import com.nhathuy.gas24h_7app.data.repository.ReviewRepository
 import com.nhathuy.gas24h_7app.data.repository.SearchRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
+import com.nhathuy.gas24h_7app.data.repository.impl.ChatRepositoryImpl
 import com.nhathuy.gas24h_7app.data.repository.impl.RevenueStatisticsRepositoryImpl
 import com.nhathuy.gas24h_7app.data.repository.impl.UserRepositoryImpl
 import com.nhathuy.gas24h_7app.viewmodel.SearchViewModel
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -82,5 +85,14 @@ class RepositoryModule {
     @Singleton
     fun provideRevenueStatisticsRepository(db:FirebaseFirestore,productRepository: ProductRepository): RevenueStatisticsRepository {
         return RevenueStatisticsRepositoryImpl(db,productRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatMessageRepository(db: FirebaseFirestore,
+                                     storage: FirebaseStorage,
+                                     dispatcher: CoroutineDispatcher
+    ): ChatRepository {
+        return ChatRepositoryImpl(db,storage, dispatcher)
     }
 }

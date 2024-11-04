@@ -82,14 +82,12 @@ class ChatAdapter(private val currentUserId:String,
     }
 
     inner class SentTextMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textMessage: TextView = itemView.findViewById(R.id.textMessage)
-        private val textTime: TextView = itemView.findViewById(R.id.textTime)
-        private val imageStatus: ImageView = itemView.findViewById(R.id.imageStatus)
+        private val textMessage: TextView = itemView.findViewById(R.id.textMessageSent)
+        private val textTime: TextView = itemView.findViewById(R.id.textTimeSent)
 
         fun bind(message: Message) {
             textMessage.text = message.content
             textTime.text = formatTime(message.timestamp)
-            setMessageStatus(message.status, imageStatus)
 
             itemView.setOnLongClickListener {
                 onMessageLongClick(message)
@@ -98,8 +96,8 @@ class ChatAdapter(private val currentUserId:String,
         }
     }
     inner class ReceivedTextMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textMessage: TextView = itemView.findViewById(R.id.textMessage)
-        private val textTime: TextView = itemView.findViewById(R.id.textTime)
+        private val textMessage: TextView = itemView.findViewById(R.id.textMessageReceived)
+        private val textTime: TextView = itemView.findViewById(R.id.textTimeReceived)
 
         fun bind(message: Message) {
             textMessage.text = message.content
@@ -113,10 +111,10 @@ class ChatAdapter(private val currentUserId:String,
     }
 
     inner class SentImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageMessage: ImageView = itemView.findViewById(R.id.imageMessage)
-        private val textTime: TextView = itemView.findViewById(R.id.textTime)
-        private val imageStatus: ImageView = itemView.findViewById(R.id.imageStatus)
-        private val progressBar: View = itemView.findViewById(R.id.progressBar)
+        private val imageMessage: ImageView = itemView.findViewById(R.id.imageMessageSent)
+        private val textTime: TextView = itemView.findViewById(R.id.textTimeImageSent)
+        private val imageStatus: ImageView = itemView.findViewById(R.id.imageStatusSent)
+        private val progressBar: View = itemView.findViewById(R.id.progressBarSent)
 
         fun bind(message: Message) {
             textTime.text = formatTime(message.timestamp)
@@ -139,8 +137,8 @@ class ChatAdapter(private val currentUserId:String,
     }
 
     inner class ReceivedImageMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageMessage: ImageView = itemView.findViewById(R.id.imageMessage)
-        private val textTime: TextView = itemView.findViewById(R.id.textTime)
+        private val imageMessage: ImageView = itemView.findViewById(R.id.imageMessageReceived)
+        private val textTime: TextView = itemView.findViewById(R.id.textTimeImageReceived)
 
         fun bind(message: Message) {
             textTime.text = formatTime(message.timestamp)

@@ -14,6 +14,7 @@ interface ChatContract {
         fun attachView(view:View)
         fun detachView()
         fun loadOrders()
+        fun getCurrentUserId():String?
     }
 
 }
