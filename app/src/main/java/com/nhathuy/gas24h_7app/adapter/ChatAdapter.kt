@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageStatus
@@ -22,6 +26,7 @@ import com.nhathuy.gas24h_7app.util.Constants.VIEW_TYPE_SYSTEM
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import javax.sql.DataSource
 
 class ChatAdapter(private val currentUserId:String,
                   private val onMessageClick :(Message) -> Unit,
@@ -125,6 +130,28 @@ class ChatAdapter(private val currentUserId:String,
 
             Glide.with(itemView.context)
                 .load(message.mediaUrl)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        dataSource: com.bumptech.glide.load.DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
+                        return false
+                    }
+                })
                 .into(imageMessage)
 
             imageMessage.setOnClickListener { onImageClick(message.mediaUrl) }

@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.util
 
 object Constants {
     const val BASE_URL="https://esgoo.net/"
+    const val NOTIFICATION_URL="https://mongodb-csvv.onrender.com/travishuy/notifications/"
     const val ARG_CATEGORY="category"
     const val ARG_CATEGORY_ID="category_id"
     const val ADMIN_PHONE_NUMBER="+84349929162"

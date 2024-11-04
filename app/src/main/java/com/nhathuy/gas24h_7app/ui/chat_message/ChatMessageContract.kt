@@ -31,6 +31,7 @@ interface ChatMessageContract {
         fun initialize(orderId: String? = null)
         fun loadMessages()
         fun sendMessage(content: String, type: MessageType= MessageType.TEXT)
+        fun sendMessageImage(content: String, type: MessageType= MessageType.IMAGE)
         fun sendImage(uri: Uri)
         fun markMessagesAsRead()
         fun onImagePickerClicked()

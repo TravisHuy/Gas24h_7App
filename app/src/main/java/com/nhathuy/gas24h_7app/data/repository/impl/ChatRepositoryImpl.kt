@@ -83,7 +83,7 @@ class ChatRepositoryImpl @Inject constructor(
         callbackFlow<List<Message>> {
             val subscription = db.collection(MESSAGES_COLLECTION)
                 .whereEqualTo("chatRoomId", chatRoomId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .orderBy("timestamp", Query.Direction.ASCENDING)
                 .limit(50)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -106,7 +106,7 @@ class ChatRepositoryImpl @Inject constructor(
 
             //check if chat room already exists
             db.collection(CHAT_ROOMS_COLLECTION)
-                .whereEqualTo("participants ", participants)
+                .whereEqualTo("participants", participants)
                 .get()
                 .await()
                 .documents
@@ -128,8 +128,10 @@ class ChatRepositoryImpl @Inject constructor(
 
                 val participants = listOf(sellerId, buyerId).sorted()
 
+                val roomId = "${participants[0]}_${participants[1]}"
+
                 val newRoom = ChatRoom(
-                    id = UUID.randomUUID().toString(),
+                    id = roomId,
                     participants = participants,
                     unreadCount = mapOf(
                         sellerId to 0,
@@ -143,7 +145,7 @@ class ChatRepositoryImpl @Inject constructor(
                     )
                 )
 
-                db.collection(CHAT_ROOMS_COLLECTION).document(newRoom.id).set(newRoom.toMap())
+                db.collection(CHAT_ROOMS_COLLECTION).document(roomId    ).set(newRoom.toMap())
                     .await()
 
                 Result.success(newRoom)

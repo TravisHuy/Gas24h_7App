@@ -93,6 +93,7 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
             catch (e:Exception){
                 withContext(Dispatchers.Main){
                     view?.showError("Failed to load messages: ${e.message}")
+                    Log.d("ChatMessagePresenter","${e.message}")
                 }
             }
             finally {
@@ -144,6 +145,46 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
         }
     }
 
+    override fun sendMessageImage(mediaUrl: String, type: MessageType) {
+        if (mediaUrl.isBlank() && type == MessageType.IMAGE) return
+
+        coroutineScope.launch(Dispatchers.IO) {
+            try {
+                val message = Message(
+                    id = UUID.randomUUID().toString(),
+                    chatRoomId = chatRoomId ?: return@launch,
+                    senderId = currentUserId ?: return@launch,
+                    receiverId = adminId ?: return@launch,
+                    mediaUrl = mediaUrl,
+                    type = type,
+                    timestamp = System.currentTimeMillis()
+                )
+
+                val result = chatRepository.sendMessage(message)
+
+                result.fold(
+                    onSuccess = {
+                        withContext(Dispatchers.Main) {
+//                            view?.showMessageSent(message)
+                            view?.clearInput()
+                        }
+                    },
+                    onFailure = { e ->
+                        withContext(Dispatchers.Main) {
+                            view?.showError("Failed to send messages: ${e.message}")
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.showError("Failed to send message: ${e.message}")
+                }
+            } finally {
+                view?.hideLoading()
+            }
+        }
+    }
+
     override fun sendImage(uri: Uri) {
         coroutineScope.launch {
             try {
@@ -152,7 +193,7 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
                 uploadResult.fold(
                     onSuccess = {
                         imageUrl ->
-                        sendMessage(imageUrl,MessageType.IMAGE)
+                        sendMessageImage(imageUrl,MessageType.IMAGE)
                     },
                     onFailure = { e->
                         view?.showError("Failed to upload image: ${e.message}")
