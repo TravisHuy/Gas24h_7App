@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.ui.shipping_address
 
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
+import com.nhathuy.gas24h_7app.data.api.LocationRetrofit
 import com.nhathuy.gas24h_7app.data.model.District
 import com.nhathuy.gas24h_7app.data.model.Province
 import com.nhathuy.gas24h_7app.data.model.User
@@ -14,7 +15,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShippingAddressPresenter @Inject constructor(private val userRepository: UserRepository,
-                                                   private val locationApiService: LocationApiService
+                                                   @LocationRetrofit private val locationApiService: LocationApiService
 ):ShippingAddressContract.Presenter {
 
     private var view:ShippingAddressContract.View? = null

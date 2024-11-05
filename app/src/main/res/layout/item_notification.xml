@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/logo_image"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/logo"
+            app:civ_border_color="@color/dark_primary"
+            app:civ_border_width="1dp"
+            />
+        <TextView
+            android:id="@+id/notification_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="thông báo giá gas thánh 9 năm 2024"
+            android:layout_marginStart="5dp"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:fontFamily="@font/kalam_bold"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

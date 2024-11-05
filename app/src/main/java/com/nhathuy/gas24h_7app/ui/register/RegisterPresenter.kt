@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
+import com.nhathuy.gas24h_7app.data.api.LocationRetrofit
 import com.nhathuy.gas24h_7app.data.model.District
 import com.nhathuy.gas24h_7app.data.model.Province
 import com.nhathuy.gas24h_7app.data.model.User
@@ -27,7 +28,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 
-class RegisterPresenter @Inject constructor(private val locationApiService: LocationApiService,
+class RegisterPresenter @Inject constructor(@LocationRetrofit private val locationApiService: LocationApiService,
                                             private val userRepository: UserRepository,
                                             private val coroutineScope: CoroutineScope,
                                             private val context: Context

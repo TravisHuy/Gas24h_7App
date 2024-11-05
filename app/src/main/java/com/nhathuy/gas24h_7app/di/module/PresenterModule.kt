@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationContract
@@ -20,9 +21,11 @@ import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllPresenter
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContract
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
+import com.nhathuy.gas24h_7app.data.api.NotificationApiService
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
+import com.nhathuy.gas24h_7app.data.repository.NotificationRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.RevenueStatisticsRepository
@@ -34,6 +37,7 @@ import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.chat.ChatPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
+import com.nhathuy.gas24h_7app.fragment.notification.NotificationPresenter
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileContract
 import com.nhathuy.gas24h_7app.fragment.profile.ProfilePresenter
 import com.nhathuy.gas24h_7app.ui.add_review.AddReviewContract
@@ -247,5 +251,18 @@ class PresenterModule {
     @Singleton
     fun provideChatPresenter(orderRepository: OrderRepository,userRepository: UserRepository,productRepository: ProductRepository): ChatPresenter {
         return ChatPresenter(orderRepository,userRepository, productRepository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideNotificationPresenter(notificationApiService: NotificationApiService): NotificationPresenter {
+        return NotificationPresenter(notificationApiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddNotificationPresenter(context: Context,notificationRepository: NotificationRepository): AddNotificationPresenter {
+        return AddNotificationPresenter(context, notificationRepository)
     }
 }

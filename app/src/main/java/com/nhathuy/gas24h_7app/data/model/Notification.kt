@@ -6,7 +6,7 @@ data class Notification(
     val id:String,
     val title:String,
     val content:String,
-    val imageData: ByteArray?,
+    val imageData: String,
     val hotline:String,
     val date:Date
 )

@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
+import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
@@ -20,7 +21,7 @@ import com.nhathuy.gas24h_7app.di.module.ViewModelModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
 import com.nhathuy.gas24h_7app.fragment.chat.ChatFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
-import com.nhathuy.gas24h_7app.fragment.logout.LogoutFragment
+import com.nhathuy.gas24h_7app.fragment.notification.NotificationFragment
 import com.nhathuy.gas24h_7app.fragment.profile.ProfileFragment
 import com.nhathuy.gas24h_7app.ui.add_review.AddReviewActivity
 import com.nhathuy.gas24h_7app.ui.add_review_test.AddReviewTestActivity
@@ -42,11 +43,9 @@ import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMeActivity
 import com.nhathuy.gas24h_7app.ui.search.SearchActivity
 import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressActivity
-import com.nhathuy.gas24h_7app.ui.splash.SplashActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
 import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
 import dagger.Component
-import dagger.Module
 import javax.inject.Singleton
 
 @Singleton
@@ -93,4 +92,6 @@ interface GasComponent {
     fun inject(revenueStatisticsActivity: RevenueStatisticsActivity)
     fun inject(chatFragment: ChatFragment)
     fun inject(chatMessageActivity: ChatMessageActivity)
+    fun inject(notificationFragment: NotificationFragment)
+    fun inject(addNotificationActivity: AddNotificationActivity)
 }
