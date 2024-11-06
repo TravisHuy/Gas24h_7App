@@ -25,6 +25,9 @@ class NotificationFragment : Fragment(),NotificationContract.View {
 
     private lateinit var adapter: NotificationAdapter
 
+    private val DETAIL_REQUEST_CODE = 1001
+
+
     @Inject
     lateinit var presenter:NotificationPresenter
 
@@ -76,7 +79,13 @@ class NotificationFragment : Fragment(),NotificationContract.View {
         val intent = Intent(requireContext(),DetailNotificationActivity::class.java)
         intent.putExtra("NOTIFICATION_ID",id)
         startActivity(intent)
+//        startActivityForResult(intent, DETAIL_REQUEST_CODE)
     }
 
-
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == DETAIL_REQUEST_CODE) {
+//            presenter.loadNotifications()
+//        }
+//    }
 }

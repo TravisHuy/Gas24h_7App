@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
+import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationActivity
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
@@ -97,4 +98,5 @@ interface GasComponent {
     fun inject(notificationFragment: NotificationFragment)
     fun inject(addNotificationActivity: AddNotificationActivity)
     fun inject(detailNotificationActivity: DetailNotificationActivity)
+    fun inject(allNotificationActivity: AllNotificationActivity)
 }

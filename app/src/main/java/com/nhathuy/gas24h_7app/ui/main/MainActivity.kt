@@ -22,6 +22,7 @@ import com.nhathuy.gas24h_7app.databinding.ActivityMainBinding
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
 import com.nhathuy.gas24h_7app.viewmodel.HomeSharedViewModel
 import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
+import com.nhathuy.gas24h_7app.websocket.WebSocketService
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -33,11 +34,19 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var webSocketService: WebSocketService
+
     private lateinit var homeSharedViewModel: HomeSharedViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        (application as Gas24h_7Application).getGasComponent().inject(this)
+
+        ensureWebSocketConnection()
 
         try {
             binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
             // Log để kiểm tra
             Log.d("MainActivity","MainActivity onCreate executed successfully")
+
         } catch (e: Exception) {
             // Log lỗi nếu có
             e.printStackTrace()
@@ -107,5 +117,16 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    private fun ensureWebSocketConnection() {
+        webSocketService.connectForNotification(
+            onConnected = {
+                Log.d("MainActivity", "WebSocket connected")
+            },
+            onError = { error ->
+                Log.e("MainActivity", "WebSocket connection error: $error")
+            }
+        )
     }
 }

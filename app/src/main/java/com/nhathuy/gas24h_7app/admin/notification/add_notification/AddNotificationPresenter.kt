@@ -93,7 +93,21 @@ class AddNotificationPresenter @Inject constructor(private val  context: Context
                     hotline = hotlinePart
                 ).collect { result ->
                     result.onSuccess {
-                        notificationHelper.showNotification(title,content, hotline)
+
+                        webSocketService.connectForNotification(
+                            title = title,
+                            content = content,
+                            hotline = hotline,
+                            onConnected = {
+                                notificationHelper.showNotification(title, content, hotline)
+                                view?.showMessage("Notification added successfully")
+                                view?.clear()
+                            },
+                            onError = { error ->
+                                view?.showMessage("Failed to send broadcast: $error")
+                            }
+                        )
+
                         view?.showMessage("Notification added successfully")
                         view?.clear()
                     }.onFailure { exception ->

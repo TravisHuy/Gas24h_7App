@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.ui.detail_notification
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.data.model.Notification
 import com.nhathuy.gas24h_7app.databinding.ActivityDetailNotificationBinding
+import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import javax.inject.Inject
@@ -58,8 +60,13 @@ class DetailNotificationActivity : AppCompatActivity(),DetailNotificationContrac
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        presenter.detachView()
+//    }
+
+    override fun onBackPressed() {
+        setResult(RESULT_OK)
+        finish()
     }
 }

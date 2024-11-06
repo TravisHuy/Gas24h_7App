@@ -15,7 +15,11 @@ class WebSocketService @Inject constructor(private val notificationHelper: Notif
     private var isConnected = false
     private val SOCKET_URL = "wss://mongodb-csvv.onrender.com/ws/websocket"
 
-    fun connectForNotification(onConnected: () -> Unit, onError: (String) -> Unit) {
+    fun connectForNotification(  title: String? = null,
+                                 content: String? = null,
+                                 hotline: String? = null,
+                                 onConnected: () -> Unit,
+                                 onError: (String) -> Unit) {
         if (isConnected) {
             onConnected()
             return
@@ -47,6 +51,10 @@ class WebSocketService @Inject constructor(private val notificationHelper: Notif
                     """.trimIndent()
                     send(stompConnect)
 
+                    // Sau khi kết nối thành công, gửi thông báo
+                    if (title != null && content != null && hotline != null) {
+                        sendBroadcastNotification(title, content, hotline)
+                    }
                     onConnected()
                 }
 
@@ -82,7 +90,7 @@ class WebSocketService @Inject constructor(private val notificationHelper: Notif
                     // Try to reconnect after a delay
                     Thread {
                         Thread.sleep(5000)
-                        connectForNotification(onConnected, onError)
+                        connectForNotification(title,content,hotline,onConnected, onError)
                     }.start()
                 }
 
@@ -117,6 +125,27 @@ class WebSocketService @Inject constructor(private val notificationHelper: Notif
         } catch (e: Exception) {
             Log.e("WebSocket", "Error during disconnect", e)
         }
+    }
+
+    private fun sendBroadcastNotification(title: String, content: String, hotline: String) {
+        val notificationData = """
+            {
+                "title": "$title",
+                "content": "$content",
+                "hotline": "$hotline"
+            }
+        """.trimIndent()
+
+        val stompMessage = """
+            SEND
+            destination:/app/broadcast
+            content-type:application/json
+            
+            $notificationData
+            
+        """.trimIndent()
+
+        webSocketClient?.send(stompMessage)
     }
 
     private fun parseNotification(message: String): NotificationData {
