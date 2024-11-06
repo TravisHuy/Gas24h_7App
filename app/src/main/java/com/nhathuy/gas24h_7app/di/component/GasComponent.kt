@@ -31,6 +31,7 @@ import com.nhathuy.gas24h_7app.ui.buy_back.BuyBackActivity
 import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.chat_message.ChatMessageActivity
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherActivity
+import com.nhathuy.gas24h_7app.ui.detail_notification.DetailNotificationActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
@@ -94,4 +95,5 @@ interface GasComponent {
     fun inject(chatMessageActivity: ChatMessageActivity)
     fun inject(notificationFragment: NotificationFragment)
     fun inject(addNotificationActivity: AddNotificationActivity)
+    fun inject(detailNotificationActivity: DetailNotificationActivity)
 }

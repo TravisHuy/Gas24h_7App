@@ -53,6 +53,7 @@ import com.nhathuy.gas24h_7app.ui.cart.CartContract
 import com.nhathuy.gas24h_7app.ui.cart.CartPresenter
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherContract
 import com.nhathuy.gas24h_7app.ui.choose_voucher.ChooseVoucherPresenter
+import com.nhathuy.gas24h_7app.ui.detail_notification.DetailNotificationPresenter
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductContract
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductPresenter
 import com.nhathuy.gas24h_7app.ui.login.LoginContract
@@ -264,5 +265,11 @@ class PresenterModule {
     @Singleton
     fun provideAddNotificationPresenter(context: Context,notificationRepository: NotificationRepository): AddNotificationPresenter {
         return AddNotificationPresenter(context, notificationRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDetailNotificationPresenter(notificationRepository: NotificationRepository): DetailNotificationPresenter {
+        return DetailNotificationPresenter(notificationRepository)
     }
 }

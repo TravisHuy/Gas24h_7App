@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.detail_notification.DetailNotificationActivity">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detail_notification_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/open_sans_bold"
+        android:justificationMode="inter_word"
+        android:lineSpacingExtra="3dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/detail_notification_image"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:scaleType="centerInside"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_notification_content" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/material_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_sans_bold"
+        android:justificationMode="inter_word"
+        android:lineSpacingExtra="3dp"
+        android:textSize="16sp"
+        android:text="Hotline: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_notification_image"  />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detail_notification_hotline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/material_text_view"
+        app:layout_constraintStart_toEndOf="@id/material_text_view"
+        app:layout_constraintTop_toTopOf="@+id/material_text_view" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/material_text_view_date_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="10dp"
+        android:justificationMode="inter_word"
+        android:lineSpacingExtra="3dp"
+        android:text="Ngày gửi: "
+        android:textColor="#04B1FF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/material_text_view"  />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detail_notification_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:lineSpacingExtra="5dp"
+        android:textColor="#04B1FF"
+        app:layout_constraintBottom_toBottomOf="@+id/material_text_view_date_send"
+        app:layout_constraintStart_toEndOf="@id/material_text_view_date_send"
+        app:layout_constraintTop_toTopOf="@+id/material_text_view_date_send" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

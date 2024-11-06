@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.fragment.notification
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.nhathuy.gas24h_7app.adapter.NotificationAdapter
 import com.nhathuy.gas24h_7app.data.model.Notification
 import com.nhathuy.gas24h_7app.databinding.FragmentChatBinding
 import com.nhathuy.gas24h_7app.databinding.FragmentNotificationBinding
+import com.nhathuy.gas24h_7app.ui.detail_notification.DetailNotificationActivity
 import javax.inject.Inject
 
 class NotificationFragment : Fragment(),NotificationContract.View {
@@ -71,7 +73,9 @@ class NotificationFragment : Fragment(),NotificationContract.View {
     }
 
     override fun navigateDetailNotification(id: String) {
-        Toast.makeText(requireContext(),"${id}",Toast.LENGTH_SHORT).show()
+        val intent = Intent(requireContext(),DetailNotificationActivity::class.java)
+        intent.putExtra("NOTIFICATION_ID",id)
+        startActivity(intent)
     }
 
 
