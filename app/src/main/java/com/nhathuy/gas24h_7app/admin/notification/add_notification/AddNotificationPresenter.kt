@@ -3,8 +3,10 @@ package com.nhathuy.gas24h_7app.admin.notification.add_notification
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.nhathuy.gas24h_7app.data.helper.NotificationHelper
 import com.nhathuy.gas24h_7app.data.repository.NotificationRepository
 import com.nhathuy.gas24h_7app.fragment.notification.NotificationContract
+import com.nhathuy.gas24h_7app.websocket.WebSocketService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -17,7 +19,10 @@ import java.io.File
 import javax.inject.Inject
 
 class AddNotificationPresenter @Inject constructor(private val  context: Context,
-                                                   private val notificationRepository: NotificationRepository):AddNotificationContract.Presenter{
+                                                   private val notificationRepository: NotificationRepository,
+                                                   private val notificationHelper: NotificationHelper,
+                                                   private val webSocketService: WebSocketService
+):AddNotificationContract.Presenter{
     private var view:AddNotificationContract.View? = null
     private val job = SupervisorJob()
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
@@ -26,13 +31,33 @@ class AddNotificationPresenter @Inject constructor(private val  context: Context
     override fun attachView(view: AddNotificationContract.View) {
         this.view= view
     }
-
     override fun detachView() {
         view = null
         job.cancel()
+        webSocketService.disconnect()
     }
 
     override fun addNotification(title: String, content: String, imageUri: Uri?, hotline: String) {
+        if (title.isEmpty() || content.isEmpty() || hotline.isEmpty()) {
+            view?.showMessage("Please fill all required fields")
+            return
+        }
+        view?.showLoading()
+
+        // Connect to WebSocket first
+        webSocketService.connectForNotification(
+            onConnected = {
+                // After successful connection, proceed with adding notification
+                uploadNotification(title, content, imageUri, hotline)
+            },
+            onError = { error ->
+                view?.hideLoading()
+                view?.showMessage("Failed to connect to notification service: $error")
+            }
+        )
+    }
+
+    private fun uploadNotification(title: String, content: String, imageUri: Uri?, hotline: String) {
         if(title.isEmpty() || content.isEmpty() || hotline.isEmpty()){
             view?.showMessage("Please fill all required fields")
             return
@@ -68,6 +93,7 @@ class AddNotificationPresenter @Inject constructor(private val  context: Context
                     hotline = hotlinePart
                 ).collect { result ->
                     result.onSuccess {
+                        notificationHelper.showNotification(title,content, hotline)
                         view?.showMessage("Notification added successfully")
                         view?.clear()
                     }.onFailure { exception ->

@@ -12,7 +12,7 @@ import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class NotificationHelper @Inject constructor(private val context: Context) {
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

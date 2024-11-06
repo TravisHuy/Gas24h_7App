@@ -142,4 +142,8 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
     implementation("androidx.compose.material3:material3:1.1.1")
+
+
+    //Krossbow
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
 }

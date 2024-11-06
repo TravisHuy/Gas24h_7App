@@ -18,6 +18,7 @@ import com.nhathuy.gas24h_7app.di.module.GasModule
 import com.nhathuy.gas24h_7app.di.module.PresenterModule
 import com.nhathuy.gas24h_7app.di.module.RepositoryModule
 import com.nhathuy.gas24h_7app.di.module.ViewModelModule
+import com.nhathuy.gas24h_7app.di.module.WebSocketModule
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryFragment
 import com.nhathuy.gas24h_7app.fragment.chat.ChatFragment
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragment
@@ -50,7 +51,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [GasModule::class,RetrofitClient::class,FirebaseModule::class,PresenterModule::class,RepositoryModule::class,ViewModelModule::class])
+@Component(modules = [GasModule::class,RetrofitClient::class,FirebaseModule::class,PresenterModule::class,RepositoryModule::class,ViewModelModule::class,WebSocketModule::class])
 interface GasComponent {
     fun inject(loginActivity: LoginActivity)
     fun inject(verifyActivity: VerificationActivity)

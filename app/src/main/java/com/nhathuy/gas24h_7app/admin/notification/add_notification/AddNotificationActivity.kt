@@ -114,4 +114,9 @@ class AddNotificationActivity : AppCompatActivity(),AddNotificationContract.View
         binding.ivPreview.setImageDrawable(null)
         selectedImageUri = null
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
 }

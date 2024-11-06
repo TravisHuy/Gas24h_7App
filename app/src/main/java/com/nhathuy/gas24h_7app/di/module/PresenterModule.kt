@@ -22,6 +22,7 @@ import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContrac
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.api.NotificationApiService
+import com.nhathuy.gas24h_7app.data.helper.NotificationHelper
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
@@ -72,6 +73,7 @@ import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMePresenter
 import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressPresenter
 import com.nhathuy.gas24h_7app.ui.verify.VerificationContract
 import com.nhathuy.gas24h_7app.ui.verify.VerificationPresenter
+import com.nhathuy.gas24h_7app.websocket.WebSocketService
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
@@ -263,8 +265,8 @@ class PresenterModule {
 
     @Provides
     @Singleton
-    fun provideAddNotificationPresenter(context: Context,notificationRepository: NotificationRepository): AddNotificationPresenter {
-        return AddNotificationPresenter(context, notificationRepository)
+    fun provideAddNotificationPresenter(context: Context,notificationRepository: NotificationRepository,notificationHelper: NotificationHelper,webSocketService: WebSocketService): AddNotificationPresenter {
+        return AddNotificationPresenter(context, notificationRepository,notificationHelper,webSocketService)
     }
 
     @Provides
