@@ -29,6 +29,6 @@ interface NotificationApiService {
     @PUT("travishuy/notifications/edit/{id}")
     suspend fun editNotification(@Path("id") id:String,@Part("title") title:RequestBody ,@Part("content") content:RequestBody, @Part imageData: MultipartBody.Part?,@Part("hotline") hotline:RequestBody):Response<Unit>
 
-    @DELETE("travishuy/notifications/delete/{id}")
+    @DELETE("travishuy/notifications/{id}")
     suspend fun deleteNotification(@Path("id") id:String):Response<Unit>
 }

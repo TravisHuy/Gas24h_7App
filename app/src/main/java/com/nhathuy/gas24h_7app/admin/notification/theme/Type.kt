@@ -1,4 +1,4 @@
-package com.nhathuy.gas24h_7app.admin.notification.all_notification.ui.theme
+package com.nhathuy.gas24h_7app.admin.notification.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

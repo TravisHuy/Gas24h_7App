@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
-import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
 import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity

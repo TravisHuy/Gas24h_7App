@@ -27,26 +27,25 @@ class AllNotificationPresenter @Inject constructor(private val notificationRepos
 
     override fun loadNotifications() {
         coroutineScope.launch {
+            view?.showLoading()
             try {
-                view?.showLoading()
-
                 notificationRepository.getAllNotifications().collect{
                     result ->
                     result.fold(
                         onSuccess = {
                             notifications ->
                             view?.showAllNotifications(notifications)
+                            view?.hideLoading()
                         },
                         onFailure = {error ->
                             view?.showMessage(error.message ?: "Unknown error")
+                            view?.hideLoading()
                         }
                     )
                 }
 
             }catch (e:Exception){
                 view?.showMessage(e.message ?: "Unexpected error")
-            }
-            finally {
                 view?.hideLoading()
             }
         }

@@ -78,4 +78,5 @@
     <string name="title_activity_qr_code">QrCodeActivity</string>
     <string name="title_activity_revenue_statistics">RevenueStatisticsActivity</string>
     <string name="title_activity_all_notification">AllNotificationActivity</string>
+    <string name="title_activity_edit_notification">EditNotificationActivity</string>
 </resources>

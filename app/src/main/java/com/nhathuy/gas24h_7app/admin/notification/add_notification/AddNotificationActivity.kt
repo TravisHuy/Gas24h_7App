@@ -12,11 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nhathuy.gas24h_7app.Gas24h_7Application
-import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.databinding.ActivityAddNotificationBinding
 import javax.inject.Inject
 
-class AddNotificationActivity : AppCompatActivity(),AddNotificationContract.View {
+class AddNotificationActivity : AppCompatActivity(), AddNotificationContract.View {
     private lateinit var binding :ActivityAddNotificationBinding
 
     @Inject

@@ -8,8 +8,7 @@ interface AllNotificationContract {
         fun hideLoading()
         fun showMessage(message:String)
         fun showAllNotifications(notifications:List<Notification>)
-        fun showDialogDeleteNotification()
-        fun navigateEditNotification()
+        fun navigateEditNotification(id:String)
     }
     interface Presenter{
         fun attachView(view:View)

@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.admin.notification.all_notification
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -8,24 +10,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.RemoveDone
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,17 +39,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nhathuy.gas24h_7app.Gas24h_7Application
-import com.nhathuy.gas24h_7app.admin.notification.all_notification.ui.theme.Gas24h_7AppTheme
+import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotificationActivity
+import com.nhathuy.gas24h_7app.admin.notification.theme.Gas24h_7AppTheme
 import com.nhathuy.gas24h_7app.data.model.Notification
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -94,12 +100,10 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
         currentNotifications.addAll(notifications)
     }
 
-    override fun showDialogDeleteNotification() {
-        TODO("Not yet implemented")
-    }
-
-    override fun navigateEditNotification() {
-        TODO("Not yet implemented")
+    override fun navigateEditNotification(id:String) {
+        val intent = Intent(this, EditNotificationActivity::class.java)
+        intent.putExtra("NOTIFICATION_ID",id)
+        startActivity(intent)
     }
 
 
@@ -122,6 +126,7 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
 
             //Main content
             if (showLoading) {
+                Log.d("Loading", "LoadingIndicator is active")
                 LoadingIndicator()
             } else {
                 NotificationContent(notifications = currentNotifications)
@@ -149,15 +154,17 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
 
             items(notifications) { notification ->
                 NotificationCard(
-                    notification = notification
+                    notification = notification,
+                    onDelete =  { presenter.deleteNotification(notification.id) }
                 )
-
             }
         }
     }
 
     @Composable
-    private fun NotificationCard(notification: Notification) {
+    private fun NotificationCard(notification: Notification,onDelete: (String) -> Unit) {
+        var showDeleteDialog by remember { mutableStateOf(false) }
+
         ElevatedCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             modifier = Modifier
@@ -185,11 +192,69 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
                         .fillMaxWidth(),
                     textAlign = TextAlign.End
                 )
-                Row(modifier = Modifier) {
-                    
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                , horizontalArrangement = Arrangement.Center) {
+
+                    IconButton(onClick = { navigateEditNotification(notification.id) }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Edit,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .padding(end = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(start = 50.dp, end = 50.dp))
+
+                    IconButton(onClick = { showDeleteDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .padding(end = 8.dp)
+                        )
+                    }
                 }
             }
+            if (showDeleteDialog) {
+                DeleteNotificationDialog(
+                    notification = notification,
+                    onConfirm = {
+                        onDelete(notification.id)
+                        Log.d("AllNotification","${notification.id}")
+                        showDeleteDialog = false
+                    },
+                    onDismiss = { showDeleteDialog = false }
+                )
+            }
         }
+    }
+
+    @Composable
+    private fun DeleteNotificationDialog(notification: Notification, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Delete Notification") },
+            text = {
+                Text("Are you sure you want to delete the notification: ${notification.title}?")
+            },
+            confirmButton = {
+                TextButton(onClick = onConfirm) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     private fun formatDate(date: Date): String {
@@ -205,7 +270,7 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
         ) {
             CircularProgressIndicator(
                 modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = Color.Red
             )
         }
     }
@@ -214,7 +279,7 @@ class AllNotificationActivity : ComponentActivity(), AllNotificationContract.Vie
     private fun ErrorDialog(message: String, onDismiss: () -> Unit) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Error") },
+            title = { Text("") },
             text = { Text(message) },
             confirmButton = {
                 TextButton(onClick = onDismiss) {

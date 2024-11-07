@@ -34,10 +34,15 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".admin.notification.edit_notification.EditNotificationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_edit_notification"
+            android:theme="@style/Theme.Gas24h_7App" />
+        <activity
             android:name=".admin.notification.all_notification.AllNotificationActivity"
             android:exported="true"
             android:label="@string/title_activity_all_notification"
-            android:theme="@style/Theme.Gas24h_7App" >
+            android:theme="@style/Theme.Gas24h_7App">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -156,9 +161,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
