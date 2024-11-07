@@ -54,7 +54,9 @@
             android:exported="false" />
         <activity
             android:name=".admin.notification.add_notification.AddNotificationActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".ui.chat_message.ChatMessageActivity"
             android:exported="false" />

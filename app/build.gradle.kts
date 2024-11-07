@@ -150,4 +150,7 @@ dependencies {
 
     //Krossbow
     implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+
+    //AsyncImage
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

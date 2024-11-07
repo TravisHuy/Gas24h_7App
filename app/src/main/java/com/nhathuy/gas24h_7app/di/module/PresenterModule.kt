@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationPresenter
+import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductContract
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductPresenter
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationContract
@@ -281,4 +282,11 @@ class PresenterModule {
     fun provideAllNotificationPresenter(notificationRepository: NotificationRepository): AllNotificationPresenter {
         return AllNotificationPresenter(notificationRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideEditNotificationPresenter(context: Context,notificationRepository: NotificationRepository): EditNotificationPresenter {
+        return EditNotificationPresenter(context ,notificationRepository)
+    }
+
 }
