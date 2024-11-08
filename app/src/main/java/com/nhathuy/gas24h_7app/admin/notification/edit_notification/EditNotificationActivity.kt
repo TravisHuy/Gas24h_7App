@@ -54,9 +54,6 @@ import javax.inject.Inject
 
 class EditNotificationActivity : ComponentActivity(),EditNotificationContract.View {
 
-
-
-
     override var title by mutableStateOf("")
     override var content by mutableStateOf("")
     override var hotline by mutableStateOf("")

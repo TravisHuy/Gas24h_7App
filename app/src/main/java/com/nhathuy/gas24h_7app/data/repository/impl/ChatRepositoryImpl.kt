@@ -137,6 +137,7 @@ class ChatRepositoryImpl @Inject constructor(
                         sellerId to 0,
                         buyerId to 0
                     ),
+                    lastMessage = Message(),
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis(),
                     metadata = mutableMapOf(
