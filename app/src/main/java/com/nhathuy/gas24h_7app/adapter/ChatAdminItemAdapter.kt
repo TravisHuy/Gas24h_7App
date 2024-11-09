@@ -13,8 +13,8 @@ import java.util.Date
 import java.util.Locale
 
 class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
-                           private val messages:Map<String,Message> = mapOf(),
-                           private val users:Map<String,User> = mapOf(),
+                           private var messages:Map<String,Message> = mapOf(),
+                           private var users:Map<String,User> = mapOf(),
                            private val onClickChat: (String) -> Unit
 ):RecyclerView.Adapter<ChatAdminItemAdapter.ChatAdminItemViewHolder>(){
 
@@ -63,6 +63,17 @@ class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
     private fun formatTime(timestamp: Long): String {
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         return sdf.format(Date(timestamp))
+    }
+
+    fun updateRooms(newRooms: List<ChatRoom>) {
+        rooms = newRooms
+        notifyDataSetChanged()
+    }
+
+    fun updateChat(newMessages: Map<String, Message>, newUsers: Map<String, User>) {
+        messages = newMessages
+        users = newUsers
+        notifyDataSetChanged()
     }
 
 }

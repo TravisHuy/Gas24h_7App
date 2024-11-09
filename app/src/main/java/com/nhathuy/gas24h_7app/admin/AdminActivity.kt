@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.admin.chat.ChatActivity
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
@@ -53,6 +54,9 @@ class AdminActivity : AppCompatActivity() {
 
         binding.linearNotification.setOnClickListener {
             startActivity(Intent(this, AddNotificationActivity::class.java))
+        }
+        binding.floatingActionButtonChat.setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
         }
     }
 

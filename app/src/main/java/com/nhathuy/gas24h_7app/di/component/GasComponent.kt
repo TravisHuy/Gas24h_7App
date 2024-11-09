@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.di.component
 
 import com.nhathuy.gas24h_7app.admin.AdminActivity
+import com.nhathuy.gas24h_7app.admin.chat.ChatActivity
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
 import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationActivity
 import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotificationActivity
@@ -101,4 +102,5 @@ interface GasComponent {
     fun inject(detailNotificationActivity: DetailNotificationActivity)
     fun inject(allNotificationActivity: AllNotificationActivity)
     fun inject(editNotificationActivity: EditNotificationActivity)
+    fun inject(chatActivity: ChatActivity)
 }

@@ -53,12 +53,12 @@ class ChatPresenter @Inject constructor(private val orderRepository: OrderReposi
                         view?.showOrders(orders, productMap)
                     },
                     onFailure = {e->
-                        Log.d("ChatPresenter","Failed load orders :${e.message}")
+                        Log.d("ChatAdminPresenter","Failed load orders :${e.message}")
                     }
                 )
             }
             catch (e:Exception){
-                Log.d("ChatPresenter","Failed load orders :${e.message}")
+                Log.d("ChatAdminPresenter","Failed load orders :${e.message}")
             }
             finally {
                 view?.hideLoading()

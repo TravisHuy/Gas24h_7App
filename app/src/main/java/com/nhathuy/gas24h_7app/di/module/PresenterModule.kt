@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.admin.chat.ChatAdminPresenter
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotificationPresenter
@@ -27,6 +28,7 @@ import com.nhathuy.gas24h_7app.data.api.NotificationApiService
 import com.nhathuy.gas24h_7app.data.helper.NotificationHelper
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
+import com.nhathuy.gas24h_7app.data.repository.ChatRepository
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
 import com.nhathuy.gas24h_7app.data.repository.NotificationRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
@@ -288,5 +290,9 @@ class PresenterModule {
     fun provideEditNotificationPresenter(context: Context,notificationRepository: NotificationRepository): EditNotificationPresenter {
         return EditNotificationPresenter(context ,notificationRepository)
     }
-
+    @Provides
+    @Singleton
+    fun provideChatAdminPresenter(chatRepository: ChatRepository,userRepository: UserRepository): ChatAdminPresenter {
+        return ChatAdminPresenter(chatRepository,userRepository)
+    }
 }

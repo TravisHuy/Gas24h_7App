@@ -35,32 +35,32 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun sendMessage(message: Message): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            // Create batch write
-            val batch = db.batch()
+        override suspend fun sendMessage(message: Message): Result<Unit> = withContext(Dispatchers.IO) {
+            try {
+                // Create batch write
+                val batch = db.batch()
 
-            val messageRef = db.collection(MESSAGES_COLLECTION).document(message.id)
-            batch.set(messageRef, message.toMap())
+                val messageRef = db.collection(MESSAGES_COLLECTION).document(message.id)
+                batch.set(messageRef, message.toMap())
 
-            val roomRef = db.collection(CHAT_ROOMS_COLLECTION).document(message.chatRoomId)
-            batch.update(
-                roomRef,
-                mapOf(
-                    "lastMessage" to message.toMap(),
-                    "updatedAt" to FieldValue.serverTimestamp(),
-                    "unreadCount.${message.receiverId}" to FieldValue.increment(1)
+                val roomRef = db.collection(CHAT_ROOMS_COLLECTION).document(message.chatRoomId)
+                batch.update(
+                    roomRef,
+                    mapOf(
+                        "lastMessage" to message.toMap(),
+                        "updatedAt" to System.currentTimeMillis(),
+                        "unreadCount.${message.receiverId}" to FieldValue.increment(1)
+                    )
                 )
-            )
+//                "updatedAt" to FieldValue.serverTimestamp(),
+                batch.commit().await()
 
-            batch.commit().await()
 
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
-    }
 
     private suspend fun updateLastMessage(message: Message) {
         db.collection(CHAT_ROOMS_COLLECTION).document(message.chatRoomId)
