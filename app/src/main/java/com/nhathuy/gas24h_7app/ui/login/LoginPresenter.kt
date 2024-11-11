@@ -1,3 +1,4 @@
+
 package com.nhathuy.gas24h_7app.ui.login
 
 import android.app.Activity
@@ -9,11 +10,19 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhathuy.gas24h_7app.adapter.Country
 import com.nhathuy.gas24h_7app.data.repository.CountryRepository
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.util.Constants.ADMIN_PHONE_NUMBER
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private val db:FirebaseFirestore,private val repository: CountryRepository):LoginContract.Presenter {
+class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,
+                                         private val repository: CountryRepository,
+                                         private val userRepository: UserRepository
+):LoginContract.Presenter {
 
     private  var view: LoginContract.View?=null
     private lateinit var countries:List<Country>
@@ -42,10 +51,10 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
 
     private fun validatePhoneNumber(phoneNumber: String):Boolean {
         if(phoneNumber.isEmpty()||phoneNumber.length<9){
-            view?.showError("Invalid phone number")
+            view?.showError("Please enter a valid phone number")
             return false
         }
-       return true
+        return true
     }
 
 
@@ -69,9 +78,9 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
                 .setPhoneNumber(fullPhoneNumber)
                 .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
 
-                    override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
+                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                         view?.hideLoading()
-                        view?.navigateVerification(verificationId, fullPhoneNumber)
+                        signInWithCredential(credential)
                     }
 
                     override fun onVerificationFailed(e: FirebaseException) {
@@ -81,7 +90,7 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
 
                     override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
                         view?.hideLoading()
-                        verificationId=id
+                        this@LoginPresenter.verificationId=id
                         view?.navigateVerification(verificationId,fullPhoneNumber)
                     }
 
@@ -109,25 +118,37 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,private v
         return fullNumber
     }
 
-    private fun signWithPhoneCredential(phoneAuthCredential: PhoneAuthCredential) {
+
+    private fun signInWithCredential(credential: PhoneAuthCredential) {
         view?.showLoading()
-        auth.signInWithCredential(phoneAuthCredential)
-            .addOnCompleteListener {
-                task ->
-                if(task.isSuccessful){
-                    val user=auth.currentUser
-                    if(user!=null){
-                        view?.navigateAdmin()
-                    }
-                    else{
-                        view?.navigateVerification(verificationId, fullPhoneNumber)
-                    }
-                }
-                else{
-                    view?.showError("Auth failed: ${task.exception?.message}")
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                view?.hideLoading()
+                if (task.isSuccessful) {
+                    checkUserInDatabase()
+                } else {
+                    view?.showError("Authentication failed: ${task.exception?.message}")
                 }
             }
     }
 
+    private fun checkUserInDatabase() {
+        val userId = auth.currentUser?.uid ?: return
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = userRepository.getUser(userId)
+                withContext(Dispatchers.Main) {
+                    result.fold(
+                        onSuccess = { view?.navigateMainActivity() },
+                        onFailure = { view?.navigateVerification(verificationId, fullPhoneNumber) }
+                    )
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.showError("Error checking user: ${e.message}")
+                }
+            }
+        }
+    }
 
 }

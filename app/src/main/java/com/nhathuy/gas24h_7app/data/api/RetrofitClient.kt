@@ -3,6 +3,7 @@ package com.nhathuy.gas24h_7app.data.api
 import com.nhathuy.gas24h_7app.util.Constants
 import com.nhathuy.gas24h_7app.util.Constants.BASE_URL
 import com.nhathuy.gas24h_7app.util.Constants.NOTIFICATION_URL
+import com.nhathuy.gas24h_7app.util.Constants.VIETNAM_ADDRESS_URL
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -44,5 +45,24 @@ object RetrofitClient {
     @Singleton
     fun provideNotificationApi(@NotificationRetrofit retrofit: Retrofit): NotificationApiService {
         return retrofit.create(NotificationApiService::class.java)
+    }
+
+
+
+    @VietNamAddressRetrofit
+    @Provides
+    @Singleton
+    fun provideVietNamAddressRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(VIETNAM_ADDRESS_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideVietNamAddressApi(@VietNamAddressRetrofit retrofit: Retrofit): VietNamAddressApiService {
+        return retrofit.create(VietNamAddressApiService::class.java)
     }
 }

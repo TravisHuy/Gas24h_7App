@@ -3,9 +3,12 @@ package com.nhathuy.gas24h_7app.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.admin.chat.ChatActivity
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationActivity
@@ -14,18 +17,24 @@ import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductAc
 import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
+import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.databinding.ActivityAdminBinding
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
+import javax.inject.Inject
 
-class AdminActivity : AppCompatActivity() {
+class AdminActivity : AppCompatActivity(),AdminContract.View {
 
     private lateinit var binding:ActivityAdminBinding
 
+    @Inject
+    lateinit var presenter: AdminPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        (application as Gas24h_7Application).getGasComponent().inject(this)
+        presenter.attachView(this)
         setupNavigate()
     }
 
@@ -80,5 +89,15 @@ class AdminActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        Log.d("Admin","${message}")
+    }
+
+    override fun navigateToMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

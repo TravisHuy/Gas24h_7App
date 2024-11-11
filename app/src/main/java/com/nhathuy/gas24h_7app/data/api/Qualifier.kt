@@ -9,3 +9,7 @@ annotation class LocationRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class NotificationRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class VietNamAddressRetrofit

@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.nhathuy.gas24h_7app.admin.AdminPresenter
 import com.nhathuy.gas24h_7app.admin.chat.ChatAdminPresenter
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationPresenter
@@ -25,6 +26,7 @@ import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailContrac
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailPresenter
 import com.nhathuy.gas24h_7app.data.api.LocationApiService
 import com.nhathuy.gas24h_7app.data.api.NotificationApiService
+import com.nhathuy.gas24h_7app.data.api.VietNamAddressApiService
 import com.nhathuy.gas24h_7app.data.helper.NotificationHelper
 import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.CategoryRepository
@@ -87,8 +89,8 @@ import javax.inject.Singleton
 class PresenterModule {
     @Provides
     @Singleton
-    fun provideLoginPresenter(auth: FirebaseAuth,db: FirebaseFirestore, countryRepository: CountryRepository): LoginContract.Presenter {
-        return LoginPresenter(auth,db, countryRepository)
+    fun provideLoginPresenter(auth: FirebaseAuth, countryRepository: CountryRepository,userRepository: UserRepository): LoginContract.Presenter {
+        return LoginPresenter(auth, countryRepository,userRepository)
     }
     @Provides
     @Singleton
@@ -97,8 +99,8 @@ class PresenterModule {
     }
     @Provides
     @Singleton
-    fun provideRegisterPresenter(locationApiService: LocationApiService, userRepository: UserRepository, coroutineScope: CoroutineScope, context: Context): RegisterContract.Presenter {
-        return RegisterPresenter(locationApiService, userRepository,coroutineScope,context)
+    fun provideRegisterPresenter(vietNamAddressApiService: VietNamAddressApiService, userRepository: UserRepository, coroutineScope: CoroutineScope, context: Context): RegisterContract.Presenter {
+        return RegisterPresenter(vietNamAddressApiService, userRepository,coroutineScope,context)
     }
 
     @Provides
@@ -294,5 +296,10 @@ class PresenterModule {
     @Singleton
     fun provideChatAdminPresenter(chatRepository: ChatRepository,userRepository: UserRepository): ChatAdminPresenter {
         return ChatAdminPresenter(chatRepository,userRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideAdminPresenter(userRepository: UserRepository): AdminPresenter {
+        return AdminPresenter(userRepository)
     }
 }
