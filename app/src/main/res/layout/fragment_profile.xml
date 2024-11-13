@@ -16,6 +16,26 @@
             android:layout_height="wrap_content"
             android:background="@color/md_theme_light_primary"
             >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_login_admin"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trang Admin"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/ic_chevron_right"
+                app:iconGravity="end"
+                android:visibility="gone"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#000000"
+                app:strokeWidth="1dp" />
+
             <FrameLayout
                 android:id="@+id/buy_back_cart_item_container"
                 android:layout_width="wrap_content"

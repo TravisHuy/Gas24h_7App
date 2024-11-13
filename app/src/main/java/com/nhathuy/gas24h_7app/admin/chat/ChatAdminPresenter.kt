@@ -18,7 +18,8 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
 
     private var currentMessages = mutableMapOf<String, Message>()
     private var currentUsers = mutableMapOf<String, User>()
-
+    private var isLoadingMessages = false
+    private var isLoadingUsers = false
     override fun attachView(view: ChatContract.View) {
         this.view = view
     }
@@ -34,6 +35,7 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
             try {
                 val adminId = userRepository.getUserAdminId().getOrNull() ?: run {
                     view?.showError("Could not find admin user")
+                    view?.hideLoading()
                     return@launch
                 }
 
@@ -41,32 +43,42 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
                     .catch {
                         e->
                         view?.showError(e.message ?:"error loading chat rooms")
+                        view?.hideLoading()
                     }
                     .collect{ rooms->
                         if(rooms.isEmpty()){
                             view?.showEmpty()
+                            view?.hideLoading()
                         }
                         else{
                             view?.displayRooms(rooms)
 
+
+                            isLoadingMessages = false
+                            isLoadingUsers = false
+
+
                             rooms.forEach {
                                 room ->
+                                isLoadingMessages = true
                                 loadMessages(room.id)
 
                                 room.participants.forEach {
                                     participantId ->
                                     if(participantId!=adminId){
+                                        isLoadingUsers = true
                                         loadUserDetails(participantId)
                                     }
                                 }
                             }
                         }
+                        if (!isLoadingMessages && !isLoadingUsers) {
+                            view?.hideLoading()
+                        }
                     }
             }
             catch (e:Exception){
                 view?.showError(e.message ?: "Error loading chat rooms")
-            }
-            finally {
                 view?.hideLoading()
             }
         }
@@ -81,12 +93,23 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
                         messages.maxByOrNull { it.timestamp }?.let { lastMessage ->
                             currentMessages[chatRoomId] = lastMessage
                             updateView()
+
+                            isLoadingMessages = false
+                            checkAndUpdateLoadingState()
                         }
                     }
             }
             catch (e:Exception){
                 view?.showError(e.message ?: "Error loading messages")
+                isLoadingMessages = false
+                checkAndUpdateLoadingState()
             }
+        }
+    }
+
+    private fun checkAndUpdateLoadingState() {
+        if (!isLoadingMessages && !isLoadingUsers) {
+            view?.hideLoading()
         }
     }
 
@@ -97,11 +120,20 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
     override fun loadUserDetails(userId: String) {
         coroutineScope.launch {
             try {
-                val user = userRepository.getUser(userId).getOrNull() ?: return@launch
-                view?.updateChatRoom(emptyMap(), mapOf(userId to user))
+                val user = userRepository.getUser(userId).getOrNull() ?: run {
+                    isLoadingUsers = false
+                    checkAndUpdateLoadingState()
+                    return@launch
+                }
+                currentUsers[userId] = user
                 updateView()
+
+                isLoadingUsers = false
+                checkAndUpdateLoadingState()
             } catch (e: Exception) {
                 view?.showError(e.message ?: "Error loading user details")
+                isLoadingUsers = false
+                checkAndUpdateLoadingState()
             }
         }
     }

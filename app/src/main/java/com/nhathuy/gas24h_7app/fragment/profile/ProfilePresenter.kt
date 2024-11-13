@@ -194,6 +194,33 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
         }
     }
 
+    override fun loadUserAdminId() {
+        coroutineScope.launch {
+            try {
+                val currentUser = userRepository.getCurrentUserId()
+                val result = userRepository.getUserAdminId()
+                result.fold(
+                    onSuccess = {
+                        adminId ->
+                        if(adminId == currentUser){
+                            view?.showBtnAdmin()
+                        }
+                        else{
+                            view?.hideBtnAdmin()
+                        }
+                    },
+                    onFailure = {
+                        e->
+                        view?.showError("Failed user adminId: ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showError(e.message?:"Failed to load user admin id")
+            }
+        }
+    }
+
     private suspend fun updateImageToFirebaseStorage(imageUri: Uri): String = withContext(Dispatchers.IO) {
         val filename = UUID.randomUUID().toString()
         val ref = storage.reference.child("profile_images/$filename")

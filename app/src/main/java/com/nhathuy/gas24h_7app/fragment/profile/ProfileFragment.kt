@@ -19,6 +19,7 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.AllVoucherAdapter
 import com.nhathuy.gas24h_7app.adapter.BuyBackAdapter
 import com.nhathuy.gas24h_7app.adapter.BuyBackItemAdapter
+import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
@@ -65,6 +66,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         presenter.loadOrders()
         presenter.loadCartItemCount()
         presenter.loadOrderCount()
+        presenter.loadUserAdminId()
+
         return binding.root
     }
 
@@ -112,6 +115,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         }
         binding.linearReviewOfMe.setOnClickListener {
             navigateReviewOfMe()
+        }
+        binding.btnLoginAdmin.setOnClickListener {
+            navigateAdmin()
         }
     }
 
@@ -231,6 +237,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     }
 
+    override fun showBtnAdmin() {
+        binding.btnLoginAdmin.visibility = View.VISIBLE
+    }
+
+    override fun hideBtnAdmin() {
+        binding.btnLoginAdmin.visibility = View.GONE
+    }
+
     override fun navigateBuyBack() {
         startActivity(Intent(requireContext(),BuyBackActivity::class.java))
     }
@@ -249,6 +263,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
 
     override fun navigateReviewOfMe() {
         startActivity(Intent(requireActivity(),ReviewOfMeActivity::class.java))
+    }
+
+    override fun navigateAdmin() {
+        startActivity(Intent(requireActivity(),AdminActivity::class.java))
     }
 
     private fun logout() {

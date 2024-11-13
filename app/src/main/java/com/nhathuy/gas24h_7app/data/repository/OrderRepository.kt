@@ -87,6 +87,22 @@ class OrderRepository @Inject constructor(
         }
     }
 
+    //lấy ra danh sách order theo status
+    suspend fun getOrdersListStatus(status: List<String>): Result<List<Order>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = db.collection("orders").whereIn("status", status).get().await()
+
+                val orders = snapshot.documents.mapNotNull {
+                    it.toObject(Order::class.java)
+                }
+
+                Result.success(orders)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
     //lấy ra danh sách order đã đặt của người dùng
     suspend fun getOrdersForUser(userId: String, status: String): Result<List<Order>> {
 

@@ -35,6 +35,8 @@ class AdminActivity : AppCompatActivity(),AdminContract.View {
 
         (application as Gas24h_7Application).getGasComponent().inject(this)
         presenter.attachView(this)
+        presenter.loadOrderShipping()
+        presenter.loadOrderCancel()
         setupNavigate()
     }
 
@@ -94,6 +96,14 @@ class AdminActivity : AppCompatActivity(),AdminContract.View {
     override fun showMessage(message: String) {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
         Log.d("Admin","${message}")
+    }
+
+    override fun showCountOrderShipping(count: Int) {
+        binding.tvCountOrderShipping.text = String.format(count.toString())
+    }
+
+    override fun showCountOrderCancel(count: Int) {
+        binding.tvCountOrderCancel.text = String.format(count.toString())
     }
 
     override fun navigateToMain() {

@@ -299,7 +299,7 @@ class PresenterModule {
     }
     @Provides
     @Singleton
-    fun provideAdminPresenter(userRepository: UserRepository): AdminPresenter {
-        return AdminPresenter(userRepository)
+    fun provideAdminPresenter(userRepository: UserRepository,orderRepository: OrderRepository): AdminPresenter {
+        return AdminPresenter(userRepository,orderRepository)
     }
 }

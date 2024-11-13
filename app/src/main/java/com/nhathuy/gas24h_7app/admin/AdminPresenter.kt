@@ -1,6 +1,8 @@
 package com.nhathuy.gas24h_7app.admin
 
 import android.util.Log
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
+import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,7 +10,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AdminPresenter @Inject constructor(private val userRepository: UserRepository):AdminContract.Presenter{
+class AdminPresenter @Inject constructor(private val userRepository: UserRepository,
+                                         private val orderRepository: OrderRepository
+):AdminContract.Presenter{
     private var view:AdminContract.View? = null
     private val scope = CoroutineScope(Dispatchers.IO)
     private val job = SupervisorJob()
@@ -18,6 +22,52 @@ class AdminPresenter @Inject constructor(private val userRepository: UserReposit
     override fun attachView(view: AdminContract.View) {
         this.view = view
         checkAdminPermission()
+    }
+
+    override fun detachView() {
+        view = null
+    }
+
+    override fun loadOrderShipping() {
+
+        coroutineScope.launch {
+            try {
+                val result = orderRepository.getOrders(OrderStatus.PROCESSING.name)
+                result.fold(
+                    onSuccess = {
+                            orders ->
+                        view?.showCountOrderShipping(orders.size)
+                    },
+                    onFailure = {e->
+                        view?.showMessage("Failed load order : ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showMessage("Failed load order : ${e.message}")
+            }
+        }
+    }
+
+    override fun loadOrderCancel() {
+
+        coroutineScope.launch {
+            try {
+                val result = orderRepository.getOrders(OrderStatus.CANCELLED.name)
+                result.fold(
+                    onSuccess = {
+                            orders ->
+                        view?.showCountOrderCancel(orders.size)
+                    },
+                    onFailure = {e->
+                        view?.showMessage("Failed load order : ${e.message}")
+                    }
+                )
+            }
+            catch (e:Exception){
+                view?.showMessage("Failed load order : ${e.message}")
+            }
+        }
     }
 
     override fun getAdmin(){
@@ -65,7 +115,5 @@ class AdminPresenter @Inject constructor(private val userRepository: UserReposit
         }
     }
 
-    override fun detachView() {
-        view = null
-    }
+
 }

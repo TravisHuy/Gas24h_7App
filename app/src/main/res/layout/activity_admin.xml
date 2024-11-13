@@ -54,6 +54,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/tv_count_order_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -77,6 +78,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/tv_count_order_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

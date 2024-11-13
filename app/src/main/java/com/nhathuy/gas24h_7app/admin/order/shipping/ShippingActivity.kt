@@ -61,6 +61,7 @@ class ShippingActivity : AppCompatActivity(),ShippingContract.View {
         }
         binding.btnCancel.setOnClickListener {
             presenter.clearSelection()
+            onBackPressed()
         }
         binding.btnConfirm.setOnClickListener {
             presenter.confirmSelectOrders()

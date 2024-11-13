@@ -146,6 +146,7 @@ class ShippingPresenter @Inject constructor(private val orderRepository: OrderRe
         isAllSelected = false
         view?.clearSelectItems()
         view?.updateSelectAllCheckbox(false)
+
     }
 
 }

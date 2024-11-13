@@ -19,11 +19,14 @@ interface ProfileContract {
         fun updateOrderCount(pendingCount: Int, shippedCount: Int, deliveredCount: Int, cancelCount: Int)
         fun showDialogLogout()
         fun showOrders(orders:List<Order>, products:Map<String, Product>)
+        fun showBtnAdmin()
+        fun hideBtnAdmin()
         fun navigateBuyBack()
         fun navigateCart()
         fun navigateLogin()
         fun navigateAllVouchers()
         fun navigateReviewOfMe()
+        fun navigateAdmin()
     }
     interface Presenter{
         fun attachView(view:View)
@@ -34,5 +37,6 @@ interface ProfileContract {
         fun loadOrders()
         fun loadCartItemCount()
         fun loadOrderCount()
+        fun loadUserAdminId()
     }
 }
