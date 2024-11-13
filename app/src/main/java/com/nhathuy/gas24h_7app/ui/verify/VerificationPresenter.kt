@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -157,7 +158,7 @@ class VerificationPresenter @Inject constructor(
                 val result = userRepository.getUser(userId)
                 withContext(Dispatchers.Main) {
                     result.fold(
-                        onSuccess = { view?.navigateMain() },
+                        onSuccess = {   checkIfAdminAndNavigate(it)  },
                         onFailure = { view?.navigateRegister() }
                     )
                 }
@@ -170,6 +171,31 @@ class VerificationPresenter @Inject constructor(
                     view?.hideLoading()
                 }
             }
+        }
+    }
+
+    private suspend fun checkIfAdminAndNavigate(user: User) {
+        if (user == null) {
+            view?.navigateRegister()
+            return
+        }
+
+        try {
+            val adminResult = userRepository.isUserAdmin()
+            adminResult.fold(
+                onSuccess = { isAdmin ->
+                    if (isAdmin) {
+                        view?.navigateAdmin()
+                    } else {
+                        view?.navigateMain()
+                    }
+                },
+                onFailure = {
+                    view?.showError("Error checking admin status: ${it.message}")
+                }
+            )
+        } catch (e: Exception) {
+            view?.showError("Error: ${e.message}")
         }
     }
 }

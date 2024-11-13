@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.nhathuy.gas24h_7app.Gas24h_7Application
+import com.nhathuy.gas24h_7app.admin.AdminActivity
 import com.nhathuy.gas24h_7app.databinding.ActivityVerificationBinding
 import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
@@ -164,6 +165,10 @@ class VerificationActivity : AppCompatActivity(),VerificationContract.View {
     override fun navigateMain() {
         startActivity(Intent(this,MainActivity::class.java))
         finish()
+    }
+
+    override fun navigateAdmin() {
+        startActivity(Intent(this,AdminActivity::class.java))
     }
 
 

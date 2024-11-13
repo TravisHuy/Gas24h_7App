@@ -87,6 +87,54 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    // check is userAdmin
+    override suspend fun isUserAdmin(): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val currentUser = auth.currentUser ?: return@withContext Result.failure(Exception("No authenticated user"))
+
+            val userDoc = db.collection("users").document(currentUser.uid)
+                .get()
+                .await()
+
+            val user = userDoc.toObject(User::class.java)
+
+            if(user?.phoneNumber == Constants.ADMIN_PHONE_NUMBER){
+                Result.success(true)
+            }
+            else{
+                Result.success(false)
+            }
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    // add this function to create admin user if it doesn't exist
+    override suspend fun createAdminUser(phoneNumber: String) :Result<Unit>  = withContext(Dispatchers.IO) {
+        try {
+            val currentUser = auth.currentUser ?:return@withContext Result.failure(Exception("No authenticated user"))
+
+            val user = User(uid = currentUser.uid,
+                phoneNumber = phoneNumber,
+                fullName = "Admin",
+                isAdmin = true
+            )
+
+            db.collection("users")
+                .document(currentUser.uid)
+                .set(user)
+                .await()
+
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
+
+
+
     override fun getCurrentUserId(): String? {
         return auth.currentUser?.uid
     }

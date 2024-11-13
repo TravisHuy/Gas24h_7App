@@ -37,6 +37,9 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
         binding.chatSwipeRefreshLayout.setOnRefreshListener {
             presenter.loadRecentChat()
         }
+        binding.backButton.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupRecyclerView() {

@@ -1,5 +1,7 @@
 package com.nhathuy.gas24h_7app.admin.chat
 
+import com.nhathuy.gas24h_7app.data.model.Message
+import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.ChatRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +15,10 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
     private var view:ChatContract.View? = null
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+
+    private var currentMessages = mutableMapOf<String, Message>()
+    private var currentUsers = mutableMapOf<String, User>()
+
     override fun attachView(view: ChatContract.View) {
         this.view = view
     }
@@ -72,8 +78,10 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
                 chatRepository.getMessages(chatRoomId)
                     .collect{
                         messages ->
-                        val messageMap = messages.associateBy { it.id }
-                        view?.updateChatRoom(messageMap, emptyMap())
+                        messages.maxByOrNull { it.timestamp }?.let { lastMessage ->
+                            currentMessages[chatRoomId] = lastMessage
+                            updateView()
+                        }
                     }
             }
             catch (e:Exception){
@@ -82,11 +90,16 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
         }
     }
 
+    private fun updateView() {
+        view?.updateChatRoom(currentMessages.toMap(), currentUsers.toMap())
+    }
+
     override fun loadUserDetails(userId: String) {
         coroutineScope.launch {
             try {
                 val user = userRepository.getUser(userId).getOrNull() ?: return@launch
                 view?.updateChatRoom(emptyMap(), mapOf(userId to user))
+                updateView()
             } catch (e: Exception) {
                 view?.showError(e.message ?: "Error loading user details")
             }

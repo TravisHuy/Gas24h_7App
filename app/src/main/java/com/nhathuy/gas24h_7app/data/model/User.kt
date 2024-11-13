@@ -14,9 +14,10 @@ data class User(
     var referralCode:String ="",
     var imageUser: String = "",
     var lastOnline: Long = System.currentTimeMillis(),
+    val isAdmin:Boolean = false,
     val fcmToken: String =""
 ){
-    constructor():this("","","","","","","","","","",System.currentTimeMillis(),"")
+    constructor():this("","","","","","","","","","",System.currentTimeMillis(),false,"")
 
     fun toMap():Map<String,Any>{
          return hashMapOf(
@@ -31,6 +32,7 @@ data class User(
              "referralCode" to referralCode,
              "imageUser" to imageUser,
              "lastOnline" to lastOnline,
+             "isAdmin" to isAdmin,
              "fcmToken" to fcmToken
          )
      }

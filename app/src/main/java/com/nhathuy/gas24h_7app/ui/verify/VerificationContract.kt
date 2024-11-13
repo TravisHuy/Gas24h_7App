@@ -18,7 +18,7 @@ interface VerificationContract {
         fun hideResendButton()
         fun updateResendButtonText(text: String)
         fun navigateMain()
-
+        fun navigateAdmin()
     }
     interface Presenter{
         fun attachView(view: VerificationContract.View)

@@ -67,36 +67,39 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,
             fullNumber(fullPhoneNumber)
 
             if(isAdminNumber(fullPhoneNumber)){
-                view?.hideLoading()
-                view?.navigateAdmin()
+                handleAdminLogin(fullPhoneNumber)
                 return
             }
 
-            val options=PhoneAuthOptions.newBuilder(auth)
-                .setTimeout(60L,TimeUnit.SECONDS)
-                .setActivity(view as Activity)
-                .setPhoneNumber(fullPhoneNumber)
-                .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
-
-                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                        view?.hideLoading()
-                        signInWithCredential(credential)
-                    }
-
-                    override fun onVerificationFailed(e: FirebaseException) {
-                        view?.hideLoading()
-                        view?.showError("Verification failed: "+e.message)
-                    }
-
-                    override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                        view?.hideLoading()
-                        this@LoginPresenter.verificationId=id
-                        view?.navigateVerification(verificationId,fullPhoneNumber)
-                    }
-
-                }).build()
-            PhoneAuthProvider.verifyPhoneNumber(options)
+            sendPhoneVerification(fullPhoneNumber)
         }
+    }
+
+    private fun sendPhoneVerification(fullPhoneNumber: String) {
+        val options=PhoneAuthOptions.newBuilder(auth)
+            .setTimeout(60L,TimeUnit.SECONDS)
+            .setActivity(view as Activity)
+            .setPhoneNumber(fullPhoneNumber)
+            .setCallbacks(object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    view?.hideLoading()
+                    signInWithCredential(credential)
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    view?.hideLoading()
+                    view?.showError("Verification failed: "+e.message)
+                }
+
+                override fun onCodeSent(id: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                    view?.hideLoading()
+                    this@LoginPresenter.verificationId=id
+                    view?.navigateVerification(verificationId,fullPhoneNumber)
+                }
+
+            }).build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     override fun isUserLoggedIn(): Boolean {
@@ -146,6 +149,99 @@ class LoginPresenter @Inject constructor(private val auth:FirebaseAuth,
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     view?.showError("Error checking user: ${e.message}")
+                }
+            }
+        }
+    }
+
+    // admin
+    private fun handleAdminLogin(phoneNumber: String) {
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(view as Activity)
+            .setPhoneNumber(phoneNumber)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    view?.hideLoading()
+                    signInAdminWithCredential(credential)
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    view?.hideLoading()
+                    view?.showError("Admin verification failed: ${e.message}")
+                }
+
+                override fun onCodeSent(id: String, token: PhoneAuthProvider.ForceResendingToken) {
+                    view?.hideLoading()
+                    verificationId = id
+                    view?.navigateVerification(verificationId, phoneNumber)
+                }
+            }).build()
+
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    private fun signInAdminWithCredential(credential: PhoneAuthCredential) {
+        view?.showLoading()
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    checkAndCreateAdminUser()
+                } else {
+                    view?.hideLoading()
+                    view?.showError("Admin authentication failed: ${task.exception?.message}")
+                }
+            }
+    }
+
+    private fun checkAndCreateAdminUser() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val adminResult = userRepository.isUserAdmin()
+                withContext(Dispatchers.Main) {
+                    adminResult.fold(
+                        onSuccess = { isAdmin ->
+                            if (isAdmin) {
+                                view?.navigateAdmin()
+                            } else {
+                                // Create admin user if it doesn't exist
+                                createNewAdminUser()
+                            }
+                        },
+                        onFailure = {
+                            view?.showError("Error checking admin status: ${it.message}")
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.hideLoading()
+                    view?.showError("Error: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun createNewAdminUser() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = userRepository.createAdminUser(ADMIN_PHONE_NUMBER)
+                withContext(Dispatchers.Main) {
+                    result.fold(
+                        onSuccess = {
+                            view?.hideLoading()
+                            view?.navigateAdmin()
+                        },
+                        onFailure = {
+                            view?.hideLoading()
+                            view?.showError("Failed to create admin user: ${it.message}")
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.hideLoading()
+                    view?.showError("Error creating admin user: ${e.message}")
                 }
             }
         }
