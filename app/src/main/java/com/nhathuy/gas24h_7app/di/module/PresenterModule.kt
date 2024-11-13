@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.admin.AdminPresenter
 import com.nhathuy.gas24h_7app.admin.chat.ChatAdminPresenter
+import com.nhathuy.gas24h_7app.admin.chat.message.ChatMessageAdminPresenter
 import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.all_notification.AllNotificationPresenter
 import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotificationPresenter
@@ -301,5 +302,11 @@ class PresenterModule {
     @Singleton
     fun provideAdminPresenter(userRepository: UserRepository,orderRepository: OrderRepository): AdminPresenter {
         return AdminPresenter(userRepository,orderRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatMessageAdminPresenter(chatRepository: ChatRepository,userRepository: UserRepository): ChatMessageAdminPresenter {
+        return ChatMessageAdminPresenter(chatRepository,userRepository)
     }
 }

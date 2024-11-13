@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.admin.chat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.adapter.ChatAdminItemAdapter
+import com.nhathuy.gas24h_7app.admin.chat.message.ChatMessageAdminActivity
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.User
@@ -44,11 +46,17 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
 
     private fun setupRecyclerView() {
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ChatAdminItemAdapter(onClickChat = {
-            chatRoomId ->
-
+        adapter = ChatAdminItemAdapter(onClickBuyerId = {
+            buyerId ->
+            navigateChatAdminMessage(buyerId)
         })
         binding.chatRecyclerView.adapter = adapter
+    }
+
+    private fun navigateChatAdminMessage(buyerId: String) {
+        val intent = Intent(this,ChatMessageAdminActivity::class.java)
+        intent.putExtra("BUYER_ID",buyerId)
+        startActivity(intent)
     }
 
     override fun showLoading() {

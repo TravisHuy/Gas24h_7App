@@ -15,14 +15,21 @@ import java.util.Locale
 class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
                            private var messages:Map<String,Message> = mapOf(),
                            private var users:Map<String,User> = mapOf(),
-                           private val onClickChat: (String) -> Unit
+                           private val onClickBuyerId: (String) -> Unit
 ):RecyclerView.Adapter<ChatAdminItemAdapter.ChatAdminItemViewHolder>(){
 
     inner class ChatAdminItemViewHolder(val binding:ItemChatAdminBinding):RecyclerView.ViewHolder(binding.root){
         init {
             itemView.setOnClickListener {
-                val room = rooms[adapterPosition]
-                onClickChat(room.id)
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val room = rooms[position]
+                    messages[room.id]?.let { message ->
+                        users[message.senderId]?.let { user ->
+                            onClickBuyerId(user.uid)
+                        }
+                    }
+                }
             }
         }
     }

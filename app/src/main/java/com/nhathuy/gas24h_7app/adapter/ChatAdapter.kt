@@ -28,10 +28,11 @@ import java.util.Date
 import java.util.Locale
 import javax.sql.DataSource
 
-class ChatAdapter(private val currentUserId:String,
-                  private val onMessageClick :(Message) -> Unit,
-                  private val onMessageLongClick : (Message) -> Unit,
-                  private val onImageClick : (String) -> Unit
+class ChatAdapter(
+    var currentUserId:String,
+    private val onMessageClick :(Message) -> Unit,
+    private val onMessageLongClick : (Message) -> Unit,
+    private val onImageClick : (String) -> Unit
 ) : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()){
 
     override fun getItemViewType(position: Int): Int {

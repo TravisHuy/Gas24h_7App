@@ -34,6 +34,9 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".admin.chat.message.ChatMessageAdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.chat.ChatActivity"
             android:exported="false" />
         <activity
@@ -45,13 +48,13 @@
             android:name=".admin.notification.all_notification.AllNotificationActivity"
             android:exported="true"
             android:label="@string/title_activity_all_notification"
-            android:theme="@style/Theme.Gas24h_7App"></activity>
+            android:theme="@style/Theme.Gas24h_7App" />
         <activity
             android:name=".ui.detail_notification.DetailNotificationActivity"
             android:exported="false" />
         <activity
             android:name=".admin.notification.add_notification.AddNotificationActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".ui.chat_message.ChatMessageActivity"
             android:exported="false" />
