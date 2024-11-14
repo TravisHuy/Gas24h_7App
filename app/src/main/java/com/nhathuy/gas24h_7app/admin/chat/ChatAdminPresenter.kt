@@ -38,6 +38,7 @@ class ChatAdminPresenter @Inject constructor(private val chatRepository: ChatRep
                     view?.hideLoading()
                     return@launch
                 }
+                view?.onAdminIdLoaded(adminId!!)
 
                 chatRepository.getRecentChats(adminId)
                     .catch {

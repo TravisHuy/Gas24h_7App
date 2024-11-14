@@ -8,6 +8,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageStatus
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 import com.nhathuy.gas24h_7app.data.repository.ChatRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -260,4 +261,41 @@ class ChatRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun getUserOnlineStatus(userId: String): Flow<UserStatus> = callbackFlow{
+        val subscription = db.collection("userStatus")
+            .document(userId)
+            .addSnapshotListener{
+                snapshot,error ->
+                if(error!=null){
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                val status = if(snapshot?.exists() == true){
+                    UserStatus(
+                        isOnline = snapshot.getBoolean("isOnline")?:false,
+                        lastSeen = snapshot.getLong("lastSeen") ?: System.currentTimeMillis()
+                    )
+                }
+                else{
+                    UserStatus(isOnline = false)
+                }
+                trySend(status)
+            }
+        awaitClose { subscription.remove() }
+    }.flowOn(dispatcher)
+
+    override suspend fun updateUserOnlineStatus(userId: String, isOnline: Boolean):Result<Unit> = withContext(dispatcher) {
+        try {
+            val userStatusRef = db.collection("userStatus").document(userId)
+            val status = UserStatus(
+                isOnline = isOnline,
+                lastSeen = System.currentTimeMillis()
+            )
+            userStatusRef.set(status.toMap()).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

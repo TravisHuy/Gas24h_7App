@@ -20,7 +20,7 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
 
     private lateinit var binding:ActivityChatBinding
     private lateinit var adapter:ChatAdminItemAdapter
-
+    private var currentAdminId: String? = null
     @Inject
     lateinit var presenter: ChatAdminPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
 
         presenter.attachView(this)
         presenter.loadRecentChat()
-        setupRecyclerView()
+
         setupListener()
     }
 
@@ -46,10 +46,17 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
 
     private fun setupRecyclerView() {
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ChatAdminItemAdapter(onClickBuyerId = {
-            buyerId ->
-            navigateChatAdminMessage(buyerId)
-        })
+
+        currentAdminId?.let { adminId ->
+            adapter = ChatAdminItemAdapter(
+                currentAdminId = adminId,
+                onClickBuyerId = { buyerId ->
+                    navigateChatAdminMessage(buyerId)
+                }
+            )
+            binding.chatRecyclerView.adapter = adapter
+        }
+
         binding.chatRecyclerView.adapter = adapter
     }
 
@@ -89,5 +96,10 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
 
     override fun showEmpty() {
         Toast.makeText(this,"Empty",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onAdminIdLoaded(adminId: String) {
+        currentAdminId = adminId
+        setupRecyclerView()
     }
 }

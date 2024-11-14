@@ -3,12 +3,17 @@ package com.nhathuy.gas24h_7app.admin.chat.message
 import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageType
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 import com.nhathuy.gas24h_7app.data.repository.ChatRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -20,11 +25,12 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
     private var view:ChatMessageAdminContract.View? = null
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+    private var onlineStatusJob: Job? = null
+
 
     private var chatRoomId: String? = null
     private var currentAdminId: String? = null
     private var buyerId: String? = null
-
     override fun attachView(view: ChatMessageAdminContract.View) {
         this.view = view
     }
@@ -74,10 +80,23 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
                         view?.showError("Failed to initialize chat: ${e.message}")
                     }
                 )
+                startObservingUserOnlineStatus(buyerId)
             } catch (e: Exception) {
                 view?.showError("Error initializing chat: ${e.message}")
             } finally {
                 view?.hideLoading()
+            }
+        }
+    }
+
+    private fun startObservingUserOnlineStatus(userId: String) {
+        onlineStatusJob = coroutineScope.launch {
+            userId?.let { id ->
+                chatRepository.getUserOnlineStatus(id).collect { status ->
+                    withContext(Dispatchers.Main) {
+                        view?.updateOnlineStatus(status)
+                    }
+                }
             }
         }
     }
@@ -215,6 +234,9 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
 
     override fun cleanup() {
         coroutineScope.cancel()
+        onlineStatusJob?.cancel()
     }
-
+    override suspend fun getUserOnlineStatus(userId: String): Flow<UserStatus> {
+        return chatRepository.getUserOnlineStatus(userId)
+    }
 }

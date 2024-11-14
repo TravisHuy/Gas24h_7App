@@ -12,6 +12,7 @@ interface ChatContract {
         fun displayRooms(rooms:List<ChatRoom>)
         fun updateChatRoom(messages:Map<String,Message>,users:Map<String,User>)
         fun showEmpty()
+        fun onAdminIdLoaded(adminId: String)
     }
     interface Presenter{
         fun attachView(view:View)

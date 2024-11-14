@@ -4,6 +4,7 @@ import android.net.Uri
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageStatus
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
@@ -16,4 +17,6 @@ interface ChatRepository {
     suspend fun uploadImage(uri:Uri):Result<String>
     suspend fun getRecentChats(userId: String):Flow<List<ChatRoom>>
     suspend fun markMessageAsRead(chatRoomId: String,userId: String):Result<Unit>
+    suspend fun getUserOnlineStatus(userId: String):Flow<UserStatus>
+    suspend fun updateUserOnlineStatus(userId:String, isOnline:Boolean):Result<Unit>
 }

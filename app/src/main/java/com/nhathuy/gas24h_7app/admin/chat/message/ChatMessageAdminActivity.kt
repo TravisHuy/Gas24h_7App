@@ -5,11 +5,14 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.Gas24h_7Application
@@ -18,8 +21,11 @@ import com.nhathuy.gas24h_7app.adapter.ChatAdapter
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageType
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 import com.nhathuy.gas24h_7app.databinding.ActivityChatMessageAdminBinding
 import com.nhathuy.gas24h_7app.util.Constants
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.View {
@@ -28,6 +34,8 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     private lateinit var adapter: ChatAdapter
     private var buyerUserId : String? = null
     private var currentAdminId: String? = null
+    private var selectedImageUri: Uri? = null
+    private var onlineStatusJob: Job? = null
 
     @Inject
     lateinit var presenter: ChatMessageAdminPresenter
@@ -44,6 +52,8 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
 
         setupViews()
         setupListeners()
+        setupImagePreview()
+        setupOnlineStatus()
     }
 
     private fun setupListeners() {
@@ -53,10 +63,7 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
 
         // Send message
         binding.sendButton.setOnClickListener {
-            val content = binding.editInputChatMessage.text.toString().trim()
-            if (content.isNotBlank()) {
-                presenter.sendMessage(content)
-            }
+            sendMessage()
         }
 
         // Image attachment
@@ -68,10 +75,73 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
             presenter.loadMessages()
         }
+        binding.removeImageButton.setOnClickListener {
+            clearImagePreview()
+        }
+    }
+
+    private fun sendMessage() {
+        val content = binding.editInputChatMessage.text.toString().trim()
+
+        when {
+            selectedImageUri != null -> {
+                presenter.sendImage(selectedImageUri!!)
+                clearImagePreview()
+            }
+            content.isNotBlank() -> {
+                presenter.sendMessage(content,MessageType.TEXT)
+                binding.editInputChatMessage.setText("")
+            }
+        }
     }
 
     private fun setupViews() {
         binding.chatMessageRecyclerviewLayout.layoutManager = LinearLayoutManager(this)
+    }
+    private fun setupImagePreview() {
+        binding.imagePreviewLayout.visibility = View.GONE
+    }
+    private fun clearImagePreview() {
+        selectedImageUri = null
+        binding.imagePreviewLayout.visibility = View.GONE
+        binding.imagePreview.setImageDrawable(null)
+    }
+    private fun setupOnlineStatus() {
+        onlineStatusJob = lifecycleScope.launch {
+            buyerUserId?.let { userId ->
+                presenter.getUserOnlineStatus(userId).collect { status ->
+                    updateOnlineStatus(status)
+                }
+            }
+        }
+    }
+    override fun updateOnlineStatus(status: UserStatus) {
+        binding.apply {
+            if (status.isOnline) {
+                tvOnline.visibility = View.VISIBLE
+                tvMinutes.text = "Online"
+            } else {
+                tvOnline.visibility = View.GONE
+                tvMinutes.text = getTimeAgo(status.lastSeen)
+            }
+        }
+    }
+
+    private fun showImagePreview(uri: Uri) {
+        selectedImageUri = uri
+        binding.imagePreviewLayout.visibility = View.VISIBLE
+        Glide.with(this).load(uri).into(binding.imagePreview)
+    }
+
+    private fun getTimeAgo(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val diff= now - timestamp
+        return when{
+            diff < 60_000 -> "just now"
+            diff < 3600_000 -> "${diff / 60_000} minutes ago"
+            diff < 86400_000 -> "${diff / 3600_000} hours ago"
+            else -> "${diff / 86400_000} days ago"
+        }
     }
 
     private fun handleMessageClick(message: Message) {
@@ -130,7 +200,9 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     }
 
     override fun showMessages(messages: List<Message>) {
-        adapter.submitList(messages)
+        adapter.submitList(messages) {
+            scrollToBottom()
+        }
     }
 
     override fun showMessageSent(message: Message) {
@@ -143,7 +215,9 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     }
 
     override fun scrollToBottom() {
-        binding.chatMessageRecyclerviewLayout.scrollToPosition(adapter.itemCount - 1)
+        binding.chatMessageRecyclerviewLayout.post {
+            binding.chatMessageRecyclerviewLayout.smoothScrollToPosition(adapter.itemCount - 1)
+        }
     }
 
     override fun showImagePicker() {
@@ -156,10 +230,13 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_IMAGE_PICK && resultCode == RESULT_OK) {
             data?.data?.let { uri ->
-                presenter.sendImage(uri)
+                showImagePreview(uri)
             }
         }
     }
+
+
+
     override fun updateChatRoom(chatRoom: ChatRoom) {
         binding.tvNameUser.text = chatRoom.metadata["title"] as? String ?: "Chat"
     }
@@ -189,4 +266,5 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     override fun updateUserInfo(name: String, avatar: String?) {
         binding.tvNameUser.text = name
     }
+
 }

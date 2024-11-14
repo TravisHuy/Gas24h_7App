@@ -14,9 +14,11 @@ import java.util.Locale
 
 class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
                            private var messages:Map<String,Message> = mapOf(),
-                           private var users:Map<String,User> = mapOf(),
+                           private val currentAdminId: String,
                            private val onClickBuyerId: (String) -> Unit
 ):RecyclerView.Adapter<ChatAdminItemAdapter.ChatAdminItemViewHolder>(){
+
+    private var users = mutableMapOf<String, User>()
 
     inner class ChatAdminItemViewHolder(val binding:ItemChatAdminBinding):RecyclerView.ViewHolder(binding.root){
         init {
@@ -24,10 +26,9 @@ class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val room = rooms[position]
-                    messages[room.id]?.let { message ->
-                        users[message.senderId]?.let { user ->
-                            onClickBuyerId(user.uid)
-                        }
+                    val buyerId = room.participants.find { it != currentAdminId }
+                    buyerId?.let { id ->
+                        onClickBuyerId(id)
                     }
                 }
             }
@@ -48,19 +49,21 @@ class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
     ) {
         val room = rooms[position]
         val message = messages[room.id]
+        val buyerId = room.participants.find { it != currentAdminId }
+
         with(holder.binding){
             message?.let {
                 tvDate.text = formatTime(it.timestamp)
                 tvChatMessage.text = it.content
-                val user = users[message.senderId]
-                user?.let {
-                    tvUserName.text=user.fullName
+            }
+            buyerId?.let { id->
+                users[id]?.let { buyer ->
+                    tvUserName.text = buyer.fullName
                     Glide.with(holder.itemView.context)
-                        .load(user.imageUser)
+                        .load(buyer.imageUser)
                         .into(productImageUser)
                 }
             }
-
         }
     }
 
@@ -79,7 +82,7 @@ class ChatAdminItemAdapter(private var rooms:List<ChatRoom> = emptyList(),
 
     fun updateChat(newMessages: Map<String, Message>, newUsers: Map<String, User>) {
         messages = newMessages
-        users = newUsers
+        users.putAll(newUsers)
         notifyDataSetChanged()
     }
 

@@ -7,11 +7,12 @@ data class ChatRoom(
     val unreadCount: Map<String, Int> = mapOf(), // userId -> số tin nhắn chưa đọc
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
-    val metadata: Map<String, Any> = mapOf() // Các thông tin bổ sung
+    val metadata: Map<String, Any> = mapOf(), // Các thông tin bổ sung
+    val onlineStatus: Map<String,UserStatus> = mapOf()
 ){
 
     constructor():this("", listOf(),Message(), mapOf(),System.currentTimeMillis(),System.currentTimeMillis(),
-        mapOf()
+        mapOf(), mapOf()
     )
 
     fun toMap(): Map<String, Any?> {
@@ -22,7 +23,9 @@ data class ChatRoom(
             "unreadCount" to unreadCount,
             "createdAt" to createdAt,
             "updatedAt" to updatedAt,
-            "metadata" to metadata
+            "metadata" to metadata,
+            "onlineStatus" to onlineStatus.mapValues { it.value.toMap() }
         )
     }
+
 }
