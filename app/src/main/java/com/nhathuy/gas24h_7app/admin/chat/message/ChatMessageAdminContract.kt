@@ -21,6 +21,7 @@ interface ChatMessageAdminContract {
         fun clearInput()
         fun updateUserInfo(name: String, avatar: String?)
         fun updateOnlineStatus(status: UserStatus)
+        fun updateParticipantsStatus(statusMap: Map<String, UserStatus>)
     }
     interface Presenter{
         fun attachView(view:View)
@@ -32,7 +33,8 @@ interface ChatMessageAdminContract {
         fun sendImage(uri: Uri)
         fun markMessagesAsRead()
         fun onImagePickerClicked()
+        fun onResume()
+        fun onPause()
         fun cleanup()
-        suspend fun getUserOnlineStatus(userId: String): Flow<UserStatus>
     }
 }

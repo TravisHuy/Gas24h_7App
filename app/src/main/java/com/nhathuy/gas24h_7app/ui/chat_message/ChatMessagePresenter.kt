@@ -9,6 +9,7 @@ import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -30,7 +31,7 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
-
+    private var onlineStatusJob: Job? = null
 
     override fun attachView(view: ChatMessageContract.View) {
         this.view = view
@@ -49,6 +50,7 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
 
                 adminId = userRepository.getUserAdminId().getOrNull() ?: throw Exception("Admin not found")
 
+                view?.showAdminId(adminId!!)
 
                 val result = chatRepository.getOrCreateChatRoom(sellerId = adminId!!, buyerId = currentUserId!!)
 
@@ -59,6 +61,7 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
                             view?.updateChatRoom(room)
                             loadMessages()
                             markMessagesAsRead()
+                            startOnlineStatusTracking(room.id)
                         }
                     },
                     onFailure = {e->
@@ -74,7 +77,31 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
             }
         }
     }
+    private fun startOnlineStatusTracking(chatRoomId: String) {
+        coroutineScope.launch {
+            chatRepository.updateUserOnlineStatus(
+                userId = currentUserId!!,
+                chatRoomId = chatRoomId,
+                isOnline = true
+            )
+        }
 
+        onlineStatusJob = coroutineScope.launch {
+            try {
+                chatRepository.getChatRoomOnlineStatus(chatRoomId)
+                    .flowOn(Dispatchers.IO)
+                    .collect { statusMap ->
+                        withContext(Dispatchers.Main) {
+                            view?.updateParticipantsStatus(statusMap)
+                        }
+                    }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.showError("Error tracking online status: ${e.message}")
+                }
+            }
+        }
+    }
     override fun loadMessages() {
         coroutineScope.launch(Dispatchers.IO) {
             try {
@@ -227,9 +254,49 @@ class ChatMessagePresenter @Inject constructor(private val chatRepository: ChatR
         view?.showImagePicker()
     }
 
-    override fun cleanup() {
-        coroutineScope.cancel()
+    override fun onResume() {
+        coroutineScope.launch {
+            chatRoomId?.let { roomId ->
+                currentUserId?.let { buyerId ->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = buyerId,
+                        chatRoomId = roomId,
+                        isOnline = true
+                    )
+                }
+            }
+        }
     }
 
+    override fun onPause() {
+        coroutineScope.launch {
+            chatRoomId?.let { roomId ->
+                currentUserId?.let { buyerId ->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = buyerId,
+                        chatRoomId = roomId,
+                        isOnline = false
+                    )
+                }
+            }
+        }
+    }
+
+    override fun cleanup() {
+        coroutineScope.launch {
+            chatRoomId?.let { roomId ->
+                currentUserId?.let { buyerId ->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = buyerId,
+                        chatRoomId = roomId,
+                        isOnline = false
+                    )
+                }
+            }
+        }
+
+        coroutineScope.cancel()
+        onlineStatusJob?.cancel()
+    }
 
 }

@@ -8,6 +8,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -35,7 +37,6 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     private var buyerUserId : String? = null
     private var currentAdminId: String? = null
     private var selectedImageUri: Uri? = null
-    private var onlineStatusJob: Job? = null
 
     @Inject
     lateinit var presenter: ChatMessageAdminPresenter
@@ -53,7 +54,6 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         setupViews()
         setupListeners()
         setupImagePreview()
-        setupOnlineStatus()
     }
 
     private fun setupListeners() {
@@ -78,6 +78,15 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         binding.removeImageButton.setOnClickListener {
             clearImagePreview()
         }
+
+        // Message Input
+        binding.editInputChatMessage.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                binding.sendButton.isEnabled = !s.isNullOrBlank() || selectedImageUri != null
+            }
+        })
     }
 
     private fun sendMessage() {
@@ -106,23 +115,25 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         binding.imagePreviewLayout.visibility = View.GONE
         binding.imagePreview.setImageDrawable(null)
     }
-    private fun setupOnlineStatus() {
-        onlineStatusJob = lifecycleScope.launch {
-            buyerUserId?.let { userId ->
-                presenter.getUserOnlineStatus(userId).collect { status ->
-                    updateOnlineStatus(status)
-                }
-            }
-        }
-    }
+
     override fun updateOnlineStatus(status: UserStatus) {
         binding.apply {
             if (status.isOnline) {
                 tvOnline.visibility = View.VISIBLE
                 tvMinutes.text = "Online"
             } else {
+                tvOnline.text = "Last seen:"
                 tvOnline.visibility = View.GONE
                 tvMinutes.text = getTimeAgo(status.lastSeen)
+            }
+        }
+    }
+
+    override fun updateParticipantsStatus(statusMap: Map<String, UserStatus>) {
+        buyerUserId?.let { userId ->
+            val userStatus = statusMap[userId]
+            if (userStatus != null) {
+                updateOnlineStatus(userStatus)
             }
         }
     }
@@ -145,28 +156,49 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     }
 
     private fun handleMessageClick(message: Message) {
-
+        when(message.type) {
+            MessageType.IMAGE -> openImageView(message.mediaUrl)
+            MessageType.TEXT -> {
+                // Handle text message click if needed
+            }
+            else->""
+            // Add other message types as needed
+        }
     }
 
     private fun showMessageOptions(message: Message) {
+
+        if (message.senderId != currentAdminId) return
+
         val options = arrayOf("Copy","Delete")
         AlertDialog.Builder(this)
             .setItems(options){
                     _,which ->
                 when(which){
                     0 -> copyMessageToClipboard(message)
-                    1-> deleteMesssage(message)
+                    1-> showDeleteConfirmation(message)
                 }
             }
     }
 
     private fun copyMessageToClipboard(message: Message) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip  = ClipData.newPlainText("message",message.content)
+        val clip = ClipData.newPlainText("message", message.content)
         clipboard.setPrimaryClip(clip)
+        showToast("Copied")
     }
-    private fun deleteMesssage(message: Message) {
-
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    private fun showDeleteConfirmation(message: Message) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Message")
+            .setMessage("Are you sure you want to delete this message?")
+            .setPositiveButton("Delete") { _, _ ->
+//                presenter.deleteMessage(message)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
 
@@ -235,8 +267,6 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         }
     }
 
-
-
     override fun updateChatRoom(chatRoom: ChatRoom) {
         binding.tvNameUser.text = chatRoom.metadata["title"] as? String ?: "Chat"
     }
@@ -267,4 +297,17 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         binding.tvNameUser.text = name
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.onResume()
+    }
+    override fun onPause() {
+        presenter.onPause()
+        super.onPause()
+    }
+    override fun onDestroy() {
+        presenter.cleanup()
+//        presenter.detachView()
+        super.onDestroy()
+    }
 }

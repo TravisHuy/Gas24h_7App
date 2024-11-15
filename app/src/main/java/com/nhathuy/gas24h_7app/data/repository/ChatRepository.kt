@@ -17,6 +17,6 @@ interface ChatRepository {
     suspend fun uploadImage(uri:Uri):Result<String>
     suspend fun getRecentChats(userId: String):Flow<List<ChatRoom>>
     suspend fun markMessageAsRead(chatRoomId: String,userId: String):Result<Unit>
-    suspend fun getUserOnlineStatus(userId: String):Flow<UserStatus>
-    suspend fun updateUserOnlineStatus(userId:String, isOnline:Boolean):Result<Unit>
+    suspend fun getChatRoomOnlineStatus(chatRoomId:String):Flow<Map<String,UserStatus>>
+    suspend fun updateUserOnlineStatus(userId:String,chatRoomId: String, isOnline:Boolean):Result<Unit>
 }

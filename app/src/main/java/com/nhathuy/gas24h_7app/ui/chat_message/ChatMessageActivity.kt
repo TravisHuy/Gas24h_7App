@@ -5,8 +5,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +22,7 @@ import com.nhathuy.gas24h_7app.adapter.ChatAdapter
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageType
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 import com.nhathuy.gas24h_7app.databinding.ActivityChatMessageBinding
 import com.nhathuy.gas24h_7app.util.Constants.REQUEST_IMAGE_PICK
 import javax.inject.Inject
@@ -28,6 +33,8 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
     private lateinit var adapter:ChatAdapter
     private var orderId: String? = null
     private var currentUserId : String? = null
+    private var adminId: String? = null
+    private var selectedImageUri: Uri? = null
     @Inject
     lateinit var presenter: ChatMessagePresenter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +53,7 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
 
         setupViews()
         setupListeners()
+        setupImagePreview()
     }
 
     private fun setupListeners() {
@@ -55,10 +63,7 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
 
         // Send message
         binding.sendButton.setOnClickListener {
-            val content = binding.editInputChatMessage.text.toString().trim()
-            if (content.isNotBlank()) {
-                presenter.sendMessage(content)
-            }
+            sendMessage()
         }
 
         // Image attachment
@@ -70,10 +75,19 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
             presenter.loadMessages()
         }
+        binding.removeImageButton.setOnClickListener {
+            clearImagePreview()
+        }
+        binding.editInputChatMessage.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                binding.sendButton.isEnabled = !s.isNullOrBlank() || selectedImageUri != null
+            }
+        })
     }
 
     private fun setupViews() {
-
         binding.chatMessageRecyclerviewLayout.layoutManager = LinearLayoutManager(this)
         adapter = ChatAdapter(
             currentUserId = currentUserId!!,
@@ -87,6 +101,29 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         binding.chatMessageRecyclerviewLayout.adapter = adapter
     }
 
+    private fun setupImagePreview() {
+        binding.imagePreviewLayout.visibility = View.GONE
+    }
+    private fun clearImagePreview() {
+        selectedImageUri = null
+        binding.imagePreviewLayout.visibility = View.GONE
+        binding.imagePreview.setImageDrawable(null)
+    }
+
+    private fun sendMessage() {
+        val content = binding.editInputChatMessage.text.toString().trim()
+
+        when {
+            selectedImageUri != null -> {
+                presenter.sendImage(selectedImageUri!!)
+                clearImagePreview()
+            }
+            content.isNotBlank() -> {
+                presenter.sendMessage(content,MessageType.TEXT)
+                binding.editInputChatMessage.setText("")
+            }
+        }
+    }
 
     private fun openImageView(imageUrl: String) {
         val dialogs = Dialog(this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
@@ -165,13 +202,23 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         }
         startActivityForResult(intent,REQUEST_IMAGE_PICK)
     }
+
+    override fun showAdminId(adminId: String) {
+        this.adminId=adminId
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK) {
             data?.data?.let { uri ->
-                presenter.sendImage(uri)
+                showImagePreview(uri)
             }
         }
+    }
+    private fun showImagePreview(uri: Uri) {
+        selectedImageUri = uri
+        binding.imagePreviewLayout.visibility = View.VISIBLE
+        Glide.with(this).load(uri).into(binding.imagePreview)
     }
     override fun updateChatRoom(chatRoom: ChatRoom) {
         binding.tvNameShop.text = chatRoom.metadata["title"] as? String ?: "Chat"
@@ -181,4 +228,47 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         binding.editInputChatMessage.text?.clear()
     }
 
+    override fun updateOnlineStatus(status: UserStatus) {
+        binding.apply {
+            if (status.isOnline) {
+                tvOnline.visibility = View.VISIBLE
+                tvMinutes.text = "Online"
+            } else {
+                tvOnline.text = "Last seen:"
+                tvOnline.visibility = View.GONE
+                tvMinutes.text = getTimeAgo(status.lastSeen)
+            }
+        }
+    }
+    private fun getTimeAgo(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val diff = now - timestamp
+        return when {
+            diff < 60_000 -> "just now"
+            diff < 3600_000 -> "${diff / 60_000} minutes ago"
+            diff < 86400_000 -> "${diff / 3600_000} hours ago"
+            else -> "${diff / 86400_000} days ago"
+        }
+    }
+    override fun updateParticipantsStatus(statusMap: Map<String, UserStatus>) {
+        adminId?.let { userId ->
+            val userStatus = statusMap[userId]
+            if (userStatus != null) {
+                updateOnlineStatus(userStatus)
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        presenter.onResume()
+    }
+    override fun onPause() {
+        presenter.onPause()
+        super.onPause()
+    }
+    override fun onDestroy() {
+        presenter.cleanup()
+        presenter.detachView()
+        super.onDestroy()
+    }
 }

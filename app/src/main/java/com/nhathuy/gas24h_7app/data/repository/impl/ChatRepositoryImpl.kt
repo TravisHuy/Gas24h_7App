@@ -261,9 +261,9 @@ class ChatRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getUserOnlineStatus(userId: String): Flow<UserStatus> = callbackFlow{
-        val subscription = db.collection("userStatus")
-            .document(userId)
+    override suspend fun getChatRoomOnlineStatus(chatRoomId: String): Flow<Map<String, UserStatus>> = callbackFlow{
+        val subscription = db.collection(CHAT_ROOMS_COLLECTION)
+            .document(chatRoomId)
             .addSnapshotListener{
                 snapshot,error ->
                 if(error!=null){
@@ -271,31 +271,44 @@ class ChatRepositoryImpl @Inject constructor(
                     return@addSnapshotListener
                 }
 
-                val status = if(snapshot?.exists() == true){
-                    UserStatus(
-                        isOnline = snapshot.getBoolean("isOnline")?:false,
-                        lastSeen = snapshot.getLong("lastSeen") ?: System.currentTimeMillis()
-                    )
-                }
-                else{
-                    UserStatus(isOnline = false)
-                }
+                val onlineStatus = snapshot?.get("onlineStatus") as? Map<*, *>
+                val status = onlineStatus?.mapNotNull { (userId,status) ->
+                    val statusMap = status as? Map<*,*>
+                    if(statusMap != null){
+                        userId.toString() to UserStatus(
+                            isOnline = statusMap["isOnline"] as? Boolean ?: false,
+                            lastSeen = statusMap["lastSeen"] as? Long ?: System.currentTimeMillis()
+                        )
+                    }else null
+                }?.toMap() ?: emptyMap()
+
                 trySend(status)
             }
         awaitClose { subscription.remove() }
     }.flowOn(dispatcher)
 
-    override suspend fun updateUserOnlineStatus(userId: String, isOnline: Boolean):Result<Unit> = withContext(dispatcher) {
-        try {
-            val userStatusRef = db.collection("userStatus").document(userId)
-            val status = UserStatus(
-                isOnline = isOnline,
-                lastSeen = System.currentTimeMillis()
-            )
-            userStatusRef.set(status.toMap()).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+    override suspend fun updateUserOnlineStatus(userId: String, chatRoomId: String, isOnline: Boolean):Result<Unit> = withContext(dispatcher) {
+        withContext(dispatcher){
+            try {
+                val batch = db.batch()
+                val userStatusRef = db.collection("userStatus").document(userId)
+                val status = UserStatus(
+                    isOnline = isOnline,
+                    lastSeen = System.currentTimeMillis()
+                )
+
+                batch.set(userStatusRef,status.toMap())
+
+                //update chatroom
+                val chatRomRef = db.collection(CHAT_ROOMS_COLLECTION).document(chatRoomId)
+                batch.update(chatRomRef,"onlineStatus.${userId}",status.toMap())
+
+                batch.commit().await()
+
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 }

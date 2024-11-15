@@ -5,6 +5,7 @@ import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageStatus
 import com.nhathuy.gas24h_7app.data.model.MessageType
+import com.nhathuy.gas24h_7app.data.model.UserStatus
 
 interface ChatMessageContract {
     interface View{
@@ -15,15 +16,11 @@ interface ChatMessageContract {
         fun showError(message: String)
         fun scrollToBottom()
         fun showImagePicker()
+        fun showAdminId(adminId:String)
         fun updateChatRoom(chatRoom: ChatRoom)
         fun clearInput()
-//        fun showImageUploadProgress(progress: Int)
-//        fun hideImageUploadProgress()
-//        fun scrollToMessage(position: Int)
-//        fun showMessageSentSuccess()
-//        fun showMessageSentError()
-//        fun updateMessageStatus(messageId: String, status: MessageStatus)
-//        fun showUnreadCount(count: Int)
+        fun updateOnlineStatus(status: UserStatus)
+        fun updateParticipantsStatus(statusMap: Map<String, UserStatus>)
     }
     interface Presenter{
         fun attachView(view: View)
@@ -35,11 +32,8 @@ interface ChatMessageContract {
         fun sendImage(uri: Uri)
         fun markMessagesAsRead()
         fun onImagePickerClicked()
+        fun onResume()
+        fun onPause()
         fun cleanup()
-//        fun sendImage(uri: Uri)
-//        fun markMessagesAsRead(chatRoomId: String, userId: String)
-//        fun loadUnreadCount(chatRoomId: String, userId: String)
-//        fun retryFailedMessage(message: Message)
-//        fun deleteMessage(message: Message)
     }
 }

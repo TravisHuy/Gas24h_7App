@@ -13,6 +13,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -74,13 +75,13 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
 //                            view?.updateChatRoom(room)
                             loadMessages()
                             markMessagesAsRead()
+                            startOnlineStatusTracking(room.id)
                         }
                     },
                     onFailure = { e ->
                         view?.showError("Failed to initialize chat: ${e.message}")
                     }
                 )
-                startObservingUserOnlineStatus(buyerId)
             } catch (e: Exception) {
                 view?.showError("Error initializing chat: ${e.message}")
             } finally {
@@ -89,13 +90,27 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
         }
     }
 
-    private fun startObservingUserOnlineStatus(userId: String) {
+    private fun startOnlineStatusTracking(chatRoomId: String) {
+        coroutineScope.launch {
+            chatRepository.updateUserOnlineStatus(
+                userId = currentAdminId!!,
+                chatRoomId = chatRoomId,
+                isOnline = true
+            )
+        }
+
         onlineStatusJob = coroutineScope.launch {
-            userId?.let { id ->
-                chatRepository.getUserOnlineStatus(id).collect { status ->
-                    withContext(Dispatchers.Main) {
-                        view?.updateOnlineStatus(status)
+            try {
+                chatRepository.getChatRoomOnlineStatus(chatRoomId)
+                    .flowOn(Dispatchers.IO)
+                    .collect { statusMap ->
+                        withContext(Dispatchers.Main) {
+                            view?.updateParticipantsStatus(statusMap)
+                        }
                     }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view?.showError("Error tracking online status: ${e.message}")
                 }
             }
         }
@@ -232,11 +247,49 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
         view?.showImagePicker()
     }
 
+    override fun onResume() {
+        coroutineScope.launch {
+            chatRoomId?.let { roomId ->
+                currentAdminId?.let { adminId ->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = adminId,
+                        chatRoomId = roomId,
+                        isOnline = true
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        coroutineScope.launch {
+            chatRoomId?.let { roomId ->
+                currentAdminId?.let { adminId ->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = adminId,
+                        chatRoomId = roomId,
+                        isOnline = false
+                    )
+                }
+            }
+        }
+    }
+
     override fun cleanup() {
+        coroutineScope.launch {
+            chatRoomId?.let {roomId->
+                currentAdminId?.let { adminId->
+                    chatRepository.updateUserOnlineStatus(
+                        userId = adminId,
+                        chatRoomId = roomId,
+                        isOnline = false
+                    )
+                }
+            }
+        }
+
         coroutineScope.cancel()
         onlineStatusJob?.cancel()
     }
-    override suspend fun getUserOnlineStatus(userId: String): Flow<UserStatus> {
-        return chatRepository.getUserOnlineStatus(userId)
-    }
+
 }
