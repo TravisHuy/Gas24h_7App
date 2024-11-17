@@ -1,6 +1,7 @@
 package com.nhathuy.gas24h_7app.admin.chat.message
 
 import android.net.Uri
+import android.util.Log
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageType
 import com.nhathuy.gas24h_7app.data.model.UserStatus
@@ -27,20 +28,33 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
     private var onlineStatusJob: Job? = null
-
+    private var messagesJob: Job? = null
 
     private var chatRoomId: String? = null
     private var currentAdminId: String? = null
     private var buyerId: String? = null
+    private var isInitialized = false
     override fun attachView(view: ChatMessageAdminContract.View) {
         this.view = view
     }
 
     override fun detachView() {
+        cleanup()
+        coroutineScope.cancel() // Cancel coroutineScope only when detaching view
         view = null
     }
 
     override fun initialize(buyerId:String?) {
+        if (buyerId == null) {
+            view?.showError("Invalid buyer ID")
+            return
+        }
+
+        // Reset state when initializing
+        cleanup()
+        this.buyerId = buyerId
+        isInitialized = false
+
         coroutineScope.launch {
             try {
                 view?.showLoading()
@@ -48,6 +62,11 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
                 currentAdminId = userRepository.getCurrentUserId() ?:  throw Exception("Admin not logged in")
                 this@ChatMessageAdminPresenter.buyerId = buyerId
                 view?.updateCurrentAdminId(currentAdminId!!)
+
+
+                messagesJob?.cancel()
+                onlineStatusJob?.cancel()
+
 
                 // load user info
                 val userInfo = userRepository.getUser(buyerId!!)
@@ -72,10 +91,12 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
                     onSuccess = { room ->
                         withContext(Dispatchers.Main) {
                             chatRoomId = room.id
+                            Log.d("chatmesssage","${room.id}")
 //                            view?.updateChatRoom(room)
                             loadMessages()
                             markMessagesAsRead()
                             startOnlineStatusTracking(room.id)
+                            isInitialized = true
                         }
                     },
                     onFailure = { e ->
@@ -117,14 +138,17 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
     }
 
     override fun loadMessages() {
-        coroutineScope.launch(Dispatchers.IO) {
+        messagesJob?.cancel()
+        messagesJob = coroutineScope.launch(Dispatchers.IO) {
             try {
                 chatRoomId?.let { roomId ->
                     chatRepository.getMessages(roomId)
                         .collect { messages ->
                             withContext(Dispatchers.Main) {
-                                view?.showMessages(messages.sortedBy { it.timestamp })
-                                view?.scrollToBottom()
+                                if (view != null) {  // Check if view is still attached
+                                    view?.showMessages(messages.sortedBy { it.timestamp })
+                                    view?.scrollToBottom()
+                                }
                             }
                         }
                 }
@@ -288,8 +312,14 @@ class ChatMessageAdminPresenter @Inject constructor(private val chatRepository: 
             }
         }
 
-        coroutineScope.cancel()
+        messagesJob?.cancel()
         onlineStatusJob?.cancel()
+
+
+        chatRoomId = null
+        currentAdminId = null
+        buyerId = null
+        isInitialized = false
     }
 
 }

@@ -1,3 +1,4 @@
+
 package com.nhathuy.gas24h_7app.admin.chat
 
 import android.content.Intent
@@ -40,7 +41,7 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
             presenter.loadRecentChat()
         }
         binding.backButton.setOnClickListener {
-            onBackPressed()
+            finish()
         }
     }
 
@@ -80,7 +81,7 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
             .setTitle("Error")
             .setMessage(message)
             .setPositiveButton("Ok"){
-                dialog,_ -> dialog.dismiss()
+                    dialog,_ -> dialog.dismiss()
             }
             .create()
         dialog.show()
@@ -102,4 +103,13 @@ class ChatActivity : AppCompatActivity() ,ChatContract.View{
         currentAdminId = adminId
         setupRecyclerView()
     }
+    override fun onResume() {
+        super.onResume()
+        presenter.loadRecentChat()  // Refresh data when returning to the activity
+    }
+
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        presenter.detachView()  // Clean up
+//    }
 }

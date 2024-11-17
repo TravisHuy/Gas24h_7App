@@ -54,6 +54,16 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         setupViews()
         setupListeners()
         setupImagePreview()
+
+        binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
+            // Reset adapter list before reloading
+            adapter.submitList(emptyList())
+            // Reinitialize the chat
+            orderId?.let {
+                presenter.initialize(it)
+            }
+        }
+
     }
 
     private fun setupListeners() {
@@ -72,9 +82,7 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
         }
 
         // Swipe refresh
-        binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
-            presenter.loadMessages()
-        }
+
         binding.removeImageButton.setOnClickListener {
             clearImagePreview()
         }
@@ -180,7 +188,9 @@ class ChatMessageActivity : AppCompatActivity(),ChatMessageContract.View {
     }
 
     override fun showMessages(messages: List<Message>) {
-        adapter.submitList(messages)
+        adapter.submitList(messages){
+            scrollToBottom()
+        }
     }
 
     override fun showMessageSent(message: Message) {

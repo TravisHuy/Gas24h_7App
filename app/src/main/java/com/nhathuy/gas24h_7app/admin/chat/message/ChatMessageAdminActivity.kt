@@ -8,8 +8,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -20,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ChatAdapter
+import com.nhathuy.gas24h_7app.admin.chat.ChatActivity
 import com.nhathuy.gas24h_7app.data.model.ChatRoom
 import com.nhathuy.gas24h_7app.data.model.Message
 import com.nhathuy.gas24h_7app.data.model.MessageType
@@ -41,24 +44,48 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     @Inject
     lateinit var presenter: ChatMessageAdminPresenter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatMessageAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         (application as Gas24h_7Application).getGasComponent().inject(this)
-        buyerUserId = intent.getStringExtra("BUYER_ID")
-        presenter.attachView(this)
-        presenter.initialize(buyerUserId)
+
+        buyerUserId = savedInstanceState?.getString("BUYER_ID")
+            ?: intent.getStringExtra("BUYER_ID")
+
+
 
         setupViews()
         setupListeners()
         setupImagePreview()
+
+        presenter.attachView(this)
+        initializeChat()
+
+    }
+    private fun initializeChat() {
+        if (buyerUserId == null) {
+            showError("Invalid buyer ID")
+            finish()
+            return
+        }
+
+        presenter.initialize(buyerUserId)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        // Update buyerUserId from new intent
+        buyerUserId = intent?.getStringExtra("BUYER_ID")
+        initializeChat()
+    }
     private fun setupListeners() {
         binding.backButton.setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         // Send message
@@ -71,14 +98,14 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
             presenter.onImagePickerClicked()
         }
 
-        // Swipe refresh
-        binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
-            presenter.loadMessages()
-        }
+
         binding.removeImageButton.setOnClickListener {
             clearImagePreview()
         }
 
+        binding.chatMessageSwipeRefreshLayout.setOnRefreshListener {
+            initializeChat()
+        }
         // Message Input
         binding.editInputChatMessage.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -232,6 +259,13 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
     }
 
     override fun showMessages(messages: List<Message>) {
+        if (messages.isEmpty()) {
+            binding.chatMessageRecyclerviewLayout.visibility = View.GONE
+            // Optionally show an empty state
+            return
+        }
+
+        binding.chatMessageRecyclerviewLayout.visibility = View.VISIBLE
         adapter.submitList(messages) {
             scrollToBottom()
         }
@@ -244,6 +278,7 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
 
     override fun showError(message: String) {
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show()
+        Log.d("ChatMessageActivity","${message}")
     }
 
     override fun scrollToBottom() {
@@ -302,12 +337,11 @@ class ChatMessageAdminActivity : AppCompatActivity(),ChatMessageAdminContract.Vi
         presenter.onResume()
     }
     override fun onPause() {
-        presenter.onPause()
         super.onPause()
+        presenter.onPause()
     }
     override fun onDestroy() {
         presenter.cleanup()
-//        presenter.detachView()
         super.onDestroy()
     }
 }
