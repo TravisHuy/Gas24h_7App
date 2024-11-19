@@ -34,6 +34,8 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
 
     private val MAX_IMAGES = 3
     private val MAX_VIDEOS = 1
+
+    private val pendingReviews = mutableMapOf<String, PendingReview>()
     override fun attachView(view: AddReviewTestContract.View) {
         this.view = view
     }
@@ -43,6 +45,13 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
         job.cancel()
     }
 
+    data class PendingReview(
+        val rating: Float,
+        val comment: String,
+        val images: List<Uri> = emptyList(),
+        val video: Uri? = null
+    )
+
     //load information order
     override fun loadOrder(orderId: String) {
         coroutineScope.launch {
@@ -51,8 +60,8 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
                 orderId_current=orderId
                 result.fold(
                     onSuccess = {order->
-                        productId = order.items.firstOrNull()?.productId
-                        productId?.let { loadProduct(it) }
+                        val productIds = order.items.map { it.productId }
+                        loadProducts(productIds)
                     },
                     onFailure = {e->
                         view?.showMessage("Failed to load order: ${e.message}")
@@ -64,6 +73,20 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
             }
         }
     }
+
+    private fun loadProducts(productIds: List<String>) {
+        coroutineScope.launch {
+            try {
+                val products = productIds.mapNotNull { productId ->
+                    productRepository.getProductById(productId).getOrNull()
+                }
+                view?.showProducts(products)
+            } catch (e: Exception) {
+                view?.showMessage("Failed to load products: ${e.message}")
+            }
+        }
+    }
+
     //load information product
     private fun loadProduct(productId:String) {
         coroutineScope.launch {
@@ -160,6 +183,73 @@ class AddReviewTestPresenter @Inject constructor(private val reviewRepository: R
                 view?.showMessage("Failed to submit review: ${e.message}")
             }
             finally {
+                view?.hideLoading()
+            }
+        }
+    }
+
+    override fun saveCurrentReview(productId: String, rating: Float, comment: String) {
+        pendingReviews[productId] = PendingReview(
+            rating = rating,
+            comment = comment,
+            images = images.toList(),
+            video = video
+        )
+        // Clear current images and video for next review
+        images.clear()
+        video = null
+    }
+
+    override fun loadSavedReview(productId: String) {
+        pendingReviews[productId]?.let { review ->
+            view?.loadSavedReviewData(
+                rating = review.rating,
+                comment = review.comment,
+                images = review.images,
+                video = review.video
+            )
+        }
+    }
+
+    override fun submitAllReviews() {
+        coroutineScope.launch {
+            view?.showLoading()
+
+            try {
+                val userId = userRepository.getCurrentUserId()?:throw Exception("User not found")
+
+                pendingReviews.forEach { (productId, review) ->
+                    val newReview = Review(
+                        id = UUID.randomUUID().toString(),
+                        productId = productId,
+                        userId = userId,
+                        rating = review.rating,
+                        comment = review.comment,
+                        date = Date(),
+                        images = emptyList(),
+                        video = "",
+                        reviewStatus = ReviewStatus.fromStars(review.rating.toInt())
+                    )
+
+                    val result = reviewRepository.createReviewTest(
+                        newReview,
+                        review.images,
+                        review.video
+                    )
+
+                    result.getOrThrow()
+                    productRepository.updateProductReviewWithTransaction(productId, review.rating)
+                }
+
+                // Update order status
+                orderRepository.updateOrderStatus(orderId_current!!, OrderStatus.RATED)
+
+                view?.showMessage("All reviews submitted successfully")
+                view?.navigateBack()
+            }
+            catch (e:Exception){
+                view?.showMessage("Failed to submit reviews: ${e.message}")
+            } finally {
                 view?.hideLoading()
             }
         }

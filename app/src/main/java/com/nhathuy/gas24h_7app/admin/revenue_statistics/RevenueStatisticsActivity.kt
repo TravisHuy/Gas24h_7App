@@ -8,13 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Inventory
 import androidx.compose.material.icons.rounded.MonetizationOn
@@ -162,10 +166,13 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
     @Composable
     fun PeriodSelectionButtons(  selectedPeriod: String,
                                  onPeriodSelected: (String) -> Unit) {
-        Row(modifier = Modifier
+        LazyRow(modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            listOf("Daily","Weekly", "Monthly", "Yearly").forEach { period ->
+            .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            items(listOf("Daily", "Weekly", "Monthly", "Yearly")) { period ->
                 SelectablePeriodButton(
                     text = period,
                     isSelected = selectedPeriod == period,
@@ -175,26 +182,37 @@ class RevenueStatisticsActivity : ComponentActivity(),RevenueStatisticsContract.
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun SelectablePeriodButton(text: String, isSelected: Boolean, onClick: () -> Unit) {
-        Button(onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected)
-                MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.surface,
-            contentColor = if (isSelected)
-                MaterialTheme.colorScheme.onPrimary
-            else MaterialTheme.colorScheme.onSurface
-        ),
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = if (isSelected) 6.dp else 2.dp
+        Card(
+            onClick = onClick,
+            modifier = Modifier
+                .height(36.dp),
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(
+                containerColor = if (isSelected)
+                    MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
             ),
-            modifier = Modifier.padding(horizontal = 4.dp)) {
-            Text(text = text,
-                color = if (isSelected)
-                MaterialTheme.colorScheme.onPrimary
-            else MaterialTheme.colorScheme.onSurface )
-
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = if (isSelected) 2.dp else 0.dp
+            )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = text,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (isSelected)
+                        MaterialTheme.colorScheme.onPrimary
+                    else MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
     @Composable

@@ -34,7 +34,7 @@ class OrderRepository @Inject constructor(
                    val productUpdates = order.items.mapIndexed { index, item ->
                        val snapshot = productSnapshots[index]
                        val product = snapshot.toObject(Product::class.java) ?: throw  Exception("Product not found: ${item.productId}")
-                       if(product.soldCount<item.quantity){
+                       if(product.stockCount < item.quantity){
                            throw Exception("Insufficient stock product ${product.name}")
                        }
 

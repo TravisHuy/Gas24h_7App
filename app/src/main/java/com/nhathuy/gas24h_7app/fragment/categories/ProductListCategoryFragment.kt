@@ -133,7 +133,7 @@ class ProductListCategoryFragment : Fragment(R.layout.fragment_product_list_cate
         binding.recyclerViewProducts.apply {
             layoutManager=GridLayoutManager(requireContext(),2)
             this.adapter=productAdapter
-            isNestedScrollingEnabled=true
+            isNestedScrollingEnabled=false
         }
     }
 

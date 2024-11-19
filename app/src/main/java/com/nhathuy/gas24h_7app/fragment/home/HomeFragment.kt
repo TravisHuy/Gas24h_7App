@@ -64,6 +64,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
         setupSearchView()
         setupQrScanner()
         homeSharedViewModel.refreshData()
+        presenter.fetchBanners()
     }
 
     private fun setupQrScanner() {

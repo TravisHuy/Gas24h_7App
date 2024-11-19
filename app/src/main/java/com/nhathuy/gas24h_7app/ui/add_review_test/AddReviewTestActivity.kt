@@ -27,6 +27,10 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
     private var orderId: String? = null
     private lateinit var adapter: ProductImageAdapter
 
+    private var currentProductPosition = 0
+    private var products = mutableListOf<Product>()
+
+
     @Inject
     lateinit var presenter:AddReviewTestPresenter
 
@@ -54,6 +58,7 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
         setupListeners()
         setupRecyclerView()
         setupRatingBar()
+        setupNavigationButtons()
         updateImageCount(0, Constants.MAX_IMAGE_COUNT)
 
         orderId?.let {
@@ -62,6 +67,66 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
             showMessage("Order ID not found")
             finish()
         }
+    }
+
+    private fun setupNavigationButtons() {
+        binding.btnPrevious.setOnClickListener {
+            if (currentProductPosition > 0) {
+                saveCurrentReview()
+                currentProductPosition--
+                displayCurrentProduct()
+                updateNavigationButtons()
+            }
+        }
+
+        binding.btnNext.setOnClickListener {
+            if (currentProductPosition < products.size - 1) {
+                saveCurrentReview()
+                currentProductPosition++
+                displayCurrentProduct()
+                updateNavigationButtons()
+            }
+        }
+
+        binding.btnSend.setOnClickListener {
+            saveCurrentReview()
+            presenter.submitAllReviews()
+        }
+    }
+
+
+    private fun saveCurrentReview() {
+        val rating =binding.ratingStart.rating
+        val comment = binding.edComment.text.toString()
+
+        presenter.saveCurrentReview(products[currentProductPosition].id,rating,comment)
+    }
+
+    private fun displayCurrentProduct() {
+        val product = products[currentProductPosition]
+        binding.tvProductName.text = product.name
+        Glide.with(this)
+            .load(product.coverImageUrl)
+            .into(binding.productImage)
+
+        // Clear previous review data
+        binding.ratingStart.rating = 5f
+        binding.edComment.text?.clear()
+        adapter.clearImages()
+        clearVideo()
+
+        // Load saved review data if exists
+        presenter.loadSavedReview(product.id)
+
+        // Update progress indicator
+        binding.tvProgress.text = "${currentProductPosition + 1}/${products.size}"
+    }
+
+    private fun updateNavigationButtons() {
+        binding.btnPrevious.isEnabled = currentProductPosition > 0
+        binding.btnNext.isEnabled = currentProductPosition < products.size - 1
+        binding.btnSend.text = if (currentProductPosition == products.size - 1)
+            "Gửi tất cả đánh giá" else "Tiếp tục"
     }
 
     private fun setupRatingBar() {
@@ -233,6 +298,32 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
     override fun navigateBack() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun showProducts(products: List<Product>) {
+        this.products.clear()
+        this.products.addAll(products)
+        currentProductPosition = 0
+        displayCurrentProduct()
+        updateNavigationButtons()
+    }
+
+    override fun loadSavedReviewData(
+        rating: Float,
+        comment: String,
+        images: List<Uri>,
+        video: Uri?
+    ) {
+        binding.ratingStart.rating = rating
+        binding.edComment.setText(comment)
+        images.forEach { uri ->
+            adapter.addImage(uri)
+            updateImageCount(adapter.itemCount, Constants.MAX_IMAGE_COUNT)
+        }
+        video?.let {
+            onVideoAdded(it)
+            updateVideoCount(1, 1)
+        }
     }
 
     override fun onDestroy() {

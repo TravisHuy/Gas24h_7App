@@ -21,6 +21,8 @@ interface AddReviewTestContract {
         fun clearImages()
         fun clearVideo()
         fun navigateBack()
+        fun showProducts(products: List<Product>)
+        fun loadSavedReviewData(rating: Float, comment: String, images: List<Uri>, video: Uri?)
     }
     interface Presenter{
         fun attachView(view:View)
@@ -31,5 +33,8 @@ interface AddReviewTestContract {
         fun onVideoAdded(uri: Uri)
         fun onVideoRemoved()
         fun submitReview(rating:Float, comment:String)
+        fun saveCurrentReview(productId: String, rating: Float, comment: String)
+        fun loadSavedReview(productId: String)
+        fun submitAllReviews()
     }
 }
