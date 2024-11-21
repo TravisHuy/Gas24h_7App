@@ -43,6 +43,7 @@ import com.nhathuy.gas24h_7app.data.repository.VoucherRepository
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryContract
 import com.nhathuy.gas24h_7app.fragment.categories.ProductListCategoryPresenter
 import com.nhathuy.gas24h_7app.fragment.chat.ChatPresenter
+import com.nhathuy.gas24h_7app.fragment.delete.DeleteAccountPresenter
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentContract
 import com.nhathuy.gas24h_7app.fragment.home.HomeFragmentPresenter
 import com.nhathuy.gas24h_7app.fragment.notification.NotificationPresenter
@@ -308,5 +309,10 @@ class PresenterModule {
     @Singleton
     fun provideChatMessageAdminPresenter(chatRepository: ChatRepository,userRepository: UserRepository): ChatMessageAdminPresenter {
         return ChatMessageAdminPresenter(chatRepository,userRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideDeleteAccountPresenter(userRepository: UserRepository): DeleteAccountPresenter {
+        return DeleteAccountPresenter(userRepository)
     }
 }

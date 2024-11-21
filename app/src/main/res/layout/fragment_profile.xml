@@ -14,7 +14,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/md_theme_light_primary"
+            android:background="@color/brand_blue_light"
             >
 
             <com.google.android.material.button.MaterialButton

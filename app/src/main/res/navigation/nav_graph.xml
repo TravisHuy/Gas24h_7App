@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_nav_home_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_chat"
+            app:destination="@id/nav_chat" />
     </fragment>
     <fragment
         android:id="@+id/nav_chat"
@@ -49,6 +52,9 @@
         <action
             android:id="@+id/action_nav_video_to_nav_profile"
             app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_nav_chat_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment

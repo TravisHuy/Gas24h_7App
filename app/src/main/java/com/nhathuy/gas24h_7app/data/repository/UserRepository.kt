@@ -10,6 +10,7 @@ interface UserRepository {
     suspend fun getUserAdminId():Result<String>
     suspend fun isUserAdmin():Result<Boolean>
     suspend fun createAdminUser(phoneNumber:String):Result<Unit>
+    suspend fun deleteUser():Result<Unit>
     fun getCurrentUserId(): String?
     fun isUserLoggedIn(): Boolean
     fun logout()

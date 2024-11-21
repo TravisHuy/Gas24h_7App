@@ -94,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         if(intent.hasExtra("navigate_to")){
             when(intent.getStringExtra("navigate_to")){
                 "hotline" -> navController.navigate(R.id.nav_hotline)
+                "nav_to_chat" -> navController.navigate(R.id.nav_chat)
             }
 
         }

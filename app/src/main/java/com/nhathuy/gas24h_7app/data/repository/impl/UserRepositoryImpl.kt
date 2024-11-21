@@ -133,6 +133,29 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteUser(): Result<Unit> = withContext(Dispatchers.IO){
+        try {
+            var currentUser = auth.currentUser
+                ?: return@withContext Result.failure(Exception("No authenticated user found"))
+
+            // Delete user document from Firestore
+            db.collection("users").document(currentUser.uid).delete().await()
+
+            // Delete user from Firebase Authentication
+            currentUser.delete().await()
+
+            // Clear the current user
+            auth.signOut()
+
+            // Reset the local currentUser
+            this@UserRepositoryImpl.currentUser = null
+
+            Result.success(Unit)
+        }
+        catch (e:Exception){
+            Result.failure(e)
+        }
+    }
 
 
     override fun getCurrentUserId(): String? {

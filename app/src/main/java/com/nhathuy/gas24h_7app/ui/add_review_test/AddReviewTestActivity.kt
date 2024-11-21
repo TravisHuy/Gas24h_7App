@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductImageAdapter
@@ -161,7 +162,12 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
         }
 
         binding.backButton.setOnClickListener {
-            finish()
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Hủy đánh giá sản phẩm")
+                .setMessage("Bạn có chắc chắn muốn hủy đánh giá không?")
+                .setPositiveButton("Có") { _, _ -> finish() }
+                .setNegativeButton("Không", null)
+                .show()
         }
         binding.ratingStart.setOnRatingBarChangeListener { _, rating, fromUser ->
             if (fromUser) {
@@ -331,7 +337,4 @@ class AddReviewTestActivity : AppCompatActivity(),AddReviewTestContract.View{
         presenter.detachView()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }

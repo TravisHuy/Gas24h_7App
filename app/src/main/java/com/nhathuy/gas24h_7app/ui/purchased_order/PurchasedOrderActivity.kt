@@ -28,6 +28,7 @@ import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationActivity
 import com.nhathuy.gas24h_7app.ui.order_information.OrderInformationContract
+import com.nhathuy.gas24h_7app.ui.search.SearchActivity
 import com.nhathuy.gas24h_7app.util.Constants
 import javax.inject.Inject
 
@@ -57,6 +58,7 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         setupRec()
         setupTabLayout()
         setupBack()
+        setupListeners()
         presenter.attachView(this)
 
         val orderStatus = intent.getStringExtra("ORDER_STATUS") ?: OrderStatus.PROCESSING.name
@@ -73,6 +75,20 @@ class PurchasedOrderActivity : AppCompatActivity(),PurchasedOrderContract.View, 
         binding.tabLayout.getTabAt(tabIndex)?.select()
     }
 
+    private fun setupListeners() {
+        binding.btnChat.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("navigate_to", "nav_to_chat")
+                // Thêm flag để clear activity stack cũ
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            startActivity(intent)
+            finish()
+        }
+        binding.btnSearch.setOnClickListener {
+            startActivity(Intent(this,SearchActivity::class.java))
+        }
+    }
 
 
     override fun showLoading() {
