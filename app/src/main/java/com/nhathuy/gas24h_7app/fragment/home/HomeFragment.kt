@@ -30,7 +30,8 @@ import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View {
 
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private var viewPager2Adapter: HomeViewpagerAdapter? = null
 
     @Inject
@@ -50,7 +51,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        _binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -222,6 +223,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeFragmentContract.View
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         presenter.detachView()
     }
 

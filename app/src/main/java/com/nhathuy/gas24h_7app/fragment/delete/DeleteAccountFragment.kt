@@ -55,7 +55,11 @@ class DeleteAccountFragment : Fragment(), DeleteAccountContract.View {
     }
 
     override fun navigateMain() {
-        startActivity(Intent(requireContext(),MainActivity::class.java))
+        Intent(requireContext(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(this)
+            requireActivity().finish()
+        }
     }
 
 }

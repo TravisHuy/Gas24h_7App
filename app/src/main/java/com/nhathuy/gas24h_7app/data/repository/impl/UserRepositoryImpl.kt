@@ -2,6 +2,7 @@ package com.nhathuy.gas24h_7app.data.repository.impl
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
 import com.nhathuy.gas24h_7app.util.Constants
@@ -135,8 +136,19 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun deleteUser(): Result<Unit> = withContext(Dispatchers.IO){
         try {
-            var currentUser = auth.currentUser
+            val currentUser = auth.currentUser
                 ?: return@withContext Result.failure(Exception("No authenticated user found"))
+
+            if (isUserAdmin().getOrNull() == true) {
+                return@withContext Result.failure(Exception("Không thể xóa tài khoản admin"))
+            }
+
+            val hasPendingOrders = checkPendingOrders(currentUser.uid)
+            if (hasPendingOrders) {
+                return@withContext Result.failure(Exception("Không thể xóa tài khoản khi còn đơn hàng đang xử lý"))
+            }
+
+            deleteUserRelatedData(currentUser.uid)
 
             // Delete user document from Firestore
             db.collection("users").document(currentUser.uid).delete().await()
@@ -157,7 +169,46 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    private suspend fun checkPendingOrders(uid: String): Boolean {
+        return try {
+            // Danh sách các trạng thái đơn hàng đang xử lý
+            val pendingStatuses = listOf(
+                OrderStatus.PENDING.name,
+                OrderStatus.DELIVERED.name,
+                OrderStatus.SHIPPED.name
+            )
 
+            // Kiểm tra các đơn hàng của người dùng
+            val snapshot = db.collection("orders")
+                .whereEqualTo("userId", uid)
+                .whereIn("status", pendingStatuses)
+                .get()
+                .await()
+
+            // Trả về true nếu có đơn hàng đang xử lý
+            !snapshot.isEmpty
+
+        } catch (e: Exception) {
+            // Nếu có lỗi, giả định là có đơn hàng đang xử lý để đảm bảo an toàn
+            true
+        }
+    }
+
+    private suspend fun deleteUserRelatedData(userId: String) {
+        // Delete orders
+        db.collection("orders")
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+            .documents
+            .forEach { it.reference.delete().await() }
+
+        // Delete cart items
+        db.collection("carts")
+            .document(userId)
+            .delete()
+            .await()
+    }
     override fun getCurrentUserId(): String? {
         return auth.currentUser?.uid
     }

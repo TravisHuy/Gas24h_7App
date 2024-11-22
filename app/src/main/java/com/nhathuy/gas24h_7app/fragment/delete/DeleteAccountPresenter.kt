@@ -27,6 +27,7 @@ class DeleteAccountPresenter @Inject constructor(private val userRepository: Use
                 userRepository.deleteUser().fold(
                     onSuccess = {
                         view?.showMessage("Xóa tài khoản thành công")
+                        view?.navigateMain()
                     },
                     onFailure = { e->
                         view?.showMessage("Lỗi xóa tài khoản: ${e.message}")
