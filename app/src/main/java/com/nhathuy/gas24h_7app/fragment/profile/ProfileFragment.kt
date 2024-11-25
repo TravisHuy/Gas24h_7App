@@ -63,12 +63,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         setupListeners()
         setupRecyclerview()
 
+        refreshData()
+
+        return binding.root
+    }
+
+    private fun refreshData() {
         presenter.loadOrders()
         presenter.loadCartItemCount()
         presenter.loadOrderCount()
         presenter.loadUserAdminId()
-
-        return binding.root
+        presenter.loadUserInfo()
     }
 
     private fun setupRecyclerview() {
@@ -283,5 +288,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
             putExtra("PRODUCT_ID", productId)
         }
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        presenter.detachView()
     }
 }
