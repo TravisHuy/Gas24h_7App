@@ -78,6 +78,7 @@ import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderPresenter
 import com.nhathuy.gas24h_7app.ui.register.RegisterContract
 import com.nhathuy.gas24h_7app.ui.register.RegisterPresenter
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMePresenter
+import com.nhathuy.gas24h_7app.ui.setup_account.SetupAccountPresenter
 import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressPresenter
 import com.nhathuy.gas24h_7app.ui.verify.VerificationContract
 import com.nhathuy.gas24h_7app.ui.verify.VerificationPresenter
@@ -314,5 +315,10 @@ class PresenterModule {
     @Singleton
     fun provideDeleteAccountPresenter(userRepository: UserRepository): DeleteAccountPresenter {
         return DeleteAccountPresenter(userRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideSetupAccountPresenter(storage: FirebaseStorage,userRepository: UserRepository): SetupAccountPresenter {
+        return SetupAccountPresenter(storage, userRepository)
     }
 }

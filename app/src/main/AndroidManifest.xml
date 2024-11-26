@@ -34,6 +34,9 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".ui.setup_account.SetupAccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.chat.message.ChatMessageAdminActivity"
             android:exported="false" />
         <activity
@@ -158,7 +161,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.splash.SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -167,9 +170,7 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

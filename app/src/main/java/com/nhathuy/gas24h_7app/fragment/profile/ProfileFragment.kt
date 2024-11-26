@@ -33,6 +33,7 @@ import com.nhathuy.gas24h_7app.ui.login.LoginActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMeActivity
+import com.nhathuy.gas24h_7app.ui.setup_account.SetupAccountActivity
 import javax.inject.Inject
 
 
@@ -124,6 +125,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),ProfileContract.View
         binding.btnLoginAdmin.setOnClickListener {
             navigateAdmin()
         }
+        binding.linearSetupAccount.setOnClickListener {
+            navigateSetupAccount()
+        }
+    }
+
+    private fun navigateSetupAccount() {
+        startActivity(Intent(requireContext(),SetupAccountActivity::class.java))
     }
 
     private fun openImagePicker() {

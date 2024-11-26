@@ -49,6 +49,7 @@ import com.nhathuy.gas24h_7app.ui.qrscanner.QrScannerActivity
 import com.nhathuy.gas24h_7app.ui.register.RegisterActivity
 import com.nhathuy.gas24h_7app.ui.review_of_me.ReviewOfMeActivity
 import com.nhathuy.gas24h_7app.ui.search.SearchActivity
+import com.nhathuy.gas24h_7app.ui.setup_account.SetupAccountActivity
 import com.nhathuy.gas24h_7app.ui.shipping_address.ShippingAddressActivity
 import com.nhathuy.gas24h_7app.ui.verify.VerificationActivity
 import com.nhathuy.gas24h_7app.viewmodel.ViewModelFactory
@@ -107,4 +108,5 @@ interface GasComponent {
     fun inject(chatActivity: ChatActivity)
     fun inject(chatMessageAdminActivity: ChatMessageAdminActivity)
     fun inject(deleteAccountFragment: DeleteAccountFragment)
+    fun inject(setupAccountActivity: SetupAccountActivity)
 }
