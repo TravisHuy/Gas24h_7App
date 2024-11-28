@@ -153,4 +153,10 @@ dependencies {
 
     //AsyncImage
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    //Mockito
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.mockito:mockito-inline:3.11.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 }
