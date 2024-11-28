@@ -1,7 +1,9 @@
 package com.nhathuy.gas24h_7app.ui.order_information
 
+import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
+import com.nhathuy.gas24h_7app.data.repository.CartRepository
 import com.nhathuy.gas24h_7app.data.repository.OrderRepository
 import com.nhathuy.gas24h_7app.data.repository.ProductRepository
 import com.nhathuy.gas24h_7app.data.repository.UserRepository
@@ -10,16 +12,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderInformationPresenter @Inject constructor(private val userRepository: UserRepository,
                                                     private val orderRepository: OrderRepository,
-                                                    private val productRepository: ProductRepository
+                                                    private val productRepository: ProductRepository,
+                                                    private val cartRepository: CartRepository
 ):OrderInformationContract.Presenter {
 
     private var view:OrderInformationContract.View? = null
     private val job = SupervisorJob()
     private val coroutineScope= CoroutineScope(Dispatchers.Main+job)
+    private val productsToAdd = mutableListOf<Triple<String, Int, Double>>()
+
     override fun attachView(view: OrderInformationContract.View) {
         this.view=view
     }
@@ -110,4 +116,56 @@ class OrderInformationPresenter @Inject constructor(private val userRepository: 
         }
     }
 
+    override fun addToCart(productId: String, quantity: Int, price: Double) {
+        coroutineScope.launch {
+            try {
+                val userId = userRepository.getCurrentUserId()
+                if(userId!=null){
+                    val result = cartRepository.addToCart(userId,productId, quantity, price)
+                    result.fold(
+                        onSuccess = {
+                            if (productsToAdd.isNotEmpty()) {
+                                val nextProduct = productsToAdd.removeAt(0)
+                                addToCart(nextProduct.first, nextProduct.second, nextProduct.third)
+                            }
+                        },
+                        onFailure = {e->
+                            view?.showError("Failed to add to cart: ${e.message}")
+                        }
+                    )
+                }
+                else{
+                    view?.showError("User not logged in")
+                }
+            }
+            catch (e:Exception){
+                view?.showError("Error adding to cart: ${e.message}")
+            }
+        }
+    }
+    override fun addToCartAndNavigate(productId: String, quantity: Int, price: Double) {
+        coroutineScope.launch {
+            try {
+                val userId = userRepository.getCurrentUserId()
+                if(userId != null) {
+                    val result = cartRepository.addToCart(userId, productId, quantity, price)
+                    result.fold(
+                        onSuccess = {
+                            // Chuyển đến giỏ hàng sau khi thêm sản phẩm cuối cùng
+                            withContext(Dispatchers.Main) {
+                                view?.onCartAddSuccess()
+                            }
+                        },
+                        onFailure = { e ->
+                            view?.showError("Failed to add to cart: ${e.message}")
+                        }
+                    )
+                } else {
+                    view?.showError("User not logged in")
+                }
+            } catch (e: Exception) {
+                view?.showError("Error adding to cart: ${e.message}")
+            }
+        }
+    }
 }

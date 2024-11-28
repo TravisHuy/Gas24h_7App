@@ -12,6 +12,7 @@ interface OrderInformationContract {
         fun showOrder(order:Order, products:Map<String, Product>)
         fun setupSuggestProduct(products: List<Product>)
         fun navigateCall()
+        fun onCartAddSuccess()
         fun navigatePurchase()
     }
     interface Presenter{
@@ -21,5 +22,7 @@ interface OrderInformationContract {
         fun loadOrder(orderId:String)
         fun loadSuggestProducts()
         fun cancelOrder(orderId: String)
+        fun addToCart(productId: String, quantity: Int, price: Double)
+        fun addToCartAndNavigate(productId: String, quantity: Int, price: Double)
     }
 }

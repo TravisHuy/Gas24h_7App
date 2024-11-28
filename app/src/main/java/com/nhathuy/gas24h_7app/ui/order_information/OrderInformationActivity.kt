@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,11 +14,13 @@ import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.ProductAdapter
 import com.nhathuy.gas24h_7app.adapter.PurchasedOrderProductItemAdapter
 import com.nhathuy.gas24h_7app.data.model.Order
+import com.nhathuy.gas24h_7app.data.model.OrderStatus
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
 import com.nhathuy.gas24h_7app.databinding.ActivityOrderInformationBinding
 import com.nhathuy.gas24h_7app.fragment.categories.ProductClickListener
 import com.nhathuy.gas24h_7app.fragment.hotline.HotlineFragment
+import com.nhathuy.gas24h_7app.ui.cart.CartActivity
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import com.nhathuy.gas24h_7app.ui.main.MainActivity
 import com.nhathuy.gas24h_7app.ui.purchased_order.PurchasedOrderActivity
@@ -32,6 +35,10 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
     private lateinit var adapter: PurchasedOrderProductItemAdapter
     @Inject
     lateinit var presenter: OrderInformationPresenter
+
+    private var currentOrder: Order? = null
+    private var currentProducts: Map<String, Product>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityOrderInformationBinding.inflate(layoutInflater)
@@ -74,6 +81,9 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
     }
 
     override fun showOrder(order: Order, products: Map<String, Product>) {
+        currentOrder = order
+        currentProducts = products
+
         binding.orderConfirmId.text = order.id
         val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
         binding.orderStart.text = dateFormat.format(order.createdAt)
@@ -81,7 +91,55 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
         binding.orderTotalPrice.text = NumberFormatUtils.formatPrice(order.totalAmount)
 
         adapter.updateOrderItems(order.items, products)
+
+        updateOrderActionButton(order.status)
     }
+    private fun updateOrderActionButton(status: OrderStatus) {
+        when (status) {
+            OrderStatus.CANCELLED -> {
+                binding.btnConfirmCancel.text = getString(R.string.buy_again)
+                binding.btnConfirmCancel.setOnClickListener { reorderCancelledOrder() }
+                binding.btnConfirmCancel.visibility = View.VISIBLE
+            }
+            OrderStatus.PENDING, OrderStatus.PROCESSING -> {
+                binding.btnConfirmCancel.text = getString(R.string.confirm_cancel)
+                binding.btnConfirmCancel.setOnClickListener {
+                    currentOrder?.id?.let { orderId -> presenter.cancelOrder(orderId) }
+                }
+                binding.btnConfirmCancel.visibility = View.VISIBLE
+            }
+            else -> {
+                binding.btnConfirmCancel.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun reorderCancelledOrder() {
+        val order = currentOrder
+        val products = currentProducts
+
+        if (order != null && products != null) {
+            // Lấy toàn bộ sản phẩm từ order
+            val availableProducts = order.items.mapNotNull { orderItem ->
+                products[orderItem.productId]?.let { product ->
+                    Triple(orderItem.productId, orderItem.quantity, product.price)
+                }
+            }
+
+            // Thêm từng sản phẩm vào giỏ hàng
+            availableProducts.forEachIndexed { index, (productId, quantity, price) ->
+                // Kiểm tra nếu là sản phẩm cuối cùng thì mới chuyển trang
+                if (index == availableProducts.lastIndex) {
+                    // Thêm sản phẩm cuối và chuyển trang
+                    presenter.addToCartAndNavigate(productId, quantity, price)
+                } else {
+                    // Thêm các sản phẩm trước đó
+                    presenter.addToCart(productId, quantity, price)
+                }
+            }
+        }
+    }
+
 
     override fun setupSuggestProduct(products: List<Product>) {
         val suggestRecyclerView = findViewById<RecyclerView>(R.id.suggest_rec)
@@ -101,6 +159,11 @@ class OrderInformationActivity : AppCompatActivity(),OrderInformationContract.Vi
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("navigate_to", "hotline")
         startActivity(intent)
+        finish()
+    }
+
+    override fun onCartAddSuccess() {
+        startActivity( Intent(this, CartActivity::class.java))
         finish()
     }
 
