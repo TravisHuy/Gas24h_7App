@@ -9,6 +9,7 @@ import com.nhathuy.gas24h_7app.admin.notification.edit_notification.EditNotifica
 import com.nhathuy.gas24h_7app.admin.product_management.add_product.AddProductActivity
 import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmationActivity
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
+import com.nhathuy.gas24h_7app.admin.print_invoice.PrintInvoiceActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductActivity
 import com.nhathuy.gas24h_7app.admin.qrcode.QrCodeActivity
@@ -109,4 +110,5 @@ interface GasComponent {
     fun inject(chatMessageAdminActivity: ChatMessageAdminActivity)
     fun inject(deleteAccountFragment: DeleteAccountFragment)
     fun inject(setupAccountActivity: SetupAccountActivity)
+    fun inject(printInvoiceActivity: PrintInvoiceActivity)
 }
