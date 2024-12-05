@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tv_title"
@@ -39,7 +39,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:fontFamily="@font/noto_sans_bold"
-        android:text="Huy Nguyễn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_buyer" />
@@ -55,17 +54,39 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_buyer_name"
         />
 
+
     <TextView
         android:id="@+id/tv_buyer_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hồ Nhật huy"
         android:fontFamily="@font/noto_sans_bold"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_address"
         app:layout_constraintTop_toBottomOf="@+id/tv_address" />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số điện thoại"
+        android:fontFamily="@font/noto_sans_bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_buyer_address" />
+
+    <TextView
+        android:id="@+id/tv_buyer_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_phone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_phone" />
 
     <TextView
         android:id="@+id/tv_information"
@@ -76,7 +97,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_buyer_address"
+        app:layout_constraintTop_toBottomOf="@+id/tv_buyer_phone"
         />
 
     <TextView
@@ -95,7 +116,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="2Fs2vidgd24MT7J8QnB2"
         app:layout_constraintBottom_toBottomOf="@+id/tv_information_order_id"
         app:layout_constraintStart_toEndOf="@id/tv_information_order_id"
         app:layout_constraintTop_toTopOf="@+id/tv_information_order_id" />
@@ -103,7 +123,6 @@
         android:id="@+id/tv_information_order_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tổng SL sản phẩm 1 "
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -143,7 +162,6 @@
         android:id="@+id/tv_information_order_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="10/10/2020"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -159,12 +177,18 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_information_order_date" />
 
     <TextView
+        android:id="@+id/tv_information_order_total_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="500.000 VNĐ"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/noto_sans_bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_information_order_total_amount"
+        android:background="@color/black"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.nhathuy.gas24h_7app.admin.print_invoice
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
 import com.nhathuy.gas24h_7app.adapter.PendingConfirmationAdapter
+import com.nhathuy.gas24h_7app.admin.print_invoice.print_invoice_detail.PrintInVoiceDetailActivity
 import com.nhathuy.gas24h_7app.data.model.Order
 import com.nhathuy.gas24h_7app.data.model.Product
 import com.nhathuy.gas24h_7app.data.model.User
@@ -61,7 +63,16 @@ class PrintInvoiceActivity : AppCompatActivity(),PrintInvoiceContract.View{
             onBackPressed()
         }
         binding.btnConfirm.setOnClickListener {
-            presenter.confirmSelectOrders()
+            val selectedOrderIds = presenter.getSelectedOrders().map { it.id }
+
+            if (selectedOrderIds.isNotEmpty()) {
+                val intent = Intent(this, PrintInVoiceDetailActivity::class.java).apply {
+                    putStringArrayListExtra("ORDER_IDS", ArrayList(selectedOrderIds))
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Vui lòng chọn đơn hàng", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -71,7 +82,16 @@ class PrintInvoiceActivity : AppCompatActivity(),PrintInvoiceContract.View{
             presenter.updateItemSelection(orderId,isChecked)
         }, onItemClicked = {
                 orderId ->
+            val selectedOrderIds = presenter.getSelectedOrders().map { it.id }
 
+            if (selectedOrderIds.isNotEmpty()) {
+                val intent = Intent(this, PrintInVoiceDetailActivity::class.java).apply {
+                    putStringArrayListExtra("ORDER_IDS", ArrayList(selectedOrderIds))
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Vui lòng chọn đơn hàng", Toast.LENGTH_SHORT).show()
+            }
         })
         binding.recyclerViewOrder.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewOrder.adapter = adapter
@@ -116,6 +136,13 @@ class PrintInvoiceActivity : AppCompatActivity(),PrintInvoiceContract.View{
 
     override fun updateSelectAllCheckbox(isAllSelected: Boolean) {
         binding.selectAllCheckbox.isChecked = isAllSelected
+    }
+
+    override fun navigateToPrintDetail(orderIds: List<String>) {
+        val intent = Intent(this,PrintInVoiceDetailActivity::class.java).apply {
+            putExtra("ORDER_IDS", arrayListOf(orderIds))
+        }
+        startActivity(intent)
     }
 
     override fun clearSelectItems() {

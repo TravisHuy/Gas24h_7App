@@ -14,6 +14,7 @@ interface PrintInvoiceContract {
         fun showOrders(orders:List<Order>, products:Map<String, Product>, users:Map<String, User>)
         fun updateOrderList(orders: List<Order>, selectedOrders: MutableSet<String>)
         fun updateSelectAllCheckbox(isAllSelected:Boolean)
+        fun navigateToPrintDetail(orderIds: List<String>)
         fun clearSelectItems()
     }
     interface Presenter{
@@ -25,6 +26,7 @@ interface PrintInvoiceContract {
         fun toggleSelectAll(isChecked: Boolean)
         fun searchOrders(query:String)
         fun confirmSelectOrders()
+        fun printSelectedOrders()
         fun clearSelection()
     }
 }

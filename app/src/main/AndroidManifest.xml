@@ -34,6 +34,9 @@
         android:theme="@style/Theme.Gas24h_7App"
         tools:targetApi="31">
         <activity
+            android:name=".admin.print_invoice.print_invoice_detail.PrintInVoiceDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.print_invoice.PrintInvoiceActivity"
             android:exported="false" />
         <activity

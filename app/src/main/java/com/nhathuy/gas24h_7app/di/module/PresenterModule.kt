@@ -17,6 +17,7 @@ import com.nhathuy.gas24h_7app.admin.order.pending_confirmation.PendingConfirmat
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingContract
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingPresenter
 import com.nhathuy.gas24h_7app.admin.print_invoice.PrintInvoicePresenter
+import com.nhathuy.gas24h_7app.admin.print_invoice.print_invoice_detail.PrintVoiceDetailPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductPresenter
 import com.nhathuy.gas24h_7app.admin.product_management.edit_product.EditProductPresenter
 import com.nhathuy.gas24h_7app.admin.qrcode.QrCodePresenter
@@ -327,5 +328,10 @@ class PresenterModule {
     @Singleton
     fun providePrintInvoicePresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository): PrintInvoicePresenter {
         return PrintInvoicePresenter(orderRepository, productRepository, userRepository)
+    }
+    @Provides
+    @Singleton
+    fun providePrintInvoiceDetailPresenter(orderRepository: OrderRepository,productRepository: ProductRepository,userRepository: UserRepository): PrintVoiceDetailPresenter {
+        return PrintVoiceDetailPresenter(orderRepository, productRepository, userRepository)
     }
 }

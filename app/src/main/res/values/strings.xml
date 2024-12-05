@@ -18,8 +18,10 @@
     <string name="error_count_add_to_cart">Bạn đã có %1d sản phẩm trong giỏ hàng.\nKhông thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn</string>
     <string name="title_cart_toolbar">Giỏ hàng (%d)</string>
     <string name="count_product">(%d sản phẩm) : </string>
+    <string name="count_total_product"> Tổng số lượng sản phẩm %d : </string>
     <string name="voucher_tv_offerpercent">Giảm %.0f%% </string>
     <string name="voucher_discount_price">Giảm %s</string>
+    <string name="order_count">SL %d</string>
 
     <string name="voucher_discount_prices">-%s</string>
     <string name="voucher_discount_offerpercent">-%.0f%% </string>

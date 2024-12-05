@@ -142,6 +142,14 @@ class PrintInvoicePresenter @Inject constructor(private val orderRepository: Ord
         }
     }
 
+    override fun printSelectedOrders() {
+        if (selectedOrders.isEmpty()) {
+            view?.showError("Vui lòng chọn đơn hàng để in")
+            return
+        }
+        view?.navigateToPrintDetail(selectedOrders.toList())
+    }
+
     override fun clearSelection() {
         selectedOrders.clear()
         isAllSelected = false

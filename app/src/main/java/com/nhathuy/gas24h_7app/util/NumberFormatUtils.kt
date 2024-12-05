@@ -21,4 +21,11 @@ object NumberFormatUtils {
             else -> String.format("đ%s", numberFormat.format(value))
         }
     }
+    fun formatPriceVN(value: Double): String {
+        val numberFormat = NumberFormat.getInstance(Locale("vi", "VN")).apply {
+            isGroupingUsed = true
+        }
+        return String.format("%s VNĐ", numberFormat.format(value))
+    }
+
 }

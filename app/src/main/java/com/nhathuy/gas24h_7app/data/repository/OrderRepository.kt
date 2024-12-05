@@ -124,6 +124,25 @@ class OrderRepository @Inject constructor(
         }
     }
 
+    // lấy ra danh sách order với listorderId
+    suspend fun getListOrders(orderIds:List<String>):Result<List<Order>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = db.collection("orders").whereIn("id",orderIds)
+                    .get().await()
+
+                val orders = snapshot.documents.mapNotNull {
+                    it.toObject(Order::class.java)
+                }
+                Result.success(orders)
+            }
+            catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+    }
+
+
     suspend fun getOrdersForUserBuyBack(userId: String): Result<List<Order>> {
         val statusList = listOf(OrderStatus.DELIVERED.name,OrderStatus.RATED.name)
         return withContext(Dispatchers.IO) {
