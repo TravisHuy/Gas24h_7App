@@ -40,7 +40,7 @@ class BillOrderAdapter(private var orders:List<Order> = emptyList(),
 
         with(holder.binding){
             order?.let {
-                tvInformationOrderId.text=order.id
+                tvInformationOrderIds.text=order.id
                 tvInformationOrderCount.text = holder.binding.root.context.getString(R.string.count_total_product,order.items.size)
 
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -65,9 +65,10 @@ class BillOrderAdapter(private var orders:List<Order> = emptyList(),
     }
     private fun generateQRCode(orderId: String, imageView: ImageView) {
         try {
+            val qrContent = "ORDERS:$orderId"
             val qrCodeWriter = QRCodeWriter()
             val bitMatrix = qrCodeWriter.encode(
-                orderId,
+                qrContent,
                 BarcodeFormat.QR_CODE,
                 200,
                 200

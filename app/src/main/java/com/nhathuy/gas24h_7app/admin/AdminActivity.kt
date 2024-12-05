@@ -15,6 +15,7 @@ import com.nhathuy.gas24h_7app.admin.notification.add_notification.AddNotificati
 import com.nhathuy.gas24h_7app.admin.order.shipping.ShippingActivity
 import com.nhathuy.gas24h_7app.admin.print_invoice.PrintInvoiceActivity
 import com.nhathuy.gas24h_7app.admin.product_management.all_product.AllProductActivity
+import com.nhathuy.gas24h_7app.admin.qrcode.QrCodeActivity
 import com.nhathuy.gas24h_7app.admin.revenue_statistics.RevenueStatisticsActivity
 import com.nhathuy.gas24h_7app.admin.voucher.all_product.VoucherAllProductActivity
 import com.nhathuy.gas24h_7app.admin.voucher.detail_product.VoucherDetailProductActivity
@@ -70,9 +71,13 @@ class AdminActivity : AppCompatActivity(),AdminContract.View {
         binding.linearPrintOrder.setOnClickListener {
             startActivity(Intent(this,PrintInvoiceActivity::class.java))
         }
+        binding.linearProductCode.setOnClickListener {
+            startActivity(Intent(this,QrCodeActivity::class.java))
+        }
         binding.floatingActionButtonChat.setOnClickListener {
             startActivity(Intent(this, ChatActivity::class.java))
         }
+
     }
 
     private fun showDialogAddVoucher() {

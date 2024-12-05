@@ -27,6 +27,7 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.nhathuy.gas24h_7app.Gas24h_7Application
 import com.nhathuy.gas24h_7app.R
+import com.nhathuy.gas24h_7app.admin.print_invoice.print_invoice_detail.PrintInVoiceDetailActivity
 import com.nhathuy.gas24h_7app.databinding.ActivityQrScannerBinding
 import com.nhathuy.gas24h_7app.ui.detail_product.DetailProductActivity
 import javax.inject.Inject
@@ -104,33 +105,59 @@ class QrScannerActivity : AppCompatActivity(),QrScannerContract.View {
         binding.barcodeScanner.pause()
 
         try{
-            if(result.startsWith("PRODUCT:")){
-                val parts = result.split(":")
-                if(parts.size>=2){
-                    val productId = parts[1].trim()
-                    if(productId.isNotEmpty()){
-                        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                            vibrator.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE))
-                        }else{
-                            @Suppress("DEPRECATION")
-                            vibrator.vibrate(100)
+            when{
+                result.startsWith("PRODUCT:") ->{
+                    val parts = result.split(":")
+                    if(parts.size>=2){
+                        val productId = parts[1].trim()
+                        if(productId.isNotEmpty()){
+                            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                                vibrator.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE))
+                            }else{
+                                @Suppress("DEPRECATION")
+                                vibrator.vibrate(100)
+                            }
+                            navigateToProductDetail(productId)
                         }
-                        navigateToProductDetail(productId)
+                        else{
+                            showError("Mã QR không hợp lệ")
+                            resumeScanning()
+                        }
                     }
                     else{
-                        showError("Mã QR không hợp lệ")
+                        showError("Định dạng mã QR không đúng")
                         resumeScanning()
                     }
                 }
-                else{
-                    showError("Định dạng mã QR không đúng")
+                result.startsWith("ORDERS:") ->{
+                    val parts = result.split(":")
+                    if(parts.size>=2){
+                        val orderId = parts[1].trim()
+                        if(orderId.isNotEmpty()){
+                            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                                vibrator.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE))
+                            }else{
+                                @Suppress("DEPRECATION")
+                                vibrator.vibrate(100)
+                            }
+                            navigateToOrderList(listOf(orderId))
+                        }
+                        else{
+                            showError("Mã QR không hợp lệ")
+                            resumeScanning()
+                        }
+                    }
+                    else{
+                        showError("Định dạng mã QR không đúng")
+                        resumeScanning()
+                    }
+                }
+                else -> {
+                    showError("Loại mã QR không đúng")
                     resumeScanning()
                 }
-            }
-            else{
-                showError("Loại mã QR không đúng")
-                resumeScanning()
             }
         }
         catch (e:Exception){
@@ -184,6 +211,14 @@ class QrScannerActivity : AppCompatActivity(),QrScannerContract.View {
     override fun navigateToProductDetail(productId: String) {
         val intent = Intent(this, DetailProductActivity::class.java).apply {
             putExtra("PRODUCT_ID", productId)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    override fun navigateToOrderList(orderIds: List<String>) {
+        val intent = Intent(this, PrintInVoiceDetailActivity::class.java).apply {
+            putStringArrayListExtra("ORDER_IDS", ArrayList(orderIds))
         }
         startActivity(intent)
         finish()
