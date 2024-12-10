@@ -80,6 +80,7 @@ class ProfilePresenter @Inject constructor(private val storage: FirebaseStorage,
             catch (e:Exception){
 //                view?.showError("Failed to load user information ${e.message}")
                 Log.d("ProfilePresenter","Failed to load user information ${e.message}")
+                view?.navigateLogin()
             }
         }
     }
