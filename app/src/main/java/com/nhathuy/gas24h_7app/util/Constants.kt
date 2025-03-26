@@ -1,6 +1,6 @@
 package com.nhathuy.gas24h_7app.util
 
-object Constants {
+object  Constants {
     const val BASE_URL="https://esgoo.net/"
     const val NOTIFICATION_URL="https://mongodb-csvv.onrender.com/"
     const val VIETNAM_ADDRESS_URL="https://apivietnamaddress.onrender.com/"
